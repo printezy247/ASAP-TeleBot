@@ -3,7 +3,7 @@ AMBASSADOR_NAME = "Jack"
 BROKER_NAME = "Vantage Markets"
 IB_NUMBER = "26468008"
 OPEN_ACCOUNT_LINK = "https://vigco.co/la-scom-inv/ms/oQQlQ8yM"
-BROKER_WEBSITE = "https://www.vantagemarkets.com/"
+BROKER_WEBSITE = "https://www.vantagemarketsea.com/ms/?affid=MjY0NjgwMDg=&invitecode=oQQlQ8yM"
 
 CHANGE_IB_EMAIL_TO = "lucy.my@vantagemarkets.com"
 CHANGE_IB_EMAIL_CC = "shamir.my@vantagemarkets.com"
@@ -36,7 +36,7 @@ WELCOME_MESSAGES = [
 MAIN_MENU_TEXT = "What would you like to do?"
 
 BROKER_INFO_TEXT = (
-    f"📘 *About {BROKER_NAME}*\n\n"
+    f"📘 *Why Choose {BROKER_NAME}*\n\n"
     f"We partner with {BROKER_NAME} for trading. You can check them out directly here:\n"
     f"{BROKER_WEBSITE}"
 )

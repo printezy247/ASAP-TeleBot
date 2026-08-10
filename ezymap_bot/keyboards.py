@@ -10,7 +10,7 @@ MAIN_MENU = InlineKeyboardMarkup(
     [
         [InlineKeyboardButton("🎁 See Packages", callback_data="menu_packages")],
         [InlineKeyboardButton("💎 Get EzyMap Pro", callback_data="menu_pro")],
-        [InlineKeyboardButton("📘 Learn More About Broker", callback_data="menu_broker")],
+        [InlineKeyboardButton("📘 Why Choose Vantage", callback_data="menu_broker")],
         [InlineKeyboardButton("❓ FAQ", callback_data="menu_faq")],
     ]
 )
