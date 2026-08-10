@@ -7,10 +7,11 @@ from telegram.ext import (
     ContextTypes,
     ConversationHandler,
     MessageHandler,
+    PicklePersistence,
     filters,
 )
 
-from .config import BOT_TOKEN
+from .config import BOT_TOKEN, PERSISTENCE_FILE
 from .handlers.menu import menu_router
 from .handlers.registration import (
     ASK_ACCOUNT,
@@ -36,7 +37,8 @@ async def log_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 def build_application() -> Application:
-    application = Application.builder().token(BOT_TOKEN).build()
+    persistence = PicklePersistence(filepath=PERSISTENCE_FILE)
+    application = Application.builder().token(BOT_TOKEN).persistence(persistence).build()
 
     registration_conversation = ConversationHandler(
         entry_points=[CallbackQueryHandler(submit_start, pattern="^reg_submit$")],
@@ -50,6 +52,8 @@ def build_application() -> Application:
             CommandHandler("start", restart_via_start),
         ],
         allow_reentry=True,
+        name="registration_conversation",
+        persistent=True,
     )
 
     application.add_handler(CommandHandler("start", start))

@@ -6,6 +6,11 @@ load_dotenv()
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 ADMIN_CHAT_ID = os.environ.get("ADMIN_CHAT_ID", "")
+PERSISTENCE_FILE = os.environ.get("PERSISTENCE_FILE", "bot_persistence.pickle")
+
+# Only needed when running in webhook mode (see webhook_app.py). A random secret used as
+# part of the webhook URL path so strangers can't POST fake updates to your bot.
+WEBHOOK_SECRET = os.environ.get("WEBHOOK_SECRET", "")
 
 if not BOT_TOKEN:
     raise RuntimeError(
