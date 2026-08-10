@@ -1,0 +1,57 @@
+import logging
+
+from telegram.ext import (
+    Application,
+    CallbackQueryHandler,
+    CommandHandler,
+    ConversationHandler,
+    MessageHandler,
+    filters,
+)
+
+from .config import BOT_TOKEN
+from .handlers.menu import menu_router
+from .handlers.registration import (
+    ASK_ACCOUNT,
+    ASK_EMAIL,
+    ASK_NAME,
+    cancel,
+    receive_account,
+    receive_email,
+    receive_name,
+    submit_start,
+)
+from .handlers.start import start
+
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+
+
+def build_application() -> Application:
+    application = Application.builder().token(BOT_TOKEN).build()
+
+    registration_conversation = ConversationHandler(
+        entry_points=[CallbackQueryHandler(submit_start, pattern="^reg_submit$")],
+        states={
+            ASK_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_name)],
+            ASK_EMAIL: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_email)],
+            ASK_ACCOUNT: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_account)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+    )
+
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(registration_conversation)
+    application.add_handler(CallbackQueryHandler(menu_router))
+
+    return application
+
+
+def main() -> None:
+    application = build_application()
+    application.run_polling(allowed_updates=["message", "callback_query"])
+
+
+if __name__ == "__main__":
+    main()
