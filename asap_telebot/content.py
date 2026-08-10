@@ -182,30 +182,36 @@ FAQ_ITEMS = [
         "Is this really free?",
         "Yes. There's no cost to join the VIP signals channel — you just need a trading account "
         f"opened under my IB with {BROKER_NAME}. No deposit required.",
+        False,
     ),
     (
         "Do I need to deposit money?",
         "No deposit is required to get access to the free signals channel. You only need to "
         "open an account (or switch your IB) under my link.",
+        False,
     ),
     (
         "How long until I get VIP access?",
         "Once you submit your Name, Email, and Account Number, the admin reviews it and adds "
         "you shortly after — usually the same day.",
+        False,
     ),
     (
         "I already have an Elev8 account. Can I still join?",
         "Yes — use the *Change IB* option instead of opening a new account, then submit your "
         "details the same way.",
+        False,
     ),
     (
         "Is it safe / is this broker regulated?",
         f"We work with {BROKER_NAME}. You can review their site and terms directly at "
         f"{BROKER_WEBSITE} before signing up.",
+        False,
     ),
     (
         "What if I get stuck during registration?",
-        "Go through the Open Account or Change IB steps again from the menu, or reach out to "
-        "the admin directly if something isn't working.",
+        "Go through the Open Account or Change IB steps again from the menu, or tap the button "
+        "below to message the admin directly.",
+        True,
     ),
 ]

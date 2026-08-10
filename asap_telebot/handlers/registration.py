@@ -8,6 +8,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 from .. import content
 from ..config import ADMIN_CHAT_ID
 from ..keyboards import MAIN_MENU
+from .start import start
 
 logger = logging.getLogger(__name__)
 
@@ -41,13 +42,15 @@ async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     account = context.user_data.get("reg_account", "-")
     user = update.effective_user
 
-    telegram_line = f"Telegram: @{user.username} (id: {user.id})" if user.username else f"Telegram id: {user.id}"
+    username_line = f"@{user.username}" if user.username else "(no username set)"
     admin_text = (
         "📥 *New registration submission*\n\n"
         f"Name: {name}\n"
         f"Email: {email}\n"
         f"Account Number: {account}\n\n"
-        f"{telegram_line}"
+        f"Telegram username: {username_line}\n"
+        f"Telegram ID: `{user.id}`\n"
+        f"[Open chat with this client](tg://user?id={user.id})"
     )
 
     admin_notified = True
@@ -84,4 +87,12 @@ async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text(content.CANCEL_TEXT, reply_markup=ReplyKeyboardRemove())
+    return ConversationHandler.END
+
+
+async def restart_via_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    context.user_data.pop("reg_name", None)
+    context.user_data.pop("reg_email", None)
+    context.user_data.pop("reg_account", None)
+    await start(update, context)
     return ConversationHandler.END
