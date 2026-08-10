@@ -7,7 +7,8 @@ from ..keyboards import (
     BACK_TO_MAIN,
     BACK_TO_PACKAGES,
     MAIN_MENU,
-    PACKAGES_MENU,
+    PACKAGE_TIER_MENU,
+    TIER_DETAIL_MENU,
     ezymap_pro_plans_menu,
     faq_answer_keyboard,
     faq_menu,
@@ -16,7 +17,7 @@ from ..keyboards import (
 _SIMPLE_ROUTES = {
     "menu_main": (content.MAIN_MENU_TEXT, MAIN_MENU),
     "menu_broker": (content.BROKER_INFO_TEXT, BACK_TO_MAIN),
-    "menu_packages": (content.PACKAGES_INTRO_TEXT, PACKAGES_MENU),
+    "menu_packages": (content.PACKAGES_INTRO_TEXT, PACKAGE_TIER_MENU),
     "menu_pro": (content.EZYMAP_PRO_INTRO_TEXT, None),
     "menu_faq": ("❓ *FAQ* — tap a question to see the answer.", None),
     "reg_open_account": (content.OPEN_ACCOUNT_TEXT, BACK_TO_PACKAGES),
@@ -38,6 +39,19 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         text, _ = _SIMPLE_ROUTES[data]
         await query.edit_message_text(
             text, reply_markup=ezymap_pro_plans_menu(), parse_mode=ParseMode.MARKDOWN
+        )
+        return
+
+    if data.startswith("tier_"):
+        tier_key = data.removeprefix("tier_")
+        if tier_key not in content.PACKAGE_TIERS:
+            text, keyboard = _SIMPLE_ROUTES["menu_packages"]
+            await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+            return
+        context.user_data["selected_package"] = tier_key
+        _tier_name, detail_text = content.PACKAGE_TIERS[tier_key]
+        await query.edit_message_text(
+            detail_text, reply_markup=TIER_DETAIL_MENU, parse_mode=ParseMode.MARKDOWN
         )
         return
 
