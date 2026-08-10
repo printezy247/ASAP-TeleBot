@@ -4,6 +4,7 @@ from telegram.ext import (
     Application,
     CallbackQueryHandler,
     CommandHandler,
+    ContextTypes,
     ConversationHandler,
     MessageHandler,
     filters,
@@ -26,6 +27,11 @@ from .handlers.start import start
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
+logger = logging.getLogger(__name__)
+
+
+async def log_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
+    logger.error("Unhandled exception while processing update %s", update, exc_info=context.error)
 
 
 def build_application() -> Application:
@@ -44,6 +50,7 @@ def build_application() -> Application:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(registration_conversation)
     application.add_handler(CallbackQueryHandler(menu_router))
+    application.add_error_handler(log_error)
 
     return application
 
