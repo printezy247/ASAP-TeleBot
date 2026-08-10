@@ -98,14 +98,13 @@ Before this one can run, fill in `ezymap_bot/content.py`:
 For real client registrations you need the bot running somewhere always-on — not your
 laptop. [PythonAnywhere](https://www.pythonanywhere.com/) offers a free tier that never
 asks for a credit card and never sleeps, but it hosts *web apps*, not scripts that sit
-there polling. So instead of `python -m asap_telebot.main`, deploy `webhook_app.py`,
-which makes Telegram push updates to a URL instead of the bot asking for them.
+there polling, and free accounts get exactly **one** web app.
 
-> **Free accounts are limited to one web app each.** Since `ezymap_bot` has a different
-> admin (Jack) anyway, the simplest setup is: you keep `asap_telebot` on your
-> PythonAnywhere account, and Jack signs up for his own free PythonAnywhere account and
-> hosts `ezymap_bot` there (same steps below, just his own account/credentials). Both
-> bots live in this same GitHub repo either way.
+Since both bots need to run somewhere, **`combined_webhook_app.py`** serves both from
+that single web app — each bot keeps its own URL route and its own secret, so from
+Telegram's point of view they're completely independent; they just happen to share one
+PythonAnywhere process. (Hosting location and admin identity are unrelated — Jack
+doesn't need his own PythonAnywhere account just to receive DMs.)
 
 1. Sign up free at pythonanywhere.com (no card required).
 2. Open a **Bash console** from the PythonAnywhere dashboard and run:
@@ -117,35 +116,40 @@ which makes Telegram push updates to a URL instead of the bot asking for them.
    source .venv/bin/activate
    pip install -r requirements.txt
    cp .env.example .env
-   nano .env   # fill in BOT_TOKEN/ADMIN_CHAT_ID/WEBHOOK_SECRET, or the EZYMAP_ ones
+   nano .env   # fill in BOTH bots' values: BOT_TOKEN/ADMIN_CHAT_ID/WEBHOOK_SECRET
+               # AND EZYMAP_BOT_TOKEN/EZYMAP_ADMIN_CHAT_ID/EZYMAP_WEBHOOK_SECRET
    ```
 3. Go to the **Web** tab → **Add a new web app** → choose **Flask** → Python 3.11 (match
    whatever `python3.11 -m venv` used above — check the Python version shown on the Web
    tab and use the matching `python3.X` command if it's not 3.11).
-4. In that web app's config, edit the auto-generated **WSGI configuration file** so the
-   bottom of it reads (for `asap_telebot`):
+4. Click the **WSGI configuration file** link and replace the bottom of it with:
    ```python
    import sys
    path = '/home/<your-pythonanywhere-username>/ASAP-TeleBot'
    if path not in sys.path:
        sys.path.insert(0, path)
 
-   from asap_telebot.webhook_app import app as application
+   from combined_webhook_app import app as application
    ```
-   For `ezymap_bot`, use `from ezymap_bot.webhook_app import app as application` instead.
 5. Under the web app's **Virtualenv** section, point it at
    `/home/<your-pythonanywhere-username>/ASAP-TeleBot/.venv`.
 6. Click the green **Reload** button on the Web tab.
-7. Tell Telegram where to send updates (replace the placeholders, run once from the
-   Bash console):
+7. Tell Telegram where to send updates for **each** bot (two separate calls, run once
+   each from the Bash console):
    ```bash
-   curl "https://api.telegram.org/bot<BOT_TOKEN>/setWebhook?url=https://<your-pythonanywhere-username>.pythonanywhere.com/webhook/<WEBHOOK_SECRET>"
+   curl "https://api.telegram.org/bot<BOT_TOKEN>/setWebhook?url=https://<your-pythonanywhere-username>.pythonanywhere.com/webhook/asap/<WEBHOOK_SECRET>"
+   curl "https://api.telegram.org/bot<EZYMAP_BOT_TOKEN>/setWebhook?url=https://<your-pythonanywhere-username>.pythonanywhere.com/webhook/ezymap/<EZYMAP_WEBHOOK_SECRET>"
    ```
-   Use `EZYMAP_BOT_TOKEN`/`EZYMAP_WEBHOOK_SECRET` values for the `ezymap_bot` deployment.
 
-That's it — the bot now runs permanently on PythonAnywhere's servers, no laptop or
-terminal required. To push future code updates: open a Bash console,
-`cd ASAP-TeleBot && git pull`, then hit **Reload** on the Web tab again.
+That's it — both bots now run permanently on the same PythonAnywhere web app, no
+laptop or terminal required, no paid plan needed. To push future code updates: open a
+Bash console, `cd ASAP-TeleBot && git pull`, then hit **Reload** on the Web tab again.
+
+If you'd still rather keep the bots on fully separate hosts (e.g. `asap_telebot` on
+your account, `ezymap_bot` on a second free account under a different email), the
+per-bot `webhook_app.py` files still work individually — just import from
+`asap_telebot.webhook_app` or `ezymap_bot.webhook_app` instead of
+`combined_webhook_app` in step 4, and only set that one bot's webhook in step 7.
 
 **Keeping it alive:** PythonAnywhere free sites need a login + click **"Run until 1 month
 from today"** (on the Web tab) at least once a month, or the site gets disabled. They
