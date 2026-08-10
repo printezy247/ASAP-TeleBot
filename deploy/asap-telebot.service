@@ -1,0 +1,14 @@
+[Unit]
+Description=ASAP TeleBot (Telegram registration bot)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/ASAP-TeleBot
+ExecStart=/home/ubuntu/ASAP-TeleBot/.venv/bin/python -m asap_telebot.main
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
