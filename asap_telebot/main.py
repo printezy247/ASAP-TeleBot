@@ -20,6 +20,7 @@ from .handlers.registration import (
     receive_account,
     receive_email,
     receive_name,
+    restart_via_start,
     submit_start,
 )
 from .handlers.start import start
@@ -44,7 +45,11 @@ def build_application() -> Application:
             ASK_EMAIL: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_email)],
             ASK_ACCOUNT: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_account)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)],
+        fallbacks=[
+            CommandHandler("cancel", cancel),
+            CommandHandler("start", restart_via_start),
+        ],
+        allow_reentry=True,
     )
 
     application.add_handler(CommandHandler("start", start))

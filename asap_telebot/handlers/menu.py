@@ -5,12 +5,12 @@ from telegram.ext import ContextTypes
 from .. import content
 from ..keyboards import (
     BACK_TO_DEPOSIT,
-    BACK_TO_FAQ,
     BACK_TO_MAIN,
     BACK_TO_SIGNALS,
     DEPOSIT_MENU,
     MAIN_MENU,
     SIGNALS_MENU,
+    faq_answer_keyboard,
     faq_menu,
 )
 
@@ -42,9 +42,16 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
     if data.startswith("faq_"):
         index = int(data.removeprefix("faq_"))
-        question, answer = content.FAQ_ITEMS[index]
+        question, answer, show_contact_admin = content.FAQ_ITEMS[index]
         text = f"❓ *{question}*\n\n{answer}"
-        await query.edit_message_text(text, reply_markup=BACK_TO_FAQ, parse_mode=ParseMode.MARKDOWN)
+        await query.edit_message_text(
+            text, reply_markup=faq_answer_keyboard(show_contact_admin), parse_mode=ParseMode.MARKDOWN
+        )
+        return
+
+    if data not in _SIMPLE_ROUTES:
+        text, keyboard = _SIMPLE_ROUTES["menu_main"]
+        await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
         return
 
     text, keyboard = _SIMPLE_ROUTES[data]
