@@ -1,0 +1,59 @@
+from telegram import Update
+from telegram.constants import ParseMode
+from telegram.ext import ContextTypes
+
+from .. import content
+from ..keyboards import (
+    BACK_TO_MAIN,
+    BACK_TO_PACKAGES,
+    MAIN_MENU,
+    PACKAGES_MENU,
+    ezymap_pro_plans_menu,
+    faq_answer_keyboard,
+    faq_menu,
+)
+
+_SIMPLE_ROUTES = {
+    "menu_main": (content.MAIN_MENU_TEXT, MAIN_MENU),
+    "menu_broker": (content.BROKER_INFO_TEXT, BACK_TO_MAIN),
+    "menu_packages": (content.PACKAGES_INTRO_TEXT, PACKAGES_MENU),
+    "menu_pro": (content.EZYMAP_PRO_INTRO_TEXT, None),
+    "menu_faq": ("❓ *FAQ* — tap a question to see the answer.", None),
+    "reg_open_account": (content.OPEN_ACCOUNT_TEXT, BACK_TO_PACKAGES),
+    "reg_change_ib": (content.CHANGE_IB_TEXT, BACK_TO_PACKAGES),
+}
+
+
+async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    await query.answer()
+    data = query.data
+
+    if data == "menu_faq":
+        text, _ = _SIMPLE_ROUTES[data]
+        await query.edit_message_text(text, reply_markup=faq_menu(), parse_mode=ParseMode.MARKDOWN)
+        return
+
+    if data == "menu_pro":
+        text, _ = _SIMPLE_ROUTES[data]
+        await query.edit_message_text(
+            text, reply_markup=ezymap_pro_plans_menu(), parse_mode=ParseMode.MARKDOWN
+        )
+        return
+
+    if data.startswith("faq_"):
+        index = int(data.removeprefix("faq_"))
+        question, answer, show_contact_admin = content.FAQ_ITEMS[index]
+        text = f"❓ *{question}*\n\n{answer}"
+        await query.edit_message_text(
+            text, reply_markup=faq_answer_keyboard(show_contact_admin), parse_mode=ParseMode.MARKDOWN
+        )
+        return
+
+    if data not in _SIMPLE_ROUTES:
+        text, keyboard = _SIMPLE_ROUTES["menu_main"]
+        await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+        return
+
+    text, keyboard = _SIMPLE_ROUTES[data]
+    await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
