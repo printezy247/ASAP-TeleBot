@@ -2,11 +2,14 @@ import os
 
 from dotenv import load_dotenv
 
-load_dotenv()
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 ADMIN_CHAT_ID = os.environ.get("ADMIN_CHAT_ID", "")
-PERSISTENCE_FILE = os.environ.get("PERSISTENCE_FILE", "bot_persistence.pickle")
+PERSISTENCE_FILE = os.environ.get(
+    "PERSISTENCE_FILE", os.path.join(PROJECT_ROOT, "bot_persistence.pickle")
+)
 
 # Only needed when running in webhook mode (see webhook_app.py). A random secret used as
 # part of the webhook URL path so strangers can't POST fake updates to your bot.
