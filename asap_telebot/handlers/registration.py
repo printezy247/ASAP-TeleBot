@@ -1,6 +1,6 @@
 import logging
 
-from telegram import ReplyKeyboardRemove, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.constants import ParseMode
 from telegram.error import TelegramError
 from telegram.ext import ContextTypes, ConversationHandler
@@ -49,14 +49,19 @@ async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         f"Email: {email}\n"
         f"Account Number: {account}\n\n"
         f"Telegram username: {username_line}\n"
-        f"Telegram ID: `{user.id}`\n"
-        f"[Open chat with this client](tg://user?id={user.id})"
+        f"Telegram ID: `{user.id}`"
+    )
+    chat_with_client_keyboard = InlineKeyboardMarkup(
+        [[InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")]]
     )
 
     admin_notified = True
     try:
         await context.bot.send_message(
-            chat_id=ADMIN_CHAT_ID, text=admin_text, parse_mode=ParseMode.MARKDOWN
+            chat_id=ADMIN_CHAT_ID,
+            text=admin_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=chat_with_client_keyboard,
         )
     except TelegramError:
         admin_notified = False
