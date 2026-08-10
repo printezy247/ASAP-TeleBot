@@ -8,8 +8,7 @@ BROKER_WEBSITE = "https://www.vantagemarkets.com/"
 CHANGE_IB_EMAIL_TO = "lucy.my@vantagemarkets.com"
 CHANGE_IB_EMAIL_CC = "shamir.my@vantagemarkets.com"
 
-# TODO: replace with your real USDT wallet address before going live.
-USDT_WALLET_ADDRESS = "REPLACE_ME_WITH_YOUR_USDT_WALLET_ADDRESS"
+USDT_WALLET_ADDRESS = "TH2uvMPSj6GJBduK12xKZzM3e8Zg4LeXjA"
 USDT_NETWORK = "TRC20"
 
 EZYMAP_PRO_PLANS = [
