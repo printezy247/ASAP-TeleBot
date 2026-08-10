@@ -168,6 +168,13 @@ SUBMISSION_CONFIRMATION_TEXT = (
     "check the FAQ from the main menu."
 )
 
+SUBMISSION_ADMIN_UNREACHABLE_TEXT = (
+    "🎉 Thanks, I've got your details!\n\n"
+    "I couldn't reach the admin automatically just now, but your submission was recorded — "
+    "please also send your Name, Email, and Account Number directly to the admin to be safe. "
+    "You'll be added to the VIP signals channel shortly."
+)
+
 CANCEL_TEXT = "Cancelled. Use /start any time to open the menu again."
 
 FAQ_ITEMS = [

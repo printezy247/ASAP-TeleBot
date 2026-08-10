@@ -1,10 +1,15 @@
+import logging
+
 from telegram import ReplyKeyboardRemove, Update
 from telegram.constants import ParseMode
+from telegram.error import TelegramError
 from telegram.ext import ContextTypes, ConversationHandler
 
 from .. import content
 from ..config import ADMIN_CHAT_ID
 from ..keyboards import MAIN_MENU
+
+logger = logging.getLogger(__name__)
 
 ASK_NAME, ASK_EMAIL, ASK_ACCOUNT = range(3)
 
@@ -45,12 +50,28 @@ async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         f"{telegram_line}"
     )
 
-    await context.bot.send_message(
-        chat_id=ADMIN_CHAT_ID, text=admin_text, parse_mode=ParseMode.MARKDOWN
-    )
+    admin_notified = True
+    try:
+        await context.bot.send_message(
+            chat_id=ADMIN_CHAT_ID, text=admin_text, parse_mode=ParseMode.MARKDOWN
+        )
+    except TelegramError:
+        admin_notified = False
+        logger.exception(
+            "Failed to DM admin (chat_id=%s) with registration submission from user %s. "
+            "The admin account must send /start to this bot at least once before it can "
+            "receive DMs.",
+            ADMIN_CHAT_ID,
+            user.id,
+        )
 
+    confirmation_text = (
+        content.SUBMISSION_CONFIRMATION_TEXT
+        if admin_notified
+        else content.SUBMISSION_ADMIN_UNREACHABLE_TEXT
+    )
     await update.message.reply_text(
-        content.SUBMISSION_CONFIRMATION_TEXT,
+        confirmation_text,
         reply_markup=MAIN_MENU,
         parse_mode=ParseMode.MARKDOWN,
     )
