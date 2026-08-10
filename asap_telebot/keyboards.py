@@ -1,6 +1,6 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-from .config import ADMIN_CHAT_ID
+ADMIN_CONTACT_URL = "https://t.me/Managerasad"
 
 MAIN_MENU = InlineKeyboardMarkup(
     [
@@ -49,7 +49,7 @@ def faq_menu() -> InlineKeyboardMarkup:
 
     rows = [
         [InlineKeyboardButton(question, callback_data=f"faq_{i}")]
-        for i, (question, _answer) in enumerate(FAQ_ITEMS)
+        for i, (question, _answer, _show_contact_admin) in enumerate(FAQ_ITEMS)
     ]
     rows.append([InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")])
     return InlineKeyboardMarkup(rows)
@@ -63,8 +63,6 @@ BACK_TO_FAQ = InlineKeyboardMarkup(
 def faq_answer_keyboard(show_contact_admin: bool) -> InlineKeyboardMarkup:
     rows = []
     if show_contact_admin:
-        rows.append(
-            [InlineKeyboardButton("📞 Contact Admin", url=f"tg://user?id={ADMIN_CHAT_ID}")]
-        )
+        rows.append([InlineKeyboardButton("📞 Contact Admin", url=ADMIN_CONTACT_URL)])
     rows.append([InlineKeyboardButton("⬅️ Back to FAQ", callback_data="menu_faq")])
     return InlineKeyboardMarkup(rows)
