@@ -42,9 +42,13 @@ async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     account = context.user_data.get("reg_account", "-")
     user = update.effective_user
 
+    tier_key = context.user_data.get("selected_package")
+    package_line = content.PACKAGE_TIERS[tier_key][0] if tier_key in content.PACKAGE_TIERS else "Not specified"
+
     username_line = f"@{user.username}" if user.username else "(no username set)"
     admin_text = (
         "📥 *New EzyMap Algo registration submission*\n\n"
+        f"Package: {package_line}\n"
         f"Name: {name}\n"
         f"Email: {email}\n"
         f"Account Number: {account}\n\n"

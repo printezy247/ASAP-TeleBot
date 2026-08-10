@@ -45,18 +45,45 @@ PACKAGES_INTRO_TEXT = (
     f"🎁 *{CHANNEL_NAME} Packages*\n\n"
     f"Everything is unlocked by having a trading account under my IB (`{IB_NUMBER}`) with "
     f"{BROKER_NAME}. The more you have with them, the more you unlock — no extra payment "
-    f"needed for these:\n\n"
-    "🥉 *Beginner* — open an account under my IB (no deposit needed)\n"
-    "   • Free eBooks: Technical Analysis & Mapping Like A Pro\n"
-    "   • EzyMap Lite indicator (TradingView)\n\n"
-    "🥈 *Pro* — open an account under my IB + deposit (any amount)\n"
-    "   • EzyMap Scalp Mastery — scalping gold signals channel\n"
-    "   • Everything in Beginner\n\n"
-    "🥇 *Premium* — open an account under my IB + deposit min $100\n"
-    "   • EzyMap Pro indicator (TradingView) with live signals M1–H4\n"
-    "   • Everything in Pro\n\n"
-    "Pick what applies to you:"
+    f"needed for these.\n\n"
+    "Pick a package to see what it includes:"
 )
+
+# key -> (display name, detail text). Keys match the "tier_<key>" callback_data used
+# in keyboards.PACKAGE_TIER_MENU, and are stored in context.user_data so the admin
+# notification can show which package the client picked.
+PACKAGE_TIERS = {
+    "beginner": (
+        "Beginner",
+        (
+            "🥉 *Beginner Package*\n\n"
+            f"Requirement: open an account under my IB (`{IB_NUMBER}`) — no deposit needed.\n\n"
+            "You get:\n"
+            "• Free eBooks: Technical Analysis & Mapping Like A Pro\n"
+            "• EzyMap Lite indicator (TradingView)"
+        ),
+    ),
+    "pro": (
+        "Pro",
+        (
+            "🥈 *Pro Package*\n\n"
+            f"Requirement: open an account under my IB (`{IB_NUMBER}`) + deposit (any amount).\n\n"
+            "You get:\n"
+            "• EzyMap Scalp Mastery — scalping gold signals channel\n"
+            "• Everything in Beginner"
+        ),
+    ),
+    "premium": (
+        "Premium",
+        (
+            "🥇 *Premium Package*\n\n"
+            f"Requirement: open an account under my IB (`{IB_NUMBER}`) + deposit min $100.\n\n"
+            "You get:\n"
+            "• EzyMap Pro indicator (TradingView) with live signals M1–H4\n"
+            "• Everything in Pro"
+        ),
+    ),
+}
 
 OPEN_ACCOUNT_TEXT = (
     "💠 *Open a New Account*\n\n"
