@@ -14,21 +14,25 @@ from telegram.ext import (
 from .config import BOT_TOKEN, PERSISTENCE_FILE
 from .handlers.menu import menu_router
 from .handlers.payment import ASK_PROOF
+from .handlers.payment import back_to_main_menu as payment_back_to_main_menu
 from .handlers.payment import cancel as payment_cancel
 from .handlers.payment import plan_selected, receive_proof
 from .handlers.payment import restart_via_start as payment_restart_via_start
 from .handlers.registration import (
     ASK_ACCOUNT,
+    ASK_DEPOSIT_PROOF,
     ASK_EMAIL,
     ASK_NAME,
     cancel,
     receive_account,
+    receive_deposit_proof,
     receive_email,
     receive_name,
     restart_via_start,
     submit_start,
 )
 from .handlers.start import start
+from .handlers.xendit_payment import initiate_xendit_payment
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -50,6 +54,11 @@ def build_application() -> Application:
             ASK_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_name)],
             ASK_EMAIL: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_email)],
             ASK_ACCOUNT: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_account)],
+            ASK_DEPOSIT_PROOF: [
+                MessageHandler(
+                    (filters.PHOTO | filters.TEXT) & ~filters.COMMAND, receive_deposit_proof
+                )
+            ],
         },
         fallbacks=[
             CommandHandler("cancel", cancel),
@@ -61,12 +70,13 @@ def build_application() -> Application:
     )
 
     payment_conversation = ConversationHandler(
-        entry_points=[CallbackQueryHandler(plan_selected, pattern="^pay_plan_")],
+        entry_points=[CallbackQueryHandler(plan_selected, pattern="^buy_")],
         states={
             ASK_PROOF: [
+                CallbackQueryHandler(payment_back_to_main_menu, pattern="^menu_main$"),
                 MessageHandler(
                     (filters.PHOTO | filters.TEXT) & ~filters.COMMAND, receive_proof
-                )
+                ),
             ],
         },
         fallbacks=[
@@ -81,6 +91,7 @@ def build_application() -> Application:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(registration_conversation)
     application.add_handler(payment_conversation)
+    application.add_handler(CallbackQueryHandler(initiate_xendit_payment, pattern="^xendit_"))
     application.add_handler(CallbackQueryHandler(menu_router))
     application.add_error_handler(log_error)
 
