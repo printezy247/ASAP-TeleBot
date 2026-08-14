@@ -7,7 +7,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 
 from .. import content
 from ..config import ADMIN_CHAT_ID
-from ..keyboards import MAIN_MENU
+from ..keyboards import main_menu
 from .start import start
 
 logger = logging.getLogger(__name__)
@@ -15,6 +15,14 @@ logger = logging.getLogger(__name__)
 ASK_NAME, ASK_EMAIL, ASK_ACCOUNT, ASK_DEPOSIT_PROOF = range(4)
 
 TIERS_REQUIRING_DEPOSIT_PROOF = {"pro", "premium", "elite"}
+
+
+def _region(context: ContextTypes.DEFAULT_TYPE) -> str:
+    return context.user_data.get("price_region", content.DEFAULT_PRICE_REGION)
+
+
+def _text(text_dict: dict, region: str) -> str:
+    return text_dict.get(region, text_dict[content.DEFAULT_PRICE_REGION])
 
 
 def _clear_reg_data(context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -26,19 +34,25 @@ def _clear_reg_data(context: ContextTypes.DEFAULT_TYPE) -> None:
 async def submit_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
-    await query.edit_message_text(content.SUBMIT_DETAILS_PROMPT, parse_mode=ParseMode.MARKDOWN)
+    await query.edit_message_text(
+        _text(content.SUBMIT_DETAILS_PROMPT, _region(context)), parse_mode=ParseMode.MARKDOWN
+    )
     return ASK_NAME
 
 
 async def receive_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data["reg_name"] = update.message.text.strip()
-    await update.message.reply_text(content.ASK_EMAIL_TEXT, parse_mode=ParseMode.MARKDOWN)
+    await update.message.reply_text(
+        _text(content.ASK_EMAIL_TEXT, _region(context)), parse_mode=ParseMode.MARKDOWN
+    )
     return ASK_EMAIL
 
 
 async def receive_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data["reg_email"] = update.message.text.strip()
-    await update.message.reply_text(content.ASK_ACCOUNT_TEXT, parse_mode=ParseMode.MARKDOWN)
+    await update.message.reply_text(
+        _text(content.ASK_ACCOUNT_TEXT, _region(context)), parse_mode=ParseMode.MARKDOWN
+    )
     return ASK_ACCOUNT
 
 
@@ -48,7 +62,7 @@ async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     tier_key = context.user_data.get("selected_package")
     if tier_key in TIERS_REQUIRING_DEPOSIT_PROOF:
         await update.message.reply_text(
-            content.ASK_DEPOSIT_PROOF_TEXT, parse_mode=ParseMode.MARKDOWN
+            _text(content.ASK_DEPOSIT_PROOF_TEXT, _region(context)), parse_mode=ParseMode.MARKDOWN
         )
         return ASK_DEPOSIT_PROOF
 
@@ -62,14 +76,16 @@ async def receive_deposit_proof(update: Update, context: ContextTypes.DEFAULT_TY
 async def _finalize_submission(
     update: Update, context: ContextTypes.DEFAULT_TYPE, proof_message=None
 ) -> int:
+    region = _region(context)
     name = context.user_data.get("reg_name", "-")
     email = context.user_data.get("reg_email", "-")
     account = context.user_data.get("reg_account", "-")
     user = update.effective_user
 
     tier_key = context.user_data.get("selected_package")
-    package_line = content.PACKAGE_TIERS[tier_key][0] if tier_key in content.PACKAGE_TIERS else "Not specified"
+    package_line = content.PACKAGE_TIERS[tier_key]["name"] if tier_key in content.PACKAGE_TIERS else "Not specified"
 
+    # Admin-facing notification always stays in English - it's for Jack, not the client.
     username_line = f"@{user.username}" if user.username else "(no username set)"
     proof_note = "\n\nDeposit proof is forwarded below." if proof_message else ""
     admin_text = (
@@ -110,14 +126,13 @@ async def _finalize_submission(
             user.id,
         )
 
-    confirmation_text = (
-        content.SUBMISSION_CONFIRMATION_TEXT
-        if admin_notified
-        else content.SUBMISSION_ADMIN_UNREACHABLE_TEXT
+    confirmation_text = _text(
+        content.SUBMISSION_CONFIRMATION_TEXT if admin_notified else content.SUBMISSION_ADMIN_UNREACHABLE_TEXT,
+        region,
     )
     await update.message.reply_text(
         confirmation_text,
-        reply_markup=MAIN_MENU,
+        reply_markup=main_menu(region),
         parse_mode=ParseMode.MARKDOWN,
     )
 
@@ -126,7 +141,9 @@ async def _finalize_submission(
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text(content.CANCEL_TEXT, reply_markup=ReplyKeyboardRemove())
+    await update.message.reply_text(
+        _text(content.CANCEL_TEXT, _region(context)), reply_markup=ReplyKeyboardRemove()
+    )
     return ConversationHandler.END
 
 

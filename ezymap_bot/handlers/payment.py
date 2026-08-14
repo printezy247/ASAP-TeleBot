@@ -7,7 +7,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 
 from .. import content
 from ..config import ADMIN_CHAT_ID
-from ..keyboards import MAIN_MENU, payment_prompt_keyboard
+from ..keyboards import main_menu, payment_prompt_keyboard
 from .start import start
 
 logger = logging.getLogger(__name__)
@@ -15,35 +15,46 @@ logger = logging.getLogger(__name__)
 ASK_PROOF = 100
 
 
+def _region(context: ContextTypes.DEFAULT_TYPE) -> str:
+    return context.user_data.get("price_region", content.DEFAULT_PRICE_REGION)
+
+
+def _text(text_dict: dict, region: str) -> str:
+    return text_dict.get(region, text_dict[content.DEFAULT_PRICE_REGION])
+
+
 async def plan_selected(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
+    region = _region(context)
 
     payload = query.data.removeprefix("buy_")
     product_code, duration_code = payload.rsplit("_", 1)
     product = content.PRODUCTS[product_code]
     price = product["plans"][duration_code]
-    plan_name = content.PLAN_DURATION_LABELS[duration_code]
+    plan_name = content.plan_duration_label(duration_code, region)
 
     context.user_data["pay_product_name"] = product["name"]
     context.user_data["pay_plan_name"] = plan_name
     context.user_data["pay_price"] = price
 
-    text = content.PAYMENT_PROMPT_TEMPLATE.format(
+    text = _text(content.PAYMENT_PROMPT_TEMPLATE, region).format(
         product_name=product["name"], plan_name=plan_name, price=price, network=content.USDT_NETWORK
     )
     await query.edit_message_text(
-        text, reply_markup=payment_prompt_keyboard(), parse_mode=ParseMode.MARKDOWN
+        text, reply_markup=payment_prompt_keyboard(region), parse_mode=ParseMode.MARKDOWN
     )
     return ASK_PROOF
 
 
 async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    region = _region(context)
     product_name = context.user_data.get("pay_product_name", "-")
     plan_name = context.user_data.get("pay_plan_name", "-")
     price = context.user_data.get("pay_price", "-")
     user = update.effective_user
 
+    # Admin-facing notification always stays in English - it's for Jack, not the client.
     username_line = f"@{user.username}" if user.username else "(no username set)"
     admin_summary = (
         "💰 *New EzyMap payment proof*\n\n"
@@ -79,13 +90,12 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
             user.id,
         )
 
-    confirmation_text = (
-        content.PAYMENT_PROOF_RECEIVED_TEXT
-        if admin_notified
-        else content.PAYMENT_PROOF_ADMIN_UNREACHABLE_TEXT
+    confirmation_text = _text(
+        content.PAYMENT_PROOF_RECEIVED_TEXT if admin_notified else content.PAYMENT_PROOF_ADMIN_UNREACHABLE_TEXT,
+        region,
     )
     await update.message.reply_text(
-        confirmation_text, reply_markup=MAIN_MENU, parse_mode=ParseMode.MARKDOWN
+        confirmation_text, reply_markup=main_menu(region), parse_mode=ParseMode.MARKDOWN
     )
 
     context.user_data.pop("pay_product_name", None)
@@ -97,17 +107,18 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 async def back_to_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
+    region = _region(context)
     context.user_data.pop("pay_product_name", None)
     context.user_data.pop("pay_plan_name", None)
     context.user_data.pop("pay_price", None)
     await query.edit_message_text(
-        content.MAIN_MENU_TEXT, reply_markup=MAIN_MENU, parse_mode=ParseMode.MARKDOWN
+        _text(content.MAIN_MENU_TEXT, region), reply_markup=main_menu(region), parse_mode=ParseMode.MARKDOWN
     )
     return ConversationHandler.END
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text(content.CANCEL_TEXT)
+    await update.message.reply_text(_text(content.CANCEL_TEXT, _region(context)))
     return ConversationHandler.END
 
 

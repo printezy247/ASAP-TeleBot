@@ -3,63 +3,66 @@ from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
 
 from .. import content
-from ..keyboards import (
-    BACK_TO_MAIN,
-    BACK_TO_PACKAGES,
-    MAIN_MENU,
-    PACKAGE_TIER_MENU,
-    PURCHASE_CATEGORY_MENU,
-    TIER_DETAIL_MENU,
-    faq_answer_keyboard,
-    faq_menu,
-    mt5_bundles_menu,
-    payment_method_menu,
-    product_detail_menu,
-)
+from .. import keyboards
+from ..keyboards import faq_answer_keyboard, faq_menu, mt5_bundles_menu, payment_method_menu, product_detail_menu
+from .start import send_greeting_and_menu
 
 _SIMPLE_ROUTES = {
-    "menu_main": (content.MAIN_MENU_TEXT, MAIN_MENU),
-    "menu_broker": (content.BROKER_INFO_TEXT, BACK_TO_MAIN),
-    "menu_packages": (content.PACKAGES_INTRO_TEXT, PACKAGE_TIER_MENU),
-    "menu_pro": (content.PURCHASE_INTRO_TEXT, PURCHASE_CATEGORY_MENU),
-    "menu_faq": ("❓ *FAQ* — tap a question to see the answer.", None),
-    "products_mt5": (content.MT5_BUNDLES_INTRO_TEXT, None),
-    "reg_open_account": (content.OPEN_ACCOUNT_TEXT, BACK_TO_PACKAGES),
-    "reg_change_ib": (content.CHANGE_IB_TEXT, BACK_TO_PACKAGES),
+    "menu_main": (content.MAIN_MENU_TEXT, keyboards.main_menu),
+    "menu_broker": (content.BROKER_INFO_TEXT, keyboards.back_to_main),
+    "menu_packages": (content.PACKAGES_INTRO_TEXT, keyboards.package_tier_menu),
+    "menu_pro": (content.PURCHASE_INTRO_TEXT, keyboards.purchase_category_menu),
+    "reg_open_account": (content.OPEN_ACCOUNT_TEXT, keyboards.back_to_packages),
+    "reg_change_ib": (content.CHANGE_IB_TEXT, keyboards.back_to_packages),
 }
+
+
+def _text(text_dict: dict, region: str) -> str:
+    return text_dict.get(region, text_dict[content.DEFAULT_PRICE_REGION])
+
+
+async def _show_route(query, region: str, route_key: str) -> None:
+    text_dict, keyboard_fn = _SIMPLE_ROUTES[route_key]
+    await query.edit_message_text(
+        _text(text_dict, region), reply_markup=keyboard_fn(region), parse_mode=ParseMode.MARKDOWN
+    )
 
 
 async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     await query.answer()
     data = query.data
+    region = context.user_data.get("price_region", content.DEFAULT_PRICE_REGION)
 
     if data in ("lang_en", "lang_my"):
-        context.user_data["price_region"] = "en" if data == "lang_en" else "my"
-        text, keyboard = _SIMPLE_ROUTES["menu_main"]
-        await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+        region = "en" if data == "lang_en" else "my"
+        context.user_data["price_region"] = region
+        await query.delete_message()
+        await send_greeting_and_menu(update.effective_chat, region)
         return
 
     if data == "menu_faq":
-        text, _ = _SIMPLE_ROUTES[data]
-        await query.edit_message_text(text, reply_markup=faq_menu(), parse_mode=ParseMode.MARKDOWN)
+        await query.edit_message_text(
+            _text(content.FAQ_LIST_HEADER, region),
+            reply_markup=faq_menu(region),
+            parse_mode=ParseMode.MARKDOWN,
+        )
         return
 
     if data == "products_mt5":
-        text, _ = _SIMPLE_ROUTES[data]
         await query.edit_message_text(
-            text, reply_markup=mt5_bundles_menu(), parse_mode=ParseMode.MARKDOWN
+            _text(content.MT5_BUNDLES_INTRO_TEXT, region),
+            reply_markup=mt5_bundles_menu(region),
+            parse_mode=ParseMode.MARKDOWN,
         )
         return
 
     if data.startswith("product_"):
         product_code = data.removeprefix("product_")
         if product_code not in content.PRODUCTS:
-            text, keyboard = _SIMPLE_ROUTES["menu_pro"]
-            await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+            await _show_route(query, region, "menu_pro")
             return
-        region = context.user_data.get("price_region", content.DEFAULT_PRICE_REGION)
-        text = content.product_detail_text(product_code)
+        text = content.product_detail_text(product_code, region)
         await query.edit_message_text(
             text,
             reply_markup=product_detail_menu(product_code, region),
@@ -71,20 +74,20 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         payload = data.removeprefix("choose_pay_")
         product_code, duration_code = payload.rsplit("_", 1)
         if product_code not in content.PRODUCTS:
-            text, keyboard = _SIMPLE_ROUTES["menu_pro"]
-            await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+            await _show_route(query, region, "menu_pro")
             return
-        region = context.user_data.get("price_region", content.DEFAULT_PRICE_REGION)
         product = content.PRODUCTS[product_code]
         price = product["plans"][duration_code]
-        symbol, _currency_code = content.PRICE_REGIONS.get(region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION])
-        plan_name = content.PLAN_DURATION_LABELS[duration_code]
-        text = content.CHOOSE_PAYMENT_METHOD_TEXT.format(
+        symbol, _currency_code = content.PRICE_REGIONS.get(
+            region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION]
+        )
+        plan_name = content.plan_duration_label(duration_code, region)
+        text = _text(content.CHOOSE_PAYMENT_METHOD_TEXT, region).format(
             product_name=product["name"], plan_name=plan_name, price=f"{symbol}{price}"
         )
         await query.edit_message_text(
             text,
-            reply_markup=payment_method_menu(product_code, duration_code),
+            reply_markup=payment_method_menu(product_code, duration_code, region),
             parse_mode=ParseMode.MARKDOWN,
         )
         return
@@ -92,31 +95,30 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     if data.startswith("tier_"):
         tier_key = data.removeprefix("tier_")
         if tier_key not in content.PACKAGE_TIERS:
-            text, keyboard = _SIMPLE_ROUTES["menu_packages"]
-            await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+            await _show_route(query, region, "menu_packages")
             return
         context.user_data["selected_package"] = tier_key
-        _tier_name, detail_text = content.PACKAGE_TIERS[tier_key]
+        detail_text = _text(content.PACKAGE_TIERS[tier_key]["detail"], region)
         await query.edit_message_text(
-            detail_text, reply_markup=TIER_DETAIL_MENU, parse_mode=ParseMode.MARKDOWN
+            detail_text, reply_markup=keyboards.tier_detail_menu(region), parse_mode=ParseMode.MARKDOWN
         )
         return
 
     if data.startswith("faq_"):
         index = int(data.removeprefix("faq_"))
-        question, answer, show_contact_admin, extra_button = content.FAQ_ITEMS[index]
+        item = content.FAQ_ITEMS[index]
+        question = _text(item["question"], region)
+        answer = _text(item["answer"], region)
         text = f"❓ *{question}*\n\n{answer}"
         await query.edit_message_text(
             text,
-            reply_markup=faq_answer_keyboard(show_contact_admin, extra_button),
+            reply_markup=faq_answer_keyboard(item["show_contact_admin"], item["extra_button"], region),
             parse_mode=ParseMode.MARKDOWN,
         )
         return
 
     if data not in _SIMPLE_ROUTES:
-        text, keyboard = _SIMPLE_ROUTES["menu_main"]
-        await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+        await _show_route(query, region, "menu_main")
         return
 
-    text, keyboard = _SIMPLE_ROUTES[data]
-    await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+    await _show_route(query, region, data)

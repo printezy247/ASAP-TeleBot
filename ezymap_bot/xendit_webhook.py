@@ -51,7 +51,11 @@ async def handle_paid_invoice(payload: dict) -> None:
         reply_markup=chat_with_client_keyboard,
     )
 
-    client_text = content.XENDIT_AUTO_CONFIRM_CLIENT_TEXT.format(
+    region = record.get("region", content.DEFAULT_PRICE_REGION)
+    client_text_template = content.XENDIT_AUTO_CONFIRM_CLIENT_TEXT.get(
+        region, content.XENDIT_AUTO_CONFIRM_CLIENT_TEXT[content.DEFAULT_PRICE_REGION]
+    )
+    client_text = client_text_template.format(
         product_name=record["product_name"], plan_name=record["plan_name"]
     )
     await bot.send_message(
