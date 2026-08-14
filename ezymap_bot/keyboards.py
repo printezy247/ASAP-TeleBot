@@ -87,9 +87,19 @@ def product_detail_menu(product_code: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(rows)
 
 
+DIFFERENT_PAYMENT_METHOD_URL = "https://t.me/m/Z-yb3fL4NWVl"
+
+
 def payment_prompt_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
-        [[InlineKeyboardButton("💬 I want different payment method", url=ADMIN_CONTACT_URL)]]
+        [
+            [
+                InlineKeyboardButton(
+                    "💬 I want different payment method", url=DIFFERENT_PAYMENT_METHOD_URL
+                )
+            ],
+            [InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")],
+        ]
     )
 
 

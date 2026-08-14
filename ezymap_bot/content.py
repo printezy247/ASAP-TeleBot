@@ -77,17 +77,18 @@ MT5_BUNDLE_PRODUCT_CODES = [
 
 WELCOME_MESSAGES = [
     (
-        f"👋 Welcome to *{CHANNEL_NAME}*!\n\n"
-        f"I'm your registration assistant — everything below is done with buttons, fast and "
-        f"no waiting around for answers."
+        "Hey there my trading fam 😎\n\n"
+        "I'm excited as you are, just click the button below to start and you'll get your "
+        "perks right away !"
     ),
     (
-        "⚠️ *Quick risk reminder before we begin*\n\n"
+        "Quick reminder before we begin ⚠️\n\n"
         "Trading involves risk. Only trade with capital you're prepared to risk, and treat "
-        "any signals or indicators as tools to support your own decisions, not guarantees."
+        "any indicators as tools to support decisions, not guarantees."
     ),
     (
-        f"✅ Let's go! Ambassador: *{AMBASSADOR_NAME}* | Broker: *{BROKER_NAME}*"
+        f"My name's {AMBASSADOR_NAME} and I've used {BROKER_NAME} ✅ for years due to its "
+        "fast withdrawals and lightning executions for faster entry and exit."
     ),
 ]
 

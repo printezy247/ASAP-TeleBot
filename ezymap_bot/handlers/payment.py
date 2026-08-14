@@ -94,6 +94,18 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     return ConversationHandler.END
 
 
+async def back_to_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    query = update.callback_query
+    await query.answer()
+    context.user_data.pop("pay_product_name", None)
+    context.user_data.pop("pay_plan_name", None)
+    context.user_data.pop("pay_price", None)
+    await query.edit_message_text(
+        content.MAIN_MENU_TEXT, reply_markup=MAIN_MENU, parse_mode=ParseMode.MARKDOWN
+    )
+    return ConversationHandler.END
+
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text(content.CANCEL_TEXT)
     return ConversationHandler.END

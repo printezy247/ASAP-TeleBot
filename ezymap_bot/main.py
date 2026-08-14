@@ -14,6 +14,7 @@ from telegram.ext import (
 from .config import BOT_TOKEN, PERSISTENCE_FILE
 from .handlers.menu import menu_router
 from .handlers.payment import ASK_PROOF
+from .handlers.payment import back_to_main_menu as payment_back_to_main_menu
 from .handlers.payment import cancel as payment_cancel
 from .handlers.payment import plan_selected, receive_proof
 from .handlers.payment import restart_via_start as payment_restart_via_start
@@ -64,9 +65,10 @@ def build_application() -> Application:
         entry_points=[CallbackQueryHandler(plan_selected, pattern="^buy_")],
         states={
             ASK_PROOF: [
+                CallbackQueryHandler(payment_back_to_main_menu, pattern="^menu_main$"),
                 MessageHandler(
                     (filters.PHOTO | filters.TEXT) & ~filters.COMMAND, receive_proof
-                )
+                ),
             ],
         },
         fallbacks=[
