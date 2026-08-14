@@ -22,7 +22,7 @@ async def plan_selected(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     payload = query.data.removeprefix("buy_")
     product_code, duration_code = payload.rsplit("_", 1)
     product = content.PRODUCTS[product_code]
-    price, _original_price = product["plans"][duration_code]
+    price = product["plans"][duration_code]
     plan_name = content.PLAN_DURATION_LABELS[duration_code]
 
     context.user_data["pay_product_name"] = product["name"]

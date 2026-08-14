@@ -6,6 +6,13 @@ from .config import ADMIN_CHAT_ID
 # it's more reliable than tg://user?id=, which depends on the viewer's privacy settings.
 ADMIN_CONTACT_URL = f"tg://user?id={ADMIN_CHAT_ID}"
 
+LANGUAGE_SELECT_MENU = InlineKeyboardMarkup(
+    [
+        [InlineKeyboardButton("🇬🇧 English (USD)", callback_data="lang_en")],
+        [InlineKeyboardButton("🇲🇾 Bahasa Melayu (Promo MYR)", callback_data="lang_my")],
+    ]
+)
+
 MAIN_MENU = InlineKeyboardMarkup(
     [
         [InlineKeyboardButton("🎁 Check Out FREE Steps", callback_data="menu_packages")],
@@ -69,14 +76,15 @@ def mt5_bundles_menu() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(rows)
 
 
-def product_detail_menu(product_code: str) -> InlineKeyboardMarkup:
-    from .content import MT5_BUNDLE_PRODUCT_CODES, PLAN_DURATIONS, TRADINGVIEW_FREE_URL, plan_button_label
+def product_detail_menu(product_code: str, region: str) -> InlineKeyboardMarkup:
+    from .content import DEFAULT_PRICE_REGION, MT5_BUNDLE_PRODUCT_CODES, PLAN_DURATIONS, TRADINGVIEW_FREE_URL, plan_button_label
 
+    region = region or DEFAULT_PRICE_REGION
     rows = [
         [
             InlineKeyboardButton(
-                plan_button_label(product_code, duration),
-                callback_data=f"buy_{product_code}_{duration}",
+                plan_button_label(product_code, duration, region),
+                callback_data=f"choose_pay_{product_code}_{duration}",
             )
         ]
         for duration in PLAN_DURATIONS
@@ -87,6 +95,20 @@ def product_detail_menu(product_code: str) -> InlineKeyboardMarkup:
     rows.append([InlineKeyboardButton("⬅️ Back", callback_data=back_target)])
     rows.append([InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")])
     return InlineKeyboardMarkup(rows)
+
+
+def payment_method_menu(product_code: str, duration: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("💰 Pay with USDT", callback_data=f"buy_{product_code}_{duration}")],
+            [
+                InlineKeyboardButton(
+                    "💳 Pay with Card/Bank/E-Wallet", callback_data=f"xendit_{product_code}_{duration}"
+                )
+            ],
+            [InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")],
+        ]
+    )
 
 
 DIFFERENT_PAYMENT_METHOD_URL = "https://t.me/m/Z-yb3fL4NWVl"
@@ -100,6 +122,19 @@ def payment_prompt_keyboard() -> InlineKeyboardMarkup:
                     "💬 I want different payment method", url=DIFFERENT_PAYMENT_METHOD_URL
                 )
             ],
+            [InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")],
+        ]
+    )
+
+
+# Same layout as payment_prompt_keyboard, used on Xendit unavailable/failed screens.
+different_payment_method_keyboard = payment_prompt_keyboard
+
+
+def xendit_invoice_keyboard(invoice_url: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("🔗 Pay Now", url=invoice_url)],
             [InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")],
         ]
     )

@@ -14,26 +14,24 @@ USDT_NETWORK = "TRC20"
 PLAN_DURATIONS = ["1m", "6m", "1y"]
 PLAN_DURATION_LABELS = {"1m": "1 Month", "6m": "6 Months", "1y": "1 Year"}
 
-# code -> {name, description, plans: {duration_code: (price, original_price_or_None)}}
+# code -> {name, description, plans: {duration_code: price}}
+# The same digits are used for both USD and the MYR promo (Malaysia/Indonesia/Brunei) -
+# only the currency symbol changes, based on the client's language/region choice at /start.
 PRODUCTS = {
     "tv_pro": {
         "name": "TradingView - EzyMap Pro",
         "description": "Full EzyMap Pro indicator on TradingView with live signals M1–H4.",
-        "plans": {"1m": ("29", None), "6m": ("149", None), "1y": ("249", None)},
+        "plans": {"1m": "29", "6m": "149", "1y": "249"},
     },
     "mt5_bundle": {
         "name": "MT5 Indicator Bundle (Worth $999)",
         "description": "Complete 17 MT5 EzyMap Indicators.",
-        "plans": {
-            "1m": ("99", "999"),
-            "6m": ("499", "5994"),
-            "1y": ("999", "11988"),
-        },
+        "plans": {"1m": "99", "6m": "499", "1y": "999"},
     },
     "mt5_bulk_close": {
         "name": "Bulk Close – BONUS Layer Close (Top Selling)",
         "description": "Can close partial profit, number of layers with fast executions.",
-        "plans": {"1m": ("19", None), "6m": ("109", None), "1y": ("199", None)},
+        "plans": {"1m": "19", "6m": "109", "1y": "199"},
     },
     "mt5_drawdown_guardian": {
         "name": "Drawdown Guardian (Prop Firm Favorite)",
@@ -41,12 +39,12 @@ PRODUCTS = {
             "Stay alert with your current drawdown to avoid elimination from any prop "
             "firm stages."
         ),
-        "plans": {"1m": ("9", None), "6m": ("49", None), "1y": ("99", None)},
+        "plans": {"1m": "9", "6m": "49", "1y": "99"},
     },
     "mt5_auto_tpsl": {
         "name": "Auto TPSL (Trending This Month)",
         "description": "Don't waste your time setting TP & SL manually for each layer.",
-        "plans": {"1m": ("9", None), "6m": ("49", None), "1y": ("99", None)},
+        "plans": {"1m": "9", "6m": "49", "1y": "99"},
     },
     "mt5_currency_strength": {
         "name": "Currency Strength Meter",
@@ -54,7 +52,7 @@ PRODUCTS = {
             "Keep updated with the current volatility of all currencies that are mostly "
             "traded."
         ),
-        "plans": {"1m": ("9", None), "6m": ("49", None), "1y": ("99", None)},
+        "plans": {"1m": "9", "6m": "49", "1y": "99"},
     },
     "mt5_mtf_bias": {
         "name": "MTF Bias",
@@ -62,9 +60,16 @@ PRODUCTS = {
             "Reveal bullish or bearish bias to give confluence for your ever-adapting "
             "trading plan."
         ),
-        "plans": {"1m": ("9", None), "6m": ("49", None), "1y": ("99", None)},
+        "plans": {"1m": "9", "6m": "49", "1y": "99"},
     },
 }
+
+# region code -> (currency symbol, currency code for Xendit invoices)
+PRICE_REGIONS = {
+    "en": ("$", "USD"),
+    "my": ("RM", "MYR"),
+}
+DEFAULT_PRICE_REGION = "en"
 
 MT5_BUNDLE_PRODUCT_CODES = [
     "mt5_bundle",
@@ -91,6 +96,8 @@ WELCOME_MESSAGES = [
         "fast withdrawals and lightning executions for faster entry and exit."
     ),
 ]
+
+LANGUAGE_SELECT_TEXT = "🌐 Choose your language / pricing:"
 
 MAIN_MENU_TEXT = "What would you like to do?"
 
@@ -228,14 +235,21 @@ def product_detail_text(product_code: str) -> str:
     return "\n".join(lines)
 
 
-def plan_button_label(product_code: str, duration_code: str) -> str:
-    price, original_price = PRODUCTS[product_code]["plans"][duration_code]
+def plan_button_label(product_code: str, duration_code: str, region: str = DEFAULT_PRICE_REGION) -> str:
+    price = PRODUCTS[product_code]["plans"][duration_code]
     duration_label = PLAN_DURATION_LABELS[duration_code]
-    if original_price:
-        return f"{duration_label} — ${original_price} → ${price}"
-    return f"{duration_label} — ${price}"
+    symbol, _currency_code = PRICE_REGIONS.get(region, PRICE_REGIONS[DEFAULT_PRICE_REGION])
+    return f"{duration_label} — {symbol}{price}"
 
 
+CHOOSE_PAYMENT_METHOD_TEXT = (
+    "💎 *{product_name} — {plan_name}*\n"
+    "Price: *{price}*\n\n"
+    "How would you like to pay?"
+)
+
+# USDT is always quoted in USD, regardless of the client's chosen pricing region, since
+# crypto amounts are inherently dollar-denominated.
 PAYMENT_PROMPT_TEMPLATE = (
     "💎 *{product_name} — {plan_name}*\n"
     "Price: *${price} USD*\n\n"
@@ -246,6 +260,29 @@ PAYMENT_PROMPT_TEMPLATE = (
     "Once sent, reply here with a *screenshot of the transfer* or your *transaction ID*, and "
     "Jack will confirm and activate your purchase.\n\n"
     "Prefer a different way to pay? Tap the button below to message Jack directly."
+)
+
+XENDIT_UNAVAILABLE_TEXT = (
+    "⚠️ Card/Bank/E-Wallet payment isn't set up yet — please use USDT for now, or tap "
+    "below to ask Jack about another way to pay."
+)
+
+XENDIT_INVOICE_CREATED_TEXT = (
+    "💳 *{product_name} — {plan_name}*\n"
+    "Price: *{price}*\n\n"
+    "Tap below to pay securely via card, bank transfer, or e-wallet. Once payment is "
+    "confirmed, you'll be notified here automatically — no need to send proof."
+)
+
+XENDIT_INVOICE_FAILED_TEXT = (
+    "⚠️ Couldn't create a payment link just now. Please try USDT instead, or tap below to "
+    "ask Jack about another way to pay."
+)
+
+XENDIT_AUTO_CONFIRM_CLIENT_TEXT = (
+    "🎉 *Payment confirmed!*\n\n"
+    "Your purchase of *{product_name} — {plan_name}* is confirmed. Jack has been notified "
+    "and will activate it shortly."
 )
 
 PAYMENT_PROOF_RECEIVED_TEXT = (
@@ -315,8 +352,8 @@ FAQ_ITEMS = [
     (
         "How do I pay for a paid indicator or bundle?",
         "Tap *💎 Purchase EzyMap* from the main menu, pick TradingView or MT5, then a plan "
-        "— you'll get a USDT wallet address plus instructions to confirm with Jack (or a "
-        "button to ask him about a different payment method).",
+        "— you'll be asked to pay via USDT (wallet address + confirm with Jack) or via "
+        "Card/Bank/E-Wallet, which confirms automatically once payment goes through.",
         False,
         None,
     ),

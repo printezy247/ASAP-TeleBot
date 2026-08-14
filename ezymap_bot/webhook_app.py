@@ -12,8 +12,9 @@ import logging
 from flask import Flask, abort, request
 from telegram import Update
 
-from .config import WEBHOOK_SECRET
+from .config import WEBHOOK_SECRET, XENDIT_CALLBACK_TOKEN
 from .main import build_application
+from .xendit_webhook import handle_paid_invoice
 
 if not WEBHOOK_SECRET:
     raise RuntimeError(
@@ -41,6 +42,17 @@ def telegram_webhook():
     if update_data is None:
         abort(400)
     asyncio.run(_process_update(update_data))
+    return "ok"
+
+
+@app.route("/xendit/webhook", methods=["POST"])
+def xendit_webhook():
+    if not XENDIT_CALLBACK_TOKEN or request.headers.get("x-callback-token") != XENDIT_CALLBACK_TOKEN:
+        abort(401)
+    payload = request.get_json(force=True, silent=True)
+    if payload is None:
+        abort(400)
+    asyncio.run(handle_paid_invoice(payload))
     return "ok"
 
 

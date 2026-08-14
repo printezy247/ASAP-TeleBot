@@ -13,6 +13,7 @@ from ..keyboards import (
     faq_answer_keyboard,
     faq_menu,
     mt5_bundles_menu,
+    payment_method_menu,
     product_detail_menu,
 )
 
@@ -33,6 +34,12 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await query.answer()
     data = query.data
 
+    if data in ("lang_en", "lang_my"):
+        context.user_data["price_region"] = "en" if data == "lang_en" else "my"
+        text, keyboard = _SIMPLE_ROUTES["menu_main"]
+        await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+        return
+
     if data == "menu_faq":
         text, _ = _SIMPLE_ROUTES[data]
         await query.edit_message_text(text, reply_markup=faq_menu(), parse_mode=ParseMode.MARKDOWN)
@@ -51,9 +58,34 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             text, keyboard = _SIMPLE_ROUTES["menu_pro"]
             await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
             return
+        region = context.user_data.get("price_region", content.DEFAULT_PRICE_REGION)
         text = content.product_detail_text(product_code)
         await query.edit_message_text(
-            text, reply_markup=product_detail_menu(product_code), parse_mode=ParseMode.MARKDOWN
+            text,
+            reply_markup=product_detail_menu(product_code, region),
+            parse_mode=ParseMode.MARKDOWN,
+        )
+        return
+
+    if data.startswith("choose_pay_"):
+        payload = data.removeprefix("choose_pay_")
+        product_code, duration_code = payload.rsplit("_", 1)
+        if product_code not in content.PRODUCTS:
+            text, keyboard = _SIMPLE_ROUTES["menu_pro"]
+            await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+            return
+        region = context.user_data.get("price_region", content.DEFAULT_PRICE_REGION)
+        product = content.PRODUCTS[product_code]
+        price = product["plans"][duration_code]
+        symbol, _currency_code = content.PRICE_REGIONS.get(region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION])
+        plan_name = content.PLAN_DURATION_LABELS[duration_code]
+        text = content.CHOOSE_PAYMENT_METHOD_TEXT.format(
+            product_name=product["name"], plan_name=plan_name, price=f"{symbol}{price}"
+        )
+        await query.edit_message_text(
+            text,
+            reply_markup=payment_method_menu(product_code, duration_code),
+            parse_mode=ParseMode.MARKDOWN,
         )
         return
 

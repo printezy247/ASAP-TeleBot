@@ -32,6 +32,7 @@ from .handlers.registration import (
     submit_start,
 )
 from .handlers.start import start
+from .handlers.xendit_payment import initiate_xendit_payment
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -90,6 +91,7 @@ def build_application() -> Application:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(registration_conversation)
     application.add_handler(payment_conversation)
+    application.add_handler(CallbackQueryHandler(initiate_xendit_payment, pattern="^xendit_"))
     application.add_handler(CallbackQueryHandler(menu_router))
     application.add_error_handler(log_error)
 
