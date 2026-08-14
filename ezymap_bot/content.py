@@ -1,3 +1,5 @@
+import os
+
 CHANNEL_NAME = "EzyMap Algo"
 AMBASSADOR_NAME = "Jack"
 BROKER_NAME = "Vantage Markets"
@@ -300,11 +302,12 @@ PACKAGE_TIERS = {
 # tier key -> promotional image shown above the tier detail text. Value can be a public
 # URL (Telegram fetches it directly, no upload needed) or a path to a local file in this
 # repo (opened and uploaded). Leave blank to keep showing plain text for that tier.
+_MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 PACKAGE_TIER_IMAGES = {
-    "beginner": "",
-    "pro": "",
-    "premium": "",
-    "elite": "",
+    "beginner": os.path.join(_MODULE_DIR, "1.beginner.png"),
+    "pro": os.path.join(_MODULE_DIR, "2.pro.png"),
+    "premium": os.path.join(_MODULE_DIR, "3.premium.png"),
+    "elite": os.path.join(_MODULE_DIR, "4.elite.png"),
 }
 
 OPEN_ACCOUNT_TEXT = {
