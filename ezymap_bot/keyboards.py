@@ -8,8 +8,8 @@ ADMIN_CONTACT_URL = f"tg://user?id={ADMIN_CHAT_ID}"
 
 LANGUAGE_SELECT_MENU = InlineKeyboardMarkup(
     [
-        [InlineKeyboardButton("🇬🇧 English (USD)", callback_data="lang_en")],
-        [InlineKeyboardButton("🇲🇾 Bahasa Melayu (Promo MYR)", callback_data="lang_my")],
+        [InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
+        [InlineKeyboardButton("🇲🇾 Bahasa Melayu", callback_data="lang_my")],
     ]
 )
 
