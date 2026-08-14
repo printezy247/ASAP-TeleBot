@@ -61,7 +61,7 @@ def build_application() -> Application:
     )
 
     payment_conversation = ConversationHandler(
-        entry_points=[CallbackQueryHandler(plan_selected, pattern="^pay_plan_")],
+        entry_points=[CallbackQueryHandler(plan_selected, pattern="^buy_")],
         states={
             ASK_PROOF: [
                 MessageHandler(

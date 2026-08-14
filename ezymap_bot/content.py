@@ -11,10 +11,68 @@ CHANGE_IB_EMAIL_CC = "shamir.my@vantagemarkets.com"
 USDT_WALLET_ADDRESS = "TH2uvMPSj6GJBduK12xKZzM3e8Zg4LeXjA"
 USDT_NETWORK = "TRC20"
 
-EZYMAP_PRO_PLANS = [
-    ("1 Month", "29", "plan_1m"),
-    ("6 Months", "149", "plan_6m"),
-    ("1 Year", "249", "plan_1y"),
+PLAN_DURATIONS = ["1m", "6m", "1y"]
+PLAN_DURATION_LABELS = {"1m": "1 Month", "6m": "6 Months", "1y": "1 Year"}
+
+# code -> {name, description, plans: {duration_code: (price, original_price_or_None)}}
+PRODUCTS = {
+    "tv_pro": {
+        "name": "TradingView - EzyMap Pro",
+        "description": "Full EzyMap Pro indicator on TradingView with live signals M1–H4.",
+        "plans": {"1m": ("29", None), "6m": ("149", None), "1y": ("249", None)},
+    },
+    "mt5_bundle": {
+        "name": "MT5 Indicator Bundle (Worth $999)",
+        "description": "Complete 17 MT5 EzyMap Indicators.",
+        "plans": {
+            "1m": ("99", "999"),
+            "6m": ("499", "5994"),
+            "1y": ("999", "11988"),
+        },
+    },
+    "mt5_bulk_close": {
+        "name": "Bulk Close – BONUS Layer Close (Top Selling)",
+        "description": "Can close partial profit, number of layers with fast executions.",
+        "plans": {"1m": ("19", None), "6m": ("109", None), "1y": ("199", None)},
+    },
+    "mt5_drawdown_guardian": {
+        "name": "Drawdown Guardian (Prop Firm Favorite)",
+        "description": (
+            "Stay alert with your current drawdown to avoid elimination from any prop "
+            "firm stages."
+        ),
+        "plans": {"1m": ("9", None), "6m": ("49", None), "1y": ("99", None)},
+    },
+    "mt5_auto_tpsl": {
+        "name": "Auto TPSL (Trending This Month)",
+        "description": "Don't waste your time setting TP & SL manually for each layer.",
+        "plans": {"1m": ("9", None), "6m": ("49", None), "1y": ("99", None)},
+    },
+    "mt5_currency_strength": {
+        "name": "Currency Strength Meter",
+        "description": (
+            "Keep updated with the current volatility of all currencies that are mostly "
+            "traded."
+        ),
+        "plans": {"1m": ("9", None), "6m": ("49", None), "1y": ("99", None)},
+    },
+    "mt5_mtf_bias": {
+        "name": "MTF Bias",
+        "description": (
+            "Reveal bullish or bearish bias to give confluence for your ever-adapting "
+            "trading plan."
+        ),
+        "plans": {"1m": ("9", None), "6m": ("49", None), "1y": ("99", None)},
+    },
+}
+
+MT5_BUNDLE_PRODUCT_CODES = [
+    "mt5_bundle",
+    "mt5_bulk_close",
+    "mt5_drawdown_guardian",
+    "mt5_auto_tpsl",
+    "mt5_currency_strength",
+    "mt5_mtf_bias",
 ]
 
 WELCOME_MESSAGES = [
@@ -42,7 +100,7 @@ BROKER_INFO_TEXT = (
 )
 
 PACKAGES_INTRO_TEXT = (
-    f"🎁 *{CHANNEL_NAME} Packages*\n\n"
+    f"🎁 *{CHANNEL_NAME} FREE Steps*\n\n"
     f"Everything is unlocked by having a trading account under my IB (`{IB_NUMBER}`) with "
     f"{BROKER_NAME}. The more you have with them, the more you unlock — no extra payment "
     f"needed for these.\n\n"
@@ -93,7 +151,7 @@ PACKAGE_TIERS = {
             "• EzyMap Scalp Mastery — scalping gold signals channel\n"
             "• EzyMap Pro indicator (TradingView) with live signals\n"
             "• EzyMap indicator for MT5 — Drawdown Guardian, Bulk Close with Layer Close "
-            "Function, Auto TPSL, and 2 more (worth $149)\n"
+            "Function, Auto TPSL, and 5 more (worth $249)\n"
             "• Elite group — 1-on-1 support from Jack (private Telegram group)"
         ),
     ),
@@ -148,33 +206,52 @@ SUBMISSION_ADMIN_UNREACHABLE_TEXT = (
 
 CANCEL_TEXT = "Cancelled. Use /start any time to open the menu again."
 
-EZYMAP_PRO_INTRO_TEXT = (
-    "💎 *EzyMap Pro Subscription*\n\n"
-    "This is a paid subscription, separate from your broker account — it's the premium "
-    "version of the indicator with full live signal coverage.\n\n"
-    "Choose a plan:"
+PURCHASE_INTRO_TEXT = (
+    "💎 *Purchase EzyMap*\n\n"
+    "These are paid, separate from your broker account. Pick a category:"
 )
 
+MT5_BUNDLES_INTRO_TEXT = (
+    "🖥 *MT5 - EzyMap Bundles*\n\n"
+    "Pick an indicator (or the full bundle) to see pricing:"
+)
+
+
+def product_detail_text(product_code: str) -> str:
+    product = PRODUCTS[product_code]
+    lines = [f"💎 *{product['name']}*", "", product["description"], "", "Pick a plan:"]
+    return "\n".join(lines)
+
+
+def plan_button_label(product_code: str, duration_code: str) -> str:
+    price, original_price = PRODUCTS[product_code]["plans"][duration_code]
+    duration_label = PLAN_DURATION_LABELS[duration_code]
+    if original_price:
+        return f"{duration_label} — ${original_price} → ${price}"
+    return f"{duration_label} — ${price}"
+
+
 PAYMENT_PROMPT_TEMPLATE = (
-    "💎 *EzyMap Pro — {plan_name}*\n"
+    "💎 *{product_name} — {plan_name}*\n"
     "Price: *${price} USD*\n\n"
     "Send exactly *{price} USDT* ({network} network) to:\n"
     f"`{USDT_WALLET_ADDRESS}`\n\n"
     "⚠️ Send USDT only, on the *{network}* network — wrong coin or wrong network can lose "
     "your funds.\n\n"
     "Once sent, reply here with a *screenshot of the transfer* or your *transaction ID*, and "
-    "Jack will confirm and activate your subscription."
+    "Jack will confirm and activate your purchase.\n\n"
+    "Prefer a different way to pay? Tap the button below to message Jack directly."
 )
 
 PAYMENT_PROOF_RECEIVED_TEXT = (
     "✅ Got it! Your payment proof has been sent to Jack.\n\n"
-    "He'll confirm and activate your EzyMap Pro subscription shortly. If you have questions "
-    "in the meantime, check the FAQ from the main menu."
+    "He'll confirm and activate your purchase shortly. If you have questions in the "
+    "meantime, check the FAQ from the main menu."
 )
 PAYMENT_PROOF_ADMIN_UNREACHABLE_TEXT = (
     "✅ Got your payment proof!\n\n"
     "I couldn't reach Jack automatically just now — please also message the admin directly "
-    "with your proof to be safe. Your subscription will be activated shortly after."
+    "with your proof to be safe. Your purchase will be activated shortly after."
 )
 
 FAQ_ITEMS = [
@@ -211,13 +288,14 @@ FAQ_ITEMS = [
         False,
     ),
     (
-        "How do I pay for EzyMap Pro?",
-        "Tap *💎 Get EzyMap Pro* from the main menu, pick a plan, and you'll get a USDT "
-        "wallet address to send payment to, plus instructions to confirm with Jack.",
+        "How do I pay for a paid indicator or bundle?",
+        "Tap *💎 Purchase EzyMap* from the main menu, pick TradingView or MT5, then a plan "
+        "— you'll get a USDT wallet address plus instructions to confirm with Jack (or a "
+        "button to ask him about a different payment method).",
         False,
     ),
     (
-        "Can I cancel or get a refund on EzyMap Pro?",
+        "Can I cancel or get a refund on a paid indicator/bundle?",
         "Message Jack directly to discuss — refund/cancellation isn't handled automatically "
         "through the bot.",
         True,

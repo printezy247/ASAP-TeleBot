@@ -8,7 +8,7 @@ ADMIN_CONTACT_URL = f"tg://user?id={ADMIN_CHAT_ID}"
 
 MAIN_MENU = InlineKeyboardMarkup(
     [
-        [InlineKeyboardButton("🎁 See Packages", callback_data="menu_packages")],
+        [InlineKeyboardButton("🎁 Check Out FREE Steps", callback_data="menu_packages")],
         [InlineKeyboardButton("💎 Purchase EzyMap", callback_data="menu_pro")],
         [InlineKeyboardButton("📘 Why Choose Vantage", callback_data="menu_broker")],
         [InlineKeyboardButton("❓ FAQ", callback_data="menu_faq")],
@@ -44,15 +44,53 @@ BACK_TO_PACKAGES = InlineKeyboardMarkup(
 )
 
 
-def ezymap_pro_plans_menu() -> InlineKeyboardMarkup:
-    from .content import EZYMAP_PRO_PLANS
+PURCHASE_CATEGORY_MENU = InlineKeyboardMarkup(
+    [
+        [InlineKeyboardButton("📈 TradingView - EzyMap Pro (best seller)", callback_data="product_tv_pro")],
+        [InlineKeyboardButton("🖥 MT5 - EzyMap Bundles", callback_data="products_mt5")],
+        [InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")],
+    ]
+)
+
+BACK_TO_PURCHASE = InlineKeyboardMarkup(
+    [[InlineKeyboardButton("⬅️ Back", callback_data="menu_pro")]]
+)
+
+
+def mt5_bundles_menu() -> InlineKeyboardMarkup:
+    from .content import MT5_BUNDLE_PRODUCT_CODES, PRODUCTS
 
     rows = [
-        [InlineKeyboardButton(f"{name} — ${price}", callback_data=f"pay_{code}")]
-        for name, price, code in EZYMAP_PRO_PLANS
+        [InlineKeyboardButton(PRODUCTS[code]["name"], callback_data=f"product_{code}")]
+        for code in MT5_BUNDLE_PRODUCT_CODES
     ]
+    rows.append([InlineKeyboardButton("⬅️ Back", callback_data="menu_pro")])
     rows.append([InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")])
     return InlineKeyboardMarkup(rows)
+
+
+def product_detail_menu(product_code: str) -> InlineKeyboardMarkup:
+    from .content import MT5_BUNDLE_PRODUCT_CODES, PLAN_DURATIONS, plan_button_label
+
+    rows = [
+        [
+            InlineKeyboardButton(
+                plan_button_label(product_code, duration),
+                callback_data=f"buy_{product_code}_{duration}",
+            )
+        ]
+        for duration in PLAN_DURATIONS
+    ]
+    back_target = "products_mt5" if product_code in MT5_BUNDLE_PRODUCT_CODES else "menu_pro"
+    rows.append([InlineKeyboardButton("⬅️ Back", callback_data=back_target)])
+    rows.append([InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")])
+    return InlineKeyboardMarkup(rows)
+
+
+def payment_prompt_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        [[InlineKeyboardButton("💬 I want different payment method", url=ADMIN_CONTACT_URL)]]
+    )
 
 
 def faq_menu() -> InlineKeyboardMarkup:

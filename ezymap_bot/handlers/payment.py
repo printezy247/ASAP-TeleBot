@@ -7,40 +7,47 @@ from telegram.ext import ContextTypes, ConversationHandler
 
 from .. import content
 from ..config import ADMIN_CHAT_ID
-from ..keyboards import MAIN_MENU
+from ..keyboards import MAIN_MENU, payment_prompt_keyboard
 from .start import start
 
 logger = logging.getLogger(__name__)
 
 ASK_PROOF = 100
 
-_PLANS_BY_CODE = {code: (name, price) for name, price, code in content.EZYMAP_PRO_PLANS}
-
 
 async def plan_selected(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
-    plan_code = query.data.removeprefix("pay_")
-    plan_name, price = _PLANS_BY_CODE[plan_code]
 
+    payload = query.data.removeprefix("buy_")
+    product_code, duration_code = payload.rsplit("_", 1)
+    product = content.PRODUCTS[product_code]
+    price, _original_price = product["plans"][duration_code]
+    plan_name = content.PLAN_DURATION_LABELS[duration_code]
+
+    context.user_data["pay_product_name"] = product["name"]
     context.user_data["pay_plan_name"] = plan_name
     context.user_data["pay_price"] = price
 
     text = content.PAYMENT_PROMPT_TEMPLATE.format(
-        plan_name=plan_name, price=price, network=content.USDT_NETWORK
+        product_name=product["name"], plan_name=plan_name, price=price, network=content.USDT_NETWORK
     )
-    await query.edit_message_text(text, parse_mode=ParseMode.MARKDOWN)
+    await query.edit_message_text(
+        text, reply_markup=payment_prompt_keyboard(), parse_mode=ParseMode.MARKDOWN
+    )
     return ASK_PROOF
 
 
 async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    product_name = context.user_data.get("pay_product_name", "-")
     plan_name = context.user_data.get("pay_plan_name", "-")
     price = context.user_data.get("pay_price", "-")
     user = update.effective_user
 
     username_line = f"@{user.username}" if user.username else "(no username set)"
     admin_summary = (
-        "💰 *New EzyMap Pro payment proof*\n\n"
+        "💰 *New EzyMap payment proof*\n\n"
+        f"Product: {product_name}\n"
         f"Plan: {plan_name} — ${price}\n"
         f"Telegram username: {username_line}\n"
         f"Telegram ID: `{user.id}`\n\n"
@@ -81,6 +88,7 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
         confirmation_text, reply_markup=MAIN_MENU, parse_mode=ParseMode.MARKDOWN
     )
 
+    context.user_data.pop("pay_product_name", None)
     context.user_data.pop("pay_plan_name", None)
     context.user_data.pop("pay_price", None)
     return ConversationHandler.END
@@ -92,6 +100,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 
 async def restart_via_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    context.user_data.pop("pay_product_name", None)
     context.user_data.pop("pay_plan_name", None)
     context.user_data.pop("pay_price", None)
     await start(update, context)

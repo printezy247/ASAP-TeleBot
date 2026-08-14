@@ -8,18 +8,21 @@ from ..keyboards import (
     BACK_TO_PACKAGES,
     MAIN_MENU,
     PACKAGE_TIER_MENU,
+    PURCHASE_CATEGORY_MENU,
     TIER_DETAIL_MENU,
-    ezymap_pro_plans_menu,
     faq_answer_keyboard,
     faq_menu,
+    mt5_bundles_menu,
+    product_detail_menu,
 )
 
 _SIMPLE_ROUTES = {
     "menu_main": (content.MAIN_MENU_TEXT, MAIN_MENU),
     "menu_broker": (content.BROKER_INFO_TEXT, BACK_TO_MAIN),
     "menu_packages": (content.PACKAGES_INTRO_TEXT, PACKAGE_TIER_MENU),
-    "menu_pro": (content.EZYMAP_PRO_INTRO_TEXT, None),
+    "menu_pro": (content.PURCHASE_INTRO_TEXT, PURCHASE_CATEGORY_MENU),
     "menu_faq": ("❓ *FAQ* — tap a question to see the answer.", None),
+    "products_mt5": (content.MT5_BUNDLES_INTRO_TEXT, None),
     "reg_open_account": (content.OPEN_ACCOUNT_TEXT, BACK_TO_PACKAGES),
     "reg_change_ib": (content.CHANGE_IB_TEXT, BACK_TO_PACKAGES),
 }
@@ -35,10 +38,22 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         await query.edit_message_text(text, reply_markup=faq_menu(), parse_mode=ParseMode.MARKDOWN)
         return
 
-    if data == "menu_pro":
+    if data == "products_mt5":
         text, _ = _SIMPLE_ROUTES[data]
         await query.edit_message_text(
-            text, reply_markup=ezymap_pro_plans_menu(), parse_mode=ParseMode.MARKDOWN
+            text, reply_markup=mt5_bundles_menu(), parse_mode=ParseMode.MARKDOWN
+        )
+        return
+
+    if data.startswith("product_"):
+        product_code = data.removeprefix("product_")
+        if product_code not in content.PRODUCTS:
+            text, keyboard = _SIMPLE_ROUTES["menu_pro"]
+            await query.edit_message_text(text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+            return
+        text = content.product_detail_text(product_code)
+        await query.edit_message_text(
+            text, reply_markup=product_detail_menu(product_code), parse_mode=ParseMode.MARKDOWN
         )
         return
 
