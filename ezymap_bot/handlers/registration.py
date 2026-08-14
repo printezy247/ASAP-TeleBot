@@ -8,6 +8,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 from .. import content
 from ..config import ADMIN_CHAT_ID
 from ..keyboards import main_menu
+from ..receipt import registration_receipt
 from .start import start
 
 logger = logging.getLogger(__name__)
@@ -96,10 +97,20 @@ async def _finalize_submission(
         f"Account Number: {account}\n\n"
         f"Telegram username: {username_line}\n"
         f"Telegram ID: `{user.id}`"
-        f"{proof_note}"
+        f"{proof_note}\n\n"
+        "Once you've verified this, tap Confirm Registration below to send the client "
+        "their receipt."
     )
-    chat_with_client_keyboard = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")]]
+    admin_keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")],
+            [
+                InlineKeyboardButton(
+                    "✅ Confirm Registration",
+                    callback_data=f"confirmreg|{user.id}|{tier_key}|{region}",
+                )
+            ],
+        ]
     )
 
     admin_notified = True
@@ -108,7 +119,7 @@ async def _finalize_submission(
             chat_id=ADMIN_CHAT_ID,
             text=admin_text,
             parse_mode=ParseMode.MARKDOWN,
-            reply_markup=chat_with_client_keyboard,
+            reply_markup=admin_keyboard,
         )
         if proof_message is not None:
             await context.bot.forward_message(
@@ -136,8 +147,45 @@ async def _finalize_submission(
         parse_mode=ParseMode.MARKDOWN,
     )
 
-    _clear_reg_data(context)
+    # Deliberately NOT clearing reg_name/email/account here - confirm_registration()
+    # needs to read reg_name back from this user's persisted data once Jack approves,
+    # possibly from a completely separate later request.
     return ConversationHandler.END
+
+
+async def confirm_registration(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    await query.answer()
+
+    try:
+        _prefix, client_user_id, tier_key, region = query.data.split("|")
+        client_user_id = int(client_user_id)
+    except ValueError:
+        logger.error("Unrecognized confirmreg callback_data: %r", query.data)
+        return
+
+    client_data = context.application.user_data.get(client_user_id, {})
+    name = client_data.get("reg_name", "-")
+    package_name = content.PACKAGE_TIERS[tier_key]["name"] if tier_key in content.PACKAGE_TIERS else tier_key
+
+    receipt_png = registration_receipt(name=name, package_name=package_name, region=region)
+
+    try:
+        await context.bot.send_photo(chat_id=client_user_id, photo=receipt_png)
+    except TelegramError:
+        logger.exception("Failed to send registration receipt to client chat_id=%s", client_user_id)
+
+    try:
+        await context.bot.send_photo(chat_id=ADMIN_CHAT_ID, photo=receipt_png, caption="Copy of client's receipt")
+    except TelegramError:
+        logger.exception("Failed to send registration receipt copy to admin")
+
+    client_data.pop("reg_name", None)
+    client_data.pop("reg_email", None)
+    client_data.pop("reg_account", None)
+
+    await query.edit_message_reply_markup(reply_markup=None)
+    await query.message.reply_text("✅ Confirmed — receipt sent to the client.")
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:

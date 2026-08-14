@@ -17,7 +17,7 @@ from .handlers.menu import menu_router
 from .handlers.payment import ASK_PROOF
 from .handlers.payment import back_to_main_menu as payment_back_to_main_menu
 from .handlers.payment import cancel as payment_cancel
-from .handlers.payment import plan_selected, receive_proof
+from .handlers.payment import confirm_usdt_payment, plan_selected, receive_proof
 from .handlers.payment import restart_via_start as payment_restart_via_start
 from .handlers.registration import (
     ASK_ACCOUNT,
@@ -25,6 +25,7 @@ from .handlers.registration import (
     ASK_EMAIL,
     ASK_NAME,
     cancel,
+    confirm_registration,
     receive_account,
     receive_deposit_proof,
     receive_email,
@@ -99,6 +100,8 @@ def build_application() -> Application:
     application.add_handler(CallbackQueryHandler(initiate_telegram_payment, pattern="^tgpay_"))
     application.add_handler(PreCheckoutQueryHandler(precheckout_callback))
     application.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
+    application.add_handler(CallbackQueryHandler(confirm_registration, pattern=r"^confirmreg\|"))
+    application.add_handler(CallbackQueryHandler(confirm_usdt_payment, pattern=r"^confirmusdt\|"))
     application.add_handler(CallbackQueryHandler(menu_router))
     application.add_error_handler(log_error)
 

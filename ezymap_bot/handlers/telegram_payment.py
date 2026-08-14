@@ -8,6 +8,8 @@ from telegram.ext import ContextTypes
 from .. import content
 from ..config import ADMIN_CHAT_ID, TELEGRAM_PAYMENT_PROVIDER_TOKEN
 from ..keyboards import different_payment_method_keyboard
+from ..receipt import payment_receipt
+from ..receipt_utils import generate_receipt_number
 
 logger = logging.getLogger(__name__)
 
@@ -106,20 +108,36 @@ async def successful_payment_callback(update: Update, context: ContextTypes.DEFA
     product_name = product["name"] if product else product_code
     plan_name = content.plan_duration_label(duration_code, region) if product else duration_code
     user = update.effective_user
+    amount_display = f"{payment.total_amount / 100:.2f}"
 
     # Admin-facing notification always stays in English - it's for Jack, not the client.
     username_line = f"@{user.username}" if user.username else "(no username set)"
     admin_text = (
         "💰 *EzyMap payment confirmed via Telegram Payments*\n\n"
         f"Product: {product_name}\n"
-        f"Plan: {plan_name} — {payment.currency} {payment.total_amount / 100:.2f}\n"
+        f"Plan: {plan_name} — {payment.currency} {amount_display}\n"
         f"Telegram username: {username_line}\n"
         f"Telegram ID: `{user.id}`\n\n"
-        "Payment auto-confirmed by Telegram — no action needed except activating access."
+        "Payment auto-confirmed by Telegram — no action needed except activating access. "
+        "Client's receipt is attached below."
     )
     chat_with_client_keyboard = InlineKeyboardMarkup(
         [[InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")]]
     )
+
+    _symbol, _currency_code = content.PRICE_REGIONS.get(
+        region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION]
+    )
+    receipt_png = payment_receipt(
+        product_name=product_name,
+        plan_name=plan_name,
+        price=amount_display,
+        currency_symbol=_symbol,
+        payment_method="Card/Bank/E-Wallet",
+        receipt_number=generate_receipt_number(),
+        region=region,
+    )
+
     try:
         await context.bot.send_message(
             chat_id=ADMIN_CHAT_ID,
@@ -127,6 +145,7 @@ async def successful_payment_callback(update: Update, context: ContextTypes.DEFA
             parse_mode=ParseMode.MARKDOWN,
             reply_markup=chat_with_client_keyboard,
         )
+        await context.bot.send_photo(chat_id=ADMIN_CHAT_ID, photo=receipt_png)
     except TelegramError:
         logger.exception(
             "Failed to DM admin (chat_id=%s) about a confirmed Telegram Payments purchase "
@@ -135,7 +154,7 @@ async def successful_payment_callback(update: Update, context: ContextTypes.DEFA
             user.id,
         )
 
-    client_text = _text(content.TG_PAYMENT_AUTO_CONFIRM_CLIENT_TEXT, region).format(
+    client_caption = _text(content.TG_PAYMENT_AUTO_CONFIRM_CLIENT_TEXT, region).format(
         product_name=product_name, plan_name=plan_name
     )
-    await update.message.reply_text(client_text, parse_mode=ParseMode.MARKDOWN)
+    await update.message.reply_photo(photo=receipt_png, caption=client_caption, parse_mode=ParseMode.MARKDOWN)

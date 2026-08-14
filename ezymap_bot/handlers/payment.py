@@ -8,6 +8,8 @@ from telegram.ext import ContextTypes, ConversationHandler
 from .. import content
 from ..config import ADMIN_CHAT_ID
 from ..keyboards import main_menu, payment_prompt_keyboard
+from ..receipt import payment_receipt
+from ..receipt_utils import generate_receipt_number
 from .start import start
 
 logger = logging.getLogger(__name__)
@@ -34,6 +36,8 @@ async def plan_selected(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     price = product["plans"][duration_code]
     plan_name = content.plan_duration_label(duration_code, region)
 
+    context.user_data["pay_product_code"] = product_code
+    context.user_data["pay_duration_code"] = duration_code
     context.user_data["pay_product_name"] = product["name"]
     context.user_data["pay_plan_name"] = plan_name
     context.user_data["pay_price"] = price
@@ -49,6 +53,8 @@ async def plan_selected(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 
 async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     region = _region(context)
+    product_code = context.user_data.get("pay_product_code", "-")
+    duration_code = context.user_data.get("pay_duration_code", "-")
     product_name = context.user_data.get("pay_product_name", "-")
     plan_name = context.user_data.get("pay_plan_name", "-")
     price = context.user_data.get("pay_price", "-")
@@ -62,10 +68,20 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
         f"Plan: {plan_name} — ${price}\n"
         f"Telegram username: {username_line}\n"
         f"Telegram ID: `{user.id}`\n\n"
-        "The client's proof (screenshot/message) is forwarded below."
+        "The client's proof (screenshot/message) is forwarded below.\n\n"
+        "Once you've verified the transfer, tap Confirm Payment below to send the "
+        "client their receipt."
     )
-    chat_with_client_keyboard = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")]]
+    admin_keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")],
+            [
+                InlineKeyboardButton(
+                    "✅ Confirm Payment",
+                    callback_data=f"confirmusdt|{update.effective_chat.id}|{product_code}|{duration_code}|{region}",
+                )
+            ],
+        ]
     )
 
     admin_notified = True
@@ -74,7 +90,7 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
             chat_id=ADMIN_CHAT_ID,
             text=admin_summary,
             parse_mode=ParseMode.MARKDOWN,
-            reply_markup=chat_with_client_keyboard,
+            reply_markup=admin_keyboard,
         )
         await context.bot.forward_message(
             chat_id=ADMIN_CHAT_ID,
@@ -98,10 +114,62 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
         confirmation_text, reply_markup=main_menu(region), parse_mode=ParseMode.MARKDOWN
     )
 
+    context.user_data.pop("pay_product_code", None)
+    context.user_data.pop("pay_duration_code", None)
     context.user_data.pop("pay_product_name", None)
     context.user_data.pop("pay_plan_name", None)
     context.user_data.pop("pay_price", None)
     return ConversationHandler.END
+
+
+async def confirm_usdt_payment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    await query.answer()
+
+    try:
+        _prefix, client_chat_id, product_code, duration_code, region = query.data.split("|")
+        client_chat_id = int(client_chat_id)
+    except ValueError:
+        logger.error("Unrecognized confirmusdt callback_data: %r", query.data)
+        return
+
+    product = content.PRODUCTS.get(product_code)
+    if product is None:
+        await query.edit_message_text(f"{query.message.text}\n\n⚠️ Unknown product, couldn't send receipt.")
+        return
+
+    price = product["plans"][duration_code]
+    plan_name = content.plan_duration_label(duration_code, region)
+    payment_method_label = "USDT"
+
+    receipt_png = payment_receipt(
+        product_name=product["name"],
+        plan_name=plan_name,
+        price=price,
+        currency_symbol="$",
+        payment_method=payment_method_label,
+        receipt_number=generate_receipt_number(),
+        region=region,
+    )
+
+    caption = _text(content.TG_PAYMENT_AUTO_CONFIRM_CLIENT_TEXT, region).format(
+        product_name=product["name"], plan_name=plan_name
+    )
+
+    try:
+        await context.bot.send_photo(
+            chat_id=client_chat_id, photo=receipt_png, caption=caption, parse_mode=ParseMode.MARKDOWN
+        )
+    except TelegramError:
+        logger.exception("Failed to send USDT payment receipt to client chat_id=%s", client_chat_id)
+
+    try:
+        await context.bot.send_photo(chat_id=ADMIN_CHAT_ID, photo=receipt_png, caption="Copy of client's receipt")
+    except TelegramError:
+        logger.exception("Failed to send USDT payment receipt copy to admin")
+
+    await query.edit_message_reply_markup(reply_markup=None)
+    await query.message.reply_text("✅ Confirmed — receipt sent to the client.")
 
 
 async def back_to_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
