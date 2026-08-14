@@ -70,7 +70,7 @@ def mt5_bundles_menu() -> InlineKeyboardMarkup:
 
 
 def product_detail_menu(product_code: str) -> InlineKeyboardMarkup:
-    from .content import MT5_BUNDLE_PRODUCT_CODES, PLAN_DURATIONS, plan_button_label
+    from .content import MT5_BUNDLE_PRODUCT_CODES, PLAN_DURATIONS, TRADINGVIEW_FREE_URL, plan_button_label
 
     rows = [
         [
@@ -81,6 +81,8 @@ def product_detail_menu(product_code: str) -> InlineKeyboardMarkup:
         ]
         for duration in PLAN_DURATIONS
     ]
+    if product_code == "tv_pro":
+        rows.append([InlineKeyboardButton("📊 Get TradingView FREE", url=TRADINGVIEW_FREE_URL)])
     back_target = "products_mt5" if product_code in MT5_BUNDLE_PRODUCT_CODES else "menu_pro"
     rows.append([InlineKeyboardButton("⬅️ Back", callback_data=back_target)])
     rows.append([InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")])
