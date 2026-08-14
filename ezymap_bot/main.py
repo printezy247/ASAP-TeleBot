@@ -8,11 +8,17 @@ from telegram.ext import (
     ConversationHandler,
     MessageHandler,
     PicklePersistence,
+    PreCheckoutQueryHandler,
     filters,
 )
 
 from .config import BOT_TOKEN, PERSISTENCE_FILE
 from .handlers.menu import menu_router
+from .handlers.native_payment import (
+    initiate_native_payment,
+    precheckout_callback,
+    successful_payment_callback,
+)
 from .handlers.payment import ASK_PROOF
 from .handlers.payment import back_to_main_menu as payment_back_to_main_menu
 from .handlers.payment import cancel as payment_cancel
@@ -92,6 +98,9 @@ def build_application() -> Application:
     application.add_handler(registration_conversation)
     application.add_handler(payment_conversation)
     application.add_handler(CallbackQueryHandler(initiate_xendit_payment, pattern="^xendit_"))
+    application.add_handler(CallbackQueryHandler(initiate_native_payment, pattern="^natpay_"))
+    application.add_handler(PreCheckoutQueryHandler(precheckout_callback))
+    application.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
     application.add_handler(CallbackQueryHandler(menu_router))
     application.add_error_handler(log_error)
 
@@ -100,7 +109,7 @@ def build_application() -> Application:
 
 def main() -> None:
     application = build_application()
-    application.run_polling(allowed_updates=["message", "callback_query"])
+    application.run_polling(allowed_updates=["message", "callback_query", "pre_checkout_query"])
 
 
 if __name__ == "__main__":

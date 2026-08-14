@@ -7,6 +7,7 @@ works correctly regardless of how many worker processes the host uses.
 """
 
 import asyncio
+import hmac
 import logging
 
 from flask import Flask, abort, request
@@ -47,7 +48,8 @@ def telegram_webhook():
 
 @app.route("/xendit/webhook", methods=["POST"])
 def xendit_webhook():
-    if not XENDIT_CALLBACK_TOKEN or request.headers.get("x-callback-token") != XENDIT_CALLBACK_TOKEN:
+    received_token = request.headers.get("x-callback-token", "")
+    if not XENDIT_CALLBACK_TOKEN or not hmac.compare_digest(received_token, XENDIT_CALLBACK_TOKEN):
         abort(401)
     payload = request.get_json(force=True, silent=True)
     if payload is None:

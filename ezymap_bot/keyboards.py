@@ -39,6 +39,8 @@ _LABELS = {
         "en": "💳 Pay with Card/Bank/E-Wallet",
         "my": "💳 Bayar dengan Kad/Bank/E-Wallet",
     },
+    "pay_ipay88": {"en": "🏦 Pay with iPay88", "my": "🏦 Bayar dengan iPay88"},
+    "pay_smartglocal": {"en": "🌍 Pay with Smart Glocal", "my": "🌍 Bayar dengan Smart Glocal"},
     "different_payment_method": {
         "en": "💬 I want different payment method",
         "my": "💬 Saya mahu cara bayaran lain",
@@ -150,6 +152,9 @@ def product_detail_menu(product_code: str, region: str) -> InlineKeyboardMarkup:
 
 
 def payment_method_menu(product_code: str, duration: str, region: str) -> InlineKeyboardMarkup:
+    # NOTE: iPay88 / Smart Glocal (native Telegram Payments) are built but intentionally
+    # not wired in here yet - waiting on the BotFather merchant registrations to finish.
+    # See ezymap_bot/handlers/native_payment.py; add a row per provider here to enable it.
     return InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(_label("pay_usdt", region), callback_data=f"buy_{product_code}_{duration}")],

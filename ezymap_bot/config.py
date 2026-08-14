@@ -26,6 +26,14 @@ INVOICE_STORE_FILE = os.environ.get(
     "EZYMAP_INVOICE_STORE_FILE", os.path.join(PROJECT_ROOT, "ezymap_xendit_invoices.json")
 )
 
+# Optional - native Telegram Payments (via @BotFather -> /mybots -> Payments) provider
+# tokens. Leave blank until you've connected the provider in BotFather; that payment
+# button will show a friendly "not set up yet" message instead of erroring. Unlike
+# Xendit, these don't need a webhook - Telegram delivers the payment confirmation
+# straight to the bot as a normal update.
+IPAY88_PROVIDER_TOKEN = os.environ.get("EZYMAP_IPAY88_PROVIDER_TOKEN", "")
+SMARTGLOCAL_PROVIDER_TOKEN = os.environ.get("EZYMAP_SMARTGLOCAL_PROVIDER_TOKEN", "")
+
 if not BOT_TOKEN:
     raise RuntimeError(
         "EZYMAP_BOT_TOKEN is not set. Add it to .env (see .env.example)."
