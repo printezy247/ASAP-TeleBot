@@ -35,10 +35,10 @@ async def handle_paid_invoice(payload: dict) -> None:
     admin_text = (
         "💰 *EzyMap payment confirmed via Xendit*\n\n"
         f"Product: {record['product_name']}\n"
-        f"Plan: {record['plan_name']} — {record['currency']} {record['price']}\n"
+        f"Plan: {record['plan_name']} ({record['currency']} {record['price']})\n"
         f"Telegram username: {username_line}\n"
         f"Telegram ID: `{record['user_id']}`\n\n"
-        "Payment auto-confirmed by Xendit — no action needed except activating access."
+        "Payment auto-confirmed by Xendit. No action needed except activating access."
     )
     chat_with_client_keyboard = InlineKeyboardMarkup(
         [[InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={record['user_id']}")]]

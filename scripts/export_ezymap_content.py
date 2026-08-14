@@ -43,12 +43,12 @@ def L(out, label_key):
 
 def main():
     out = []
-    line(out, "EzyMap Algo Bot — All Messages & Buttons (English / Bahasa Melayu)")
-    line(out, "Generated from ezymap_bot/content.py and keyboards.py — this is a reference")
+    line(out, "EzyMap Algo Bot: All Messages & Buttons (English / Bahasa Melayu)")
+    line(out, "Generated from ezymap_bot/content.py and keyboards.py, this is a reference")
     line(out, "copy; the bot itself always reads from the code, not this file.")
 
     # --- Welcome / language ---
-    section(out, "1. /start — LANGUAGE SELECTION (shown first, bilingual, no toggle)")
+    section(out, "1. /start: LANGUAGE SELECTION (shown first, bilingual, no toggle)")
     line(out, content.LANGUAGE_SELECT_TEXT)
     button_row(out, "🇬🇧 English", "🇲🇾 Bahasa Melayu")
 
@@ -70,7 +70,7 @@ def main():
     L(out, "main_menu")
 
     # --- Packages ---
-    section(out, "5. CHECK OUT FREE STEPS — package tier picker")
+    section(out, "5. CHECK OUT FREE STEPS: package tier picker")
     bilingual(out, "Packages intro text", content.PACKAGES_INTRO_TEXT)
     tier_emoji = {"beginner": "🥉", "pro": "🥈", "premium": "🥇", "elite": "🏆"}
     for key in ("beginner", "pro", "premium", "elite"):
@@ -108,13 +108,13 @@ def main():
     bilingual(out, "/cancel text", content.CANCEL_TEXT)
 
     # --- Purchase EzyMap ---
-    section(out, "9. PURCHASE EZYMAP — category picker")
+    section(out, "9. PURCHASE EZYMAP: category picker")
     bilingual(out, "Purchase intro text", content.PURCHASE_INTRO_TEXT)
     L(out, "tv_pro_category")
     L(out, "mt5_bundles_category")
     L(out, "main_menu")
 
-    section(out, "10. MT5 - EZYMAP BUNDLES — product picker")
+    section(out, "10. MT5 - EZYMAP BUNDLES: product picker")
     bilingual(out, "MT5 bundles intro text", content.MT5_BUNDLES_INTRO_TEXT)
     for code in content.MT5_BUNDLE_PRODUCT_CODES:
         line(out, f"  BUTTON (same both languages): {content.PRODUCTS[code]['name']}")
@@ -170,7 +170,7 @@ def main():
         L(out, "back_to_faq")
         line(out)
 
-    section(out, "16. ADMIN-ONLY NOTIFICATIONS (always English — sent to Jack, not the client)")
+    section(out, "16. ADMIN-ONLY NOTIFICATIONS (always English, sent to Jack, not the client)")
     line(out, "These are not shown to clients at all, so no Malay version exists:")
     line(out, "- New registration submission: Package / Name / Email / Account Number / Telegram")
     line(out, "  username / Telegram ID / (Deposit proof forwarded below, if applicable)")

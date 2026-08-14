@@ -60,7 +60,7 @@ async def initiate_xendit_payment(update: Update, context: ContextTypes.DEFAULT_
             external_id=external_id,
             amount=float(price),
             currency=currency_code,
-            description=f"{product['name']} — {plan_name}",
+            description=f"{product['name']} ({plan_name})",
         )
     except httpx.HTTPError:
         logger.exception("Failed to create Xendit invoice for %s", external_id)

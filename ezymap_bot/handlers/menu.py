@@ -1,3 +1,5 @@
+import os
+
 from telegram import Update
 from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
@@ -99,9 +101,25 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             return
         context.user_data["selected_package"] = tier_key
         detail_text = _text(content.PACKAGE_TIERS[tier_key]["detail"], region)
-        await query.edit_message_text(
-            detail_text, reply_markup=keyboards.tier_detail_menu(region), parse_mode=ParseMode.MARKDOWN
-        )
+        image = content.PACKAGE_TIER_IMAGES.get(tier_key)
+        if image:
+            # A text message can't be edited into a photo message, so replace it instead.
+            await query.delete_message()
+            photo = open(image, "rb") if os.path.exists(image) else image
+            try:
+                await update.effective_chat.send_photo(
+                    photo,
+                    caption=detail_text,
+                    reply_markup=keyboards.tier_detail_menu(region),
+                    parse_mode=ParseMode.MARKDOWN,
+                )
+            finally:
+                if hasattr(photo, "close"):
+                    photo.close()
+        else:
+            await query.edit_message_text(
+                detail_text, reply_markup=keyboards.tier_detail_menu(region), parse_mode=ParseMode.MARKDOWN
+            )
         return
 
     if data.startswith("faq_"):

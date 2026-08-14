@@ -89,12 +89,12 @@ async def initiate_native_payment(update: Update, context: ContextTypes.DEFAULT_
     try:
         await context.bot.send_invoice(
             chat_id=update.effective_chat.id,
-            title=f"{product['name']} — {plan_name}",
+            title=f"{product['name']} ({plan_name})",
             description=_text(product["description"], region),
             payload=invoice_payload,
             provider_token=provider_token,
             currency=currency_code,
-            prices=[LabeledPrice(label=f"{product['name']} — {plan_name}", amount=amount_minor_units)],
+            prices=[LabeledPrice(label=f"{product['name']} ({plan_name})", amount=amount_minor_units)],
         )
     except TelegramError:
         logger.exception(
@@ -143,11 +143,11 @@ async def successful_payment_callback(update: Update, context: ContextTypes.DEFA
     admin_text = (
         f"💰 *EzyMap payment confirmed via {provider_name}*\n\n"
         f"Product: {product['name']}\n"
-        f"Plan: {plan_name} — {payment.currency} {payment.total_amount / 100:.2f}\n"
+        f"Plan: {plan_name} ({payment.currency} {payment.total_amount / 100:.2f})\n"
         f"Telegram username: {username_line}\n"
         f"Telegram ID: `{user.id}`\n"
         f"Provider charge ID: `{payment.provider_payment_charge_id}`\n\n"
-        f"Payment auto-confirmed by {provider_name} — no action needed except activating access."
+        f"Payment auto-confirmed by {provider_name}. No action needed except activating access."
     )
     chat_with_client_keyboard = InlineKeyboardMarkup(
         [[InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")]]

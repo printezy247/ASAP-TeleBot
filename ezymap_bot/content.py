@@ -180,7 +180,7 @@ PACKAGES_INTRO_TEXT = {
     "en": (
         f"🎁 *{CHANNEL_NAME} FREE Steps*\n\n"
         f"Everything is unlocked by having a trading account under my IB (`{IB_NUMBER}`) "
-        f"with {BROKER_NAME}. The more you have with them, the more you unlock — no "
+        f"with {BROKER_NAME}. The more you have with them, the more you unlock. No "
         f"extra payment needed for these.\n\n"
         "Pick a package to see what it includes:"
     ),
@@ -188,7 +188,7 @@ PACKAGES_INTRO_TEXT = {
         f"🎁 *Langkah PERCUMA {CHANNEL_NAME}*\n\n"
         f"Semuanya dibuka hanya dengan membuka akaun trading di bawah IB saya "
         f"(`{IB_NUMBER}`) bersama {BROKER_NAME}. Semakin banyak anda ada dengan "
-        f"mereka, semakin banyak yang anda buka — tiada bayaran tambahan diperlukan "
+        f"mereka, semakin banyak yang anda buka. Tiada bayaran tambahan diperlukan "
         f"untuk semua ini.\n\n"
         "Pilih pakej untuk lihat apa yang disertakan:"
     ),
@@ -204,18 +204,18 @@ PACKAGE_TIERS = {
         "detail": {
             "en": (
                 "🥉 *Beginner Package*\n\n"
-                f"Requirement: open an account under my IB (`{IB_NUMBER}`) — no "
+                f"Requirement: open an account under my IB (`{IB_NUMBER}`), no "
                 f"deposit needed.\n\n"
-                "You get:\n"
-                "• Free eBooks: Technical Analysis & Mapping Like A Pro\n"
-                "• EzyMap Lite indicator (TradingView)"
+                "You will get:\n"
+                "• eBook: Technical Analysis & Mapping Like A Pro\n"
+                "• Indicator EzyMap Lite (TradingView)"
             ),
             "my": (
                 "🥉 *Pakej Beginner*\n\n"
-                f"Keperluan: buka akaun di bawah IB saya (`{IB_NUMBER}`) — tiada "
+                f"Keperluan: buka akaun di bawah IB saya (`{IB_NUMBER}`), tiada "
                 f"deposit diperlukan.\n\n"
                 "Anda akan dapat:\n"
-                "• eBook percuma: Technical Analysis & Mapping Like A Pro\n"
+                "• eBook: Technical Analysis & Mapping Like A Pro\n"
                 "• Indicator EzyMap Lite (TradingView)"
             ),
         },
@@ -227,17 +227,19 @@ PACKAGE_TIERS = {
                 "🥈 *Pro Package*\n\n"
                 f"Requirement: open an account under my IB (`{IB_NUMBER}`) + deposit "
                 f"(any amount).\n\n"
-                "You get:\n"
-                "• EzyMap Scalp Mastery — scalping gold signals channel\n"
-                "• Everything in Beginner"
+                "You will get:\n"
+                "• EzyScalper = M1 & M5 private signal channel\n"
+                "• EzyMap MT5 Indicator = Currency Strength Meter\n"
+                "• Everything in the Beginner"
             ),
             "my": (
                 "🥈 *Pakej Pro*\n\n"
                 f"Keperluan: buka akaun di bawah IB saya (`{IB_NUMBER}`) + deposit "
                 f"(apa-apa jumlah).\n\n"
                 "Anda akan dapat:\n"
-                "• EzyMap Scalp Mastery — channel signal scalping gold\n"
-                "• Semua dalam Beginner"
+                "• EzyScalper = M1 & M5 private signal channel\n"
+                "• EzyMap MT5 Indicator = Currency Strength Meter\n"
+                "• Semua dalam pakej Beginner"
             ),
         },
     },
@@ -248,17 +250,21 @@ PACKAGE_TIERS = {
                 "🥇 *Premium Package*\n\n"
                 f"Requirement: open an account under my IB (`{IB_NUMBER}`) + deposit "
                 f"min $100.\n\n"
-                "You get:\n"
-                "• EzyMap Pro indicator (TradingView) with live signals M1–H4\n"
-                "• Everything in Pro"
+                "You will get:\n"
+                "• EzyMap Pro Indicator (TradingView) = M1–H4 signals\n"
+                "• EzyMap MT5 Indicator = Auto TPSL & MTF Bias\n"
+                "• EzyIntraday = M15 & M30 private signal channel\n"
+                "• Everything in the Pro"
             ),
             "my": (
                 "🥇 *Pakej Premium*\n\n"
                 f"Keperluan: buka akaun di bawah IB saya (`{IB_NUMBER}`) + deposit "
                 f"minimum $100.\n\n"
                 "Anda akan dapat:\n"
-                "• Indicator EzyMap Pro (TradingView) dengan live signals M1–H4\n"
-                "• Semua dalam Pro"
+                "• EzyMap Pro Indicator (TradingView) = M1–H4 signals\n"
+                "• EzyMap MT5 Indicator = Auto TPSL & MTF Bias\n"
+                "• EzyIntraday = M15 & M30 private signal channel\n"
+                "• Semua dalam pakej Pro"
             ),
         },
     },
@@ -269,28 +275,36 @@ PACKAGE_TIERS = {
                 "🏆 *Elite Package*\n\n"
                 f"Requirement: open an account under my IB (`{IB_NUMBER}`) + deposit "
                 f"min $700.\n\n"
-                "You get:\n"
-                "• Free eBooks: Technical Analysis & Mapping Like A Pro\n"
-                "• EzyMap Scalp Mastery — scalping gold signals channel\n"
-                "• EzyMap Pro indicator (TradingView) with live signals\n"
-                "• EzyMap indicator for MT5 — Drawdown Guardian, Bulk Close with Layer "
+                "You will get:\n"
+                "• EzyMap MT5 Indicator = Drawdown Guardian, Bulk Close with Layer "
                 "Close Function, Auto TPSL, and 5 more (worth $249)\n"
-                "• Elite group — 1-on-1 support from Jack (private Telegram group)"
+                "• EzySwing = H1 & H4 private signal channel\n"
+                "• Ezy Elite Circle = 1-on-1 support from Jack\n"
+                "• Everything in the Premium"
             ),
             "my": (
                 "🏆 *Pakej Elite*\n\n"
                 f"Keperluan: buka akaun di bawah IB saya (`{IB_NUMBER}`) + deposit "
                 f"minimum $700.\n\n"
                 "Anda akan dapat:\n"
-                "• eBook percuma: Technical Analysis & Mapping Like A Pro\n"
-                "• EzyMap Scalp Mastery — channel signal scalping gold\n"
-                "• Indicator EzyMap Pro (TradingView) dengan live signals\n"
-                "• Indicator EzyMap untuk MT5 — Drawdown Guardian, Bulk Close with "
-                "Layer Close Function, Auto TPSL, dan 5 lagi (bernilai $249)\n"
-                "• Group Elite — sokongan 1-on-1 daripada Jack (group Telegram peribadi)"
+                "• EzyMap MT5 Indicator = Drawdown Guardian, Bulk Close with Layer "
+                "Close Function, Auto TPSL, dan 5 lagi (bernilai $249)\n"
+                "• EzySwing = H1 & H4 private signal channel\n"
+                "• Ezy Elite Circle = sokongan 1-on-1 daripada Jack\n"
+                "• Semua dalam pakej Premium"
             ),
         },
     },
+}
+
+# tier key -> promotional image shown above the tier detail text. Value can be a public
+# URL (Telegram fetches it directly, no upload needed) or a path to a local file in this
+# repo (opened and uploaded). Leave blank to keep showing plain text for that tier.
+PACKAGE_TIER_IMAGES = {
+    "beginner": "",
+    "pro": "",
+    "premium": "",
+    "elite": "",
 }
 
 OPEN_ACCOUNT_TEXT = {
@@ -299,7 +313,7 @@ OPEN_ACCOUNT_TEXT = {
         f"1️⃣ Click this link to open your account under my IB: {OPEN_ACCOUNT_LINK}\n"
         "2️⃣ Complete the sign-up form with your real details.\n"
         "3️⃣ Verify your email and identity as prompted by "
-        f"{BROKER_NAME} — be honest, you'll need this to withdraw later.\n\n"
+        f"{BROKER_NAME}. Be honest, you'll need this to withdraw later.\n\n"
         "Once your account is open (and deposited, if you're going for Pro/Premium), "
         "tap *✅ I've Completed Registration* below to send me your details."
     ),
@@ -308,7 +322,7 @@ OPEN_ACCOUNT_TEXT = {
         f"1️⃣ Klik link ini untuk buka akaun anda di bawah IB saya: {OPEN_ACCOUNT_LINK}\n"
         "2️⃣ Lengkapkan borang pendaftaran dengan maklumat sebenar anda.\n"
         "3️⃣ Sahkan email dan identiti anda seperti diminta oleh "
-        f"{BROKER_NAME} — jujurlah, anda perlukan ini untuk buat pengeluaran nanti.\n\n"
+        f"{BROKER_NAME}. Jujurlah, anda perlukan ini untuk buat pengeluaran nanti.\n\n"
         "Setelah akaun anda dibuka (dan deposit, jika anda pilih Pro/Premium), tekan "
         "*✅ Saya Telah Selesai Daftar* di bawah untuk hantar maklumat anda."
     ),
@@ -356,12 +370,12 @@ CHANGE_IB_TEXT = {
 
 SUBMIT_DETAILS_PROMPT = {
     "en": (
-        "✅ Great — let's get your details sent over so Jack can check your account "
+        "✅ Great! Let's get your details sent over so Jack can check your account "
         "and unlock your package.\n\n"
         "What's your *full name*?"
     ),
     "my": (
-        "✅ Bagus — mari hantar maklumat anda supaya Jack boleh semak akaun anda dan "
+        "✅ Bagus! Mari hantar maklumat anda supaya Jack boleh semak akaun anda dan "
         "buka pakej anda.\n\n"
         "Apakah *nama penuh* anda?"
     ),
@@ -401,13 +415,13 @@ SUBMISSION_ADMIN_UNREACHABLE_TEXT = {
     "en": (
         "🎉 Thanks, I've got your details!\n\n"
         "I couldn't reach Jack automatically just now, but your submission was "
-        "recorded — please also message the admin directly to be safe. Your perks "
+        "recorded. Please also message the admin directly to be safe. Your perks "
         "will be unlocked shortly."
     ),
     "my": (
         "🎉 Terima kasih, maklumat anda telah diterima!\n\n"
         "Saya tidak dapat hubungi Jack secara automatik buat masa ini, tetapi "
-        "maklumat anda telah direkodkan — sila mesej admin terus untuk memastikan. "
+        "maklumat anda telah direkodkan. Sila mesej admin terus untuk memastikan. "
         "Perks anda akan dibuka tidak lama lagi."
     ),
 }
@@ -430,8 +444,8 @@ PURCHASE_INTRO_TEXT = {
 }
 
 FAQ_LIST_HEADER = {
-    "en": "❓ *FAQ* — tap a question to see the answer.",
-    "my": "❓ *Soalan Lazim* — tekan soalan untuk lihat jawapan.",
+    "en": "❓ *FAQ*: tap a question to see the answer.",
+    "my": "❓ *Soalan Lazim*: tekan soalan untuk lihat jawapan.",
 }
 
 MT5_BUNDLES_INTRO_TEXT = {
@@ -458,34 +472,34 @@ def plan_button_label(product_code: str, duration_code: str, region: str = DEFAU
     price = PRODUCTS[product_code]["plans"][duration_code]
     duration_label = plan_duration_label(duration_code, region)
     symbol, _currency_code = PRICE_REGIONS.get(region, PRICE_REGIONS[DEFAULT_PRICE_REGION])
-    return f"{duration_label} — {symbol}{price}"
+    return f"{duration_label} ({symbol}{price})"
 
 
 CHOOSE_PAYMENT_METHOD_TEXT = {
-    "en": "💎 *{product_name} — {plan_name}*\nPrice: *{price}*\n\nHow would you like to pay?",
-    "my": "💎 *{product_name} — {plan_name}*\nHarga: *{price}*\n\nBagaimana anda ingin bayar?",
+    "en": "💎 *{product_name} ({plan_name})*\nPrice: *{price}*\n\nHow would you like to pay?",
+    "my": "💎 *{product_name} ({plan_name})*\nHarga: *{price}*\n\nBagaimana anda ingin bayar?",
 }
 
 # USDT is always quoted in USD, regardless of the client's chosen pricing region, since
 # crypto amounts are inherently dollar-denominated.
 PAYMENT_PROMPT_TEMPLATE = {
     "en": (
-        "💎 *{product_name} — {plan_name}*\n"
+        "💎 *{product_name} ({plan_name})*\n"
         "Price: *${price} USD*\n\n"
         "Send exactly *{price} USDT* ({network} network) to:\n"
         f"`{USDT_WALLET_ADDRESS}`\n\n"
-        "⚠️ Send USDT only, on the *{network}* network — wrong coin or wrong network "
+        "⚠️ Send USDT only, on the *{network}* network. Wrong coin or wrong network "
         "can lose your funds.\n\n"
         "Once sent, reply here with a *screenshot of the transfer* or your "
         "*transaction ID*, and Jack will confirm and activate your purchase.\n\n"
         "Prefer a different way to pay? Tap the button below to message Jack directly."
     ),
     "my": (
-        "💎 *{product_name} — {plan_name}*\n"
+        "💎 *{product_name} ({plan_name})*\n"
         "Harga: *${price} USD*\n\n"
         "Hantar tepat *{price} USDT* (rangkaian {network}) ke:\n"
         f"`{USDT_WALLET_ADDRESS}`\n\n"
-        "⚠️ Hantar USDT sahaja, pada rangkaian *{network}* — coin atau rangkaian yang "
+        "⚠️ Hantar USDT sahaja, pada rangkaian *{network}*. Coin atau rangkaian yang "
         "salah boleh menyebabkan dana anda hilang.\n\n"
         "Setelah dihantar, balas di sini dengan *screenshot pemindahan* atau "
         "*transaction ID* anda, dan Jack akan sahkan dan aktifkan pembelian anda.\n\n"
@@ -495,28 +509,28 @@ PAYMENT_PROMPT_TEMPLATE = {
 
 XENDIT_UNAVAILABLE_TEXT = {
     "en": (
-        "⚠️ Card/Bank/E-Wallet payment isn't set up yet — please use USDT for now, or "
+        "⚠️ Card/Bank/E-Wallet payment isn't set up yet. Please use USDT for now, or "
         "tap below to ask Jack about another way to pay."
     ),
     "my": (
-        "⚠️ Pembayaran Card/Bank/E-Wallet belum tersedia lagi — sila guna USDT buat "
+        "⚠️ Pembayaran Card/Bank/E-Wallet belum tersedia lagi. Sila guna USDT buat "
         "masa ini, atau tekan di bawah untuk tanya Jack cara bayaran lain."
     ),
 }
 
 XENDIT_INVOICE_CREATED_TEXT = {
     "en": (
-        "💳 *{product_name} — {plan_name}*\n"
+        "💳 *{product_name} ({plan_name})*\n"
         "Price: *{price}*\n\n"
         "Tap below to pay securely via card, bank transfer, or e-wallet. Once payment "
-        "is confirmed, you'll be notified here automatically — no need to send proof."
+        "is confirmed, you'll be notified here automatically. No need to send proof."
     ),
     "my": (
-        "💳 *{product_name} — {plan_name}*\n"
+        "💳 *{product_name} ({plan_name})*\n"
         "Harga: *{price}*\n\n"
         "Tekan di bawah untuk bayar dengan selamat melalui card, pemindahan bank, "
         "atau e-wallet. Setelah pembayaran disahkan, anda akan dimaklumkan di sini "
-        "secara automatik — tak perlu hantar bukti."
+        "secara automatik. Tak perlu hantar bukti."
     ),
 }
 
@@ -534,12 +548,12 @@ XENDIT_INVOICE_FAILED_TEXT = {
 XENDIT_AUTO_CONFIRM_CLIENT_TEXT = {
     "en": (
         "🎉 *Payment confirmed!*\n\n"
-        "Your purchase of *{product_name} — {plan_name}* is confirmed. Jack has been "
+        "Your purchase of *{product_name} ({plan_name})* is confirmed. Jack has been "
         "notified and will activate it shortly."
     ),
     "my": (
         "🎉 *Pembayaran disahkan!*\n\n"
-        "Pembelian anda untuk *{product_name} — {plan_name}* telah disahkan. Jack "
+        "Pembelian anda untuk *{product_name} ({plan_name})* telah disahkan. Jack "
         "telah dimaklumkan dan akan aktifkan tidak lama lagi."
     ),
 }
@@ -547,14 +561,14 @@ XENDIT_AUTO_CONFIRM_CLIENT_TEXT = {
 XENDIT_AUTO_CONFIRM_ADMIN_UNREACHABLE_TEXT = {
     "en": (
         "🎉 *Payment confirmed!*\n\n"
-        "Your purchase of *{product_name} — {plan_name}* is confirmed. I couldn't reach "
-        "Jack automatically just now — please also message him directly to be safe. "
+        "Your purchase of *{product_name} ({plan_name})* is confirmed. I couldn't reach "
+        "Jack automatically just now. Please also message him directly to be safe. "
         "Your purchase will be activated shortly after."
     ),
     "my": (
         "🎉 *Pembayaran disahkan!*\n\n"
-        "Pembelian anda untuk *{product_name} — {plan_name}* telah disahkan. Saya "
-        "tidak dapat hubungi Jack secara automatik buat masa ini — sila mesej dia "
+        "Pembelian anda untuk *{product_name} ({plan_name})* telah disahkan. Saya "
+        "tidak dapat hubungi Jack secara automatik buat masa ini. Sila mesej dia "
         "terus untuk memastikan. Pembelian anda akan diaktifkan tidak lama lagi "
         "selepas itu."
     ),
@@ -571,11 +585,11 @@ NATIVE_PAYMENT_PROVIDERS = {
 
 NATIVE_PAYMENT_UNAVAILABLE_TEXT = {
     "en": (
-        "⚠️ {provider} payment isn't set up yet — please use USDT for now, or tap below "
+        "⚠️ {provider} payment isn't set up yet. Please use USDT for now, or tap below "
         "to ask Jack about another way to pay."
     ),
     "my": (
-        "⚠️ Pembayaran {provider} belum tersedia lagi — sila guna USDT buat masa ini, "
+        "⚠️ Pembayaran {provider} belum tersedia lagi. Sila guna USDT buat masa ini, "
         "atau tekan di bawah untuk tanya Jack cara bayaran lain."
     ),
 }
@@ -593,14 +607,14 @@ NATIVE_PAYMENT_INVOICE_FAILED_TEXT = {
 
 NATIVE_PAYMENT_INVOICE_SENT_TEXT = {
     "en": (
-        "💳 *{product_name} — {plan_name}*\n\n"
-        "Your {provider} invoice is below — tap *Pay* to complete it. Once payment goes "
-        "through, you'll be notified here automatically — no need to send proof."
+        "💳 *{product_name} ({plan_name})*\n\n"
+        "Your {provider} invoice is below, tap *Pay* to complete it. Once payment goes "
+        "through, you'll be notified here automatically. No need to send proof."
     ),
     "my": (
-        "💳 *{product_name} — {plan_name}*\n\n"
-        "Invois {provider} anda di bawah — tekan *Pay* untuk selesaikan. Setelah "
-        "pembayaran berjaya, anda akan dimaklumkan di sini secara automatik — tak perlu "
+        "💳 *{product_name} ({plan_name})*\n\n"
+        "Invois {provider} anda di bawah, tekan *Pay* untuk selesaikan. Setelah "
+        "pembayaran berjaya, anda akan dimaklumkan di sini secara automatik. Tak perlu "
         "hantar bukti."
     ),
 }
@@ -608,12 +622,12 @@ NATIVE_PAYMENT_INVOICE_SENT_TEXT = {
 NATIVE_PAYMENT_AUTO_CONFIRM_CLIENT_TEXT = {
     "en": (
         "🎉 *Payment confirmed!*\n\n"
-        "Your purchase of *{product_name} — {plan_name}* is confirmed. Jack has been "
+        "Your purchase of *{product_name} ({plan_name})* is confirmed. Jack has been "
         "notified and will activate it shortly."
     ),
     "my": (
         "🎉 *Pembayaran disahkan!*\n\n"
-        "Pembelian anda untuk *{product_name} — {plan_name}* telah disahkan. Jack "
+        "Pembelian anda untuk *{product_name} ({plan_name})* telah disahkan. Jack "
         "telah dimaklumkan dan akan aktifkan tidak lama lagi."
     ),
 }
@@ -621,14 +635,14 @@ NATIVE_PAYMENT_AUTO_CONFIRM_CLIENT_TEXT = {
 NATIVE_PAYMENT_AUTO_CONFIRM_ADMIN_UNREACHABLE_TEXT = {
     "en": (
         "🎉 *Payment confirmed!*\n\n"
-        "Your purchase of *{product_name} — {plan_name}* is confirmed. I couldn't reach "
-        "Jack automatically just now — please also message him directly to be safe. "
+        "Your purchase of *{product_name} ({plan_name})* is confirmed. I couldn't reach "
+        "Jack automatically just now. Please also message him directly to be safe. "
         "Your purchase will be activated shortly after."
     ),
     "my": (
         "🎉 *Pembayaran disahkan!*\n\n"
-        "Pembelian anda untuk *{product_name} — {plan_name}* telah disahkan. Saya "
-        "tidak dapat hubungi Jack secara automatik buat masa ini — sila mesej dia "
+        "Pembelian anda untuk *{product_name} ({plan_name})* telah disahkan. Saya "
+        "tidak dapat hubungi Jack secara automatik buat masa ini. Sila mesej dia "
         "terus untuk memastikan. Pembelian anda akan diaktifkan tidak lama lagi "
         "selepas itu."
     ),
@@ -649,13 +663,13 @@ PAYMENT_PROOF_RECEIVED_TEXT = {
 PAYMENT_PROOF_ADMIN_UNREACHABLE_TEXT = {
     "en": (
         "✅ Got your payment proof!\n\n"
-        "I couldn't reach Jack automatically just now — please also message the "
+        "I couldn't reach Jack automatically just now. Please also message the "
         "admin directly with your proof to be safe. Your purchase will be activated "
         "shortly after."
     ),
     "my": (
         "✅ Bukti pembayaran diterima!\n\n"
-        "Saya tidak dapat hubungi Jack secara automatik buat masa ini — sila mesej "
+        "Saya tidak dapat hubungi Jack secara automatik buat masa ini. Sila mesej "
         "admin terus dengan bukti anda untuk memastikan. Pembelian anda akan "
         "diaktifkan tidak lama lagi selepas itu."
     ),
@@ -675,13 +689,13 @@ FAQ_ITEMS = [
         },
         "answer": {
             "en": (
-                "Yes — Beginner, Pro, Premium, and Elite are all unlocked just by "
+                "Yes, Beginner, Pro, Premium, and Elite are all unlocked just by "
                 f"having an account under my IB with {BROKER_NAME} (Premium and Elite "
                 "also need a minimum deposit). Only the *Purchase EzyMap* items "
                 "(TradingView Pro or the MT5 bundles) cost money."
             ),
             "my": (
-                "Ya — Beginner, Pro, Premium, dan Elite semuanya dibuka hanya dengan "
+                "Ya, Beginner, Pro, Premium, dan Elite semuanya dibuka hanya dengan "
                 f"membuka akaun di bawah IB saya bersama {BROKER_NAME} (Premium dan "
                 "Elite juga perlukan deposit minimum). Hanya item *Beli EzyMap* "
                 "(TradingView Pro atau MT5 bundles) yang berbayar."
@@ -740,13 +754,13 @@ FAQ_ITEMS = [
         "answer": {
             "en": (
                 "Everything in Premium, plus the full EzyMap MT5 indicator set "
-                "(Drawdown Guardian, Bulk Close with Layer Close, Auto TPSL, and more "
-                "— worth $249), and the Elite group with 1-on-1 support from Jack."
+                "(Drawdown Guardian, Bulk Close with Layer Close, Auto TPSL, and more, "
+                "worth $249), and the Ezy Elite Circle with 1-on-1 support from Jack."
             ),
             "my": (
                 "Semua dalam Premium, ditambah set penuh indicator EzyMap MT5 "
                 "(Drawdown Guardian, Bulk Close with Layer Close, Auto TPSL, dan "
-                "banyak lagi — bernilai $249), serta group Elite dengan sokongan "
+                "banyak lagi, bernilai $249), serta Ezy Elite Circle dengan sokongan "
                 "1-on-1 daripada Jack."
             ),
         },
@@ -760,11 +774,11 @@ FAQ_ITEMS = [
         },
         "answer": {
             "en": (
-                "Yes — use *Change IB* instead of opening a new account (it's done by "
+                "Yes, use *Change IB* instead of opening a new account (it's done by "
                 "email, not a link), then submit your details the same way."
             ),
             "my": (
-                "Boleh — guna *Tukar IB* dan bukannya buka akaun baharu (dibuat "
+                "Boleh, guna *Tukar IB* dan bukannya buka akaun baharu (dibuat "
                 "melalui email, bukan link), kemudian hantar maklumat anda dengan "
                 "cara yang sama."
             ),
@@ -780,12 +794,12 @@ FAQ_ITEMS = [
         "answer": {
             "en": (
                 "Once you submit your Name, Email, and Account Number, Jack checks "
-                "your account status and unlocks the matching package shortly after "
-                "— usually the same day."
+                "your account status and unlocks the matching package shortly after, "
+                "usually the same day."
             ),
             "my": (
                 "Setelah anda hantar Nama, Email, dan Nombor Akaun, Jack akan semak "
-                "status akaun anda dan buka pakej yang sesuai — biasanya pada hari "
+                "status akaun anda dan buka pakej yang sesuai, biasanya pada hari "
                 "yang sama."
             ),
         },
@@ -800,13 +814,13 @@ FAQ_ITEMS = [
         "answer": {
             "en": (
                 "Tap *💎 Purchase EzyMap* from the main menu, pick TradingView or "
-                "MT5, then a plan — you'll be asked to pay via USDT (wallet address + "
+                "MT5, then a plan. You'll be asked to pay via USDT (wallet address + "
                 "confirm with Jack) or via Card/Bank/E-Wallet, which confirms "
                 "automatically once payment goes through."
             ),
             "my": (
                 "Tekan *💎 Beli EzyMap* di menu utama, pilih TradingView atau MT5, "
-                "kemudian pilih pelan — anda akan diminta bayar melalui USDT (alamat "
+                "kemudian pilih pelan. Anda akan diminta bayar melalui USDT (alamat "
                 "wallet + sahkan dengan Jack) atau Card/Bank/E-Wallet, yang akan "
                 "disahkan secara automatik sebaik sahaja pembayaran berjaya."
             ),
@@ -821,11 +835,11 @@ FAQ_ITEMS = [
         },
         "answer": {
             "en": (
-                "Message Jack directly to discuss — refund/cancellation isn't "
+                "Message Jack directly to discuss. Refund/cancellation isn't "
                 "handled automatically through the bot."
             ),
             "my": (
-                "Mesej Jack terus untuk berbincang — pembatalan/refund tidak "
+                "Mesej Jack terus untuk berbincang. Pembatalan/refund tidak "
                 "dikendalikan secara automatik melalui bot."
             ),
         },
@@ -842,13 +856,13 @@ FAQ_ITEMS = [
                 "The TradingView EzyMap indicators (Lite/Scalp Mastery/Pro) need a "
                 "free or paid TradingView account. The MT5 bundle and individual "
                 "tools (Drawdown Guardian, Bulk Close, Auto TPSL, Currency Strength "
-                "Meter, MTF Bias) run on MT5 instead — no TradingView needed for those."
+                "Meter, MTF Bias) run on MT5 instead. No TradingView needed for those."
             ),
             "my": (
                 "Indicator EzyMap TradingView (Lite/Scalp Mastery/Pro) memerlukan "
                 "akaun TradingView percuma atau berbayar. Bundle MT5 dan alat "
                 "individu (Drawdown Guardian, Bulk Close, Auto TPSL, Currency "
-                "Strength Meter, MTF Bias) berjalan di MT5 — tak perlukan TradingView "
+                "Strength Meter, MTF Bias) berjalan di MT5. Tak perlukan TradingView "
                 "untuk yang ini."
             ),
         },

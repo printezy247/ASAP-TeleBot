@@ -9,17 +9,17 @@ BROKER_WEBSITE = "https://en.elev8trade.net/"
 WELCOME_MESSAGES = [
     (
         f"👋 Welcome to *{CHANNEL_NAME}*!\n\n"
-        f"I'm your registration assistant, here to get you set up fast — no waiting on a human "
+        f"I'm your registration assistant, here to get you set up fast. No waiting on a human "
         f"to answer the same questions over and over. Let's get you started."
     ),
     (
         "⚠️ *Quick risk reminder before we begin*\n\n"
         "Trading involves risk, and you should only trade with capital you're prepared to risk. "
         "How much capital are you comfortable risking on your trades? Keep this in mind as we go "
-        "through registration — it's on you to trade responsibly."
+        "through registration. It's on you to trade responsibly."
     ),
     (
-        f"✅ Alright, let's go! Everything below is done with buttons — just tap your way through.\n\n"
+        f"✅ Alright, let's go! Everything below is done with buttons, just tap your way through.\n\n"
         f"Ambassador: *{AMBASSADOR_NAME}* | Broker: *{BROKER_NAME}*"
     ),
 ]
@@ -35,7 +35,7 @@ BROKER_INFO_TEXT = (
 SIGNALS_INTRO_TEXT = (
     "🚦 *Get My Free Signals*\n\n"
     f"To get access to the VIP signals channel, you need to have a trading account open under "
-    f"my IB (`{IB_NUMBER}`) with {BROKER_NAME}. *No deposit is required* — just a registered "
+    f"my IB (`{IB_NUMBER}`) with {BROKER_NAME}. *No deposit is required*, just a registered "
     f"account under my IB.\n\n"
     "Pick what applies to you:"
 )
@@ -44,11 +44,11 @@ OPEN_ACCOUNT_TEXT = (
     "💠 *Registration & Verification*\n\n"
     f"1️⃣ Click the link below to create your free trading account:\n{OPEN_ACCOUNT_LINK}\n\n"
     "2️⃣ Fill out the form or sign up with Facebook, Google, or Apple ID.\n"
-    "   • Enter your real email — you'll confirm it.\n"
-    "   • Set a password — used for all trading accounts.\n"
+    "   • Enter your real email, you'll confirm it.\n"
+    "   • Set a password, used for all trading accounts.\n"
     "   • Press *Sign Up* to proceed.\n\n"
     "3️⃣ Check your email. In the letter from us, press *Confirm*.\n\n"
-    "4️⃣ Provide your personal details and press *Continue*. Be honest — you'll need to verify "
+    "4️⃣ Provide your personal details and press *Continue*. Be honest, you'll need to verify "
     "your identity later to withdraw money.\n\n"
     "5️⃣ Configure your new account:\n"
     "   🌟 Standard account\n"
@@ -87,7 +87,7 @@ DEPOSIT_INTRO_TEXT = (
 DEPOSIT_BANK_TEXT = (
     "🏦 *Deposit via Local Bank*\n\n"
     "1️⃣ Select the *Local Bank* option or choose your bank from the list. If you don't see this "
-    "option, it may only be available to verified users — verify your account and try again.\n"
+    "option, it may only be available to verified users. Verify your account and try again.\n"
     "2️⃣ Specify the deposit amount.\n"
     "3️⃣ Adjust your bonus percentage (select your bank first if you haven't).\n"
     "4️⃣ Choose how to transfer: online banking app, ATM, or a bank branch.\n"
@@ -118,24 +118,24 @@ DEPOSIT_BTC_TEXT = (
     "2️⃣ Adjust your bonus percentage.\n"
     "3️⃣ Make sure you're within the daily deposit limit of 20,000 USD, then press *Proceed with "
     "BTC*.\n"
-    "4️⃣ Use your crypto wallet — scan the QR code or copy the Bitcoin address and make the "
+    "4️⃣ Use your crypto wallet: scan the QR code or copy the Bitcoin address and make the "
     "payment.\n\n"
     "⏱ Usually a few minutes, sometimes up to 30 minutes."
 )
 
 DEPOSIT_USDT_TEXT = (
     "🟢 *Deposit via Tether (USDT)*\n\n"
-    "1️⃣ Select ERC20 or TRC20 — make sure you transfer on the *same network*, or your funds "
+    "1️⃣ Select ERC20 or TRC20. Make sure you transfer on the *same network*, or your funds "
     "will be lost.\n"
     "2️⃣ Adjust your bonus percentage.\n"
     "3️⃣ Make sure you're above the minimum deposit of 50 ₮, then press *Proceed with Tether*.\n"
-    "4️⃣ Use your crypto wallet — scan the QR code or copy the address and make the payment.\n\n"
+    "4️⃣ Use your crypto wallet: scan the QR code or copy the address and make the payment.\n\n"
     "⏱ Usually a few minutes, sometimes up to 30 minutes."
 )
 
 WITHDRAW_TEXT = (
     "💸 *Withdraw*\n\n"
-    "⚠️ You can only withdraw after verifying your profile — this is required by law.\n\n"
+    "⚠️ You can only withdraw after verifying your profile. This is required by law.\n\n"
     "1️⃣ Log in to your Personal Area.\n"
     "   • From your *Wallet*: open the ≡ menu at the top-right.\n"
     "   • From a *trading account*: select the account on the main screen, then press "
@@ -144,18 +144,18 @@ WITHDRAW_TEXT = (
     "⏱ Requests are usually processed in 1–3 hours; total time also depends on your payment "
     "system.\n\n"
     "*Limits:*\n"
-    "• Skrill, Perfect Money, Neteller — from 5 USD, no max\n"
-    "• Bitcoin — from 0.00096 BTC, no max\n"
-    "• Visa — from 20 USD (or currency equivalent)\n"
+    "• Skrill, Perfect Money, Neteller: from 5 USD, no max\n"
+    "• Bitcoin: from 0.00096 BTC, no max\n"
+    "• Visa: from 20 USD (or currency equivalent)\n"
     "• Banks may apply their own limits\n\n"
-    "3️⃣ Enter the details for your selected method and press *Request* — make sure the currency "
+    "3️⃣ Enter the details for your selected method and press *Request*. Make sure the currency "
     "is correct.\n"
     "4️⃣ Double-check everything and confirm by pressing *Submit* again.\n\n"
     "You'll get a notice once the money is sent, by email and in your Personal Area."
 )
 
 SUBMIT_DETAILS_PROMPT = (
-    "✅ Great — let's get your details sent over so you can be added to the VIP channel.\n\n"
+    "✅ Great! Let's get your details sent over so you can be added to the VIP channel.\n\n"
     "What's your *full name*?"
 )
 
@@ -170,8 +170,8 @@ SUBMISSION_CONFIRMATION_TEXT = (
 
 SUBMISSION_ADMIN_UNREACHABLE_TEXT = (
     "🎉 Thanks, I've got your details!\n\n"
-    "I couldn't reach the admin automatically just now, but your submission was recorded — "
-    "please also send your Name, Email, and Account Number directly to the admin to be safe. "
+    "I couldn't reach the admin automatically just now, but your submission was recorded. "
+    "Please also send your Name, Email, and Account Number directly to the admin to be safe. "
     "You'll be added to the VIP signals channel shortly."
 )
 
@@ -180,7 +180,7 @@ CANCEL_TEXT = "Cancelled. Use /start any time to open the menu again."
 FAQ_ITEMS = [
     (
         "Is this really free?",
-        "Yes. There's no cost to join the VIP signals channel — you just need a trading account "
+        "Yes. There's no cost to join the VIP signals channel, you just need a trading account "
         f"opened under my IB with {BROKER_NAME}. No deposit required.",
         False,
     ),
@@ -193,12 +193,12 @@ FAQ_ITEMS = [
     (
         "How long until I get VIP access?",
         "Once you submit your Name, Email, and Account Number, the admin reviews it and adds "
-        "you shortly after — usually the same day.",
+        "you shortly after, usually the same day.",
         False,
     ),
     (
         "I already have an Elev8 account. Can I still join?",
-        "Yes — use the *Change IB* option instead of opening a new account, then submit your "
+        "Yes, use the *Change IB* option instead of opening a new account, then submit your "
         "details the same way.",
         False,
     ),

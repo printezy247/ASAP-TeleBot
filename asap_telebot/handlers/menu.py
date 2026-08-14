@@ -18,7 +18,7 @@ _SIMPLE_ROUTES = {
     "menu_main": (content.MAIN_MENU_TEXT, MAIN_MENU),
     "menu_broker": (content.BROKER_INFO_TEXT, BACK_TO_MAIN),
     "menu_signals": (content.SIGNALS_INTRO_TEXT, SIGNALS_MENU),
-    "menu_faq": ("❓ *FAQ* — tap a question to see the answer.", None),
+    "menu_faq": ("❓ *FAQ*: tap a question to see the answer.", None),
     "reg_open_account": (content.OPEN_ACCOUNT_TEXT, BACK_TO_SIGNALS),
     "reg_change_ib": (content.CHANGE_IB_TEXT, BACK_TO_SIGNALS),
     "reg_deposit": (content.DEPOSIT_INTRO_TEXT, DEPOSIT_MENU),

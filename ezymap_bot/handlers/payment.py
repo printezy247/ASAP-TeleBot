@@ -64,7 +64,7 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     admin_summary = (
         "💰 *New EzyMap payment proof*\n\n"
         f"Product: {product_name}\n"
-        f"Plan: {plan_name} — ${price}\n"
+        f"Plan: {plan_name} (${price})\n"
         f"Telegram username: {username_line}\n"
         f"Telegram ID: `{user.id}`\n\n"
         "The client's proof (screenshot/message) is forwarded below."
