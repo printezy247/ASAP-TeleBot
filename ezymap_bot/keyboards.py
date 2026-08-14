@@ -9,7 +9,7 @@ ADMIN_CONTACT_URL = f"tg://user?id={ADMIN_CHAT_ID}"
 MAIN_MENU = InlineKeyboardMarkup(
     [
         [InlineKeyboardButton("🎁 See Packages", callback_data="menu_packages")],
-        [InlineKeyboardButton("💎 Get EzyMap Pro", callback_data="menu_pro")],
+        [InlineKeyboardButton("💎 Purchase EzyMap", callback_data="menu_pro")],
         [InlineKeyboardButton("📘 Why Choose Vantage", callback_data="menu_broker")],
         [InlineKeyboardButton("❓ FAQ", callback_data="menu_faq")],
     ]
@@ -24,6 +24,7 @@ PACKAGE_TIER_MENU = InlineKeyboardMarkup(
         [InlineKeyboardButton("🥉 Beginner", callback_data="tier_beginner")],
         [InlineKeyboardButton("🥈 Pro", callback_data="tier_pro")],
         [InlineKeyboardButton("🥇 Premium", callback_data="tier_premium")],
+        [InlineKeyboardButton("🏆 Elite", callback_data="tier_elite")],
         [InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")],
     ]
 )

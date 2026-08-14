@@ -83,6 +83,20 @@ PACKAGE_TIERS = {
             "• Everything in Pro"
         ),
     ),
+    "elite": (
+        "Elite",
+        (
+            "🏆 *Elite Package*\n\n"
+            f"Requirement: open an account under my IB (`{IB_NUMBER}`) + deposit min $700.\n\n"
+            "You get:\n"
+            "• Free eBooks: Technical Analysis & Mapping Like A Pro\n"
+            "• EzyMap Scalp Mastery — scalping gold signals channel\n"
+            "• EzyMap Pro indicator (TradingView) with live signals\n"
+            "• EzyMap indicator for MT5 — Drawdown Guardian, Bulk Close with Layer Close "
+            "Function, Auto TPSL, and 2 more (worth $149)\n"
+            "• Elite group — 1-on-1 support from Jack (private Telegram group)"
+        ),
+    ),
 }
 
 OPEN_ACCOUNT_TEXT = (
