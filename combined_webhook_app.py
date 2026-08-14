@@ -6,6 +6,7 @@ file - this file just multiplexes incoming requests to the right one.
 """
 
 import asyncio
+import hmac
 import logging
 
 from flask import Flask, abort, request
@@ -57,7 +58,8 @@ def ezymap_webhook():
 
 @app.route("/xendit/webhook/ezymap", methods=["POST"])
 def ezymap_xendit_webhook():
-    if not XENDIT_CALLBACK_TOKEN or request.headers.get("x-callback-token") != XENDIT_CALLBACK_TOKEN:
+    received_token = request.headers.get("x-callback-token", "")
+    if not XENDIT_CALLBACK_TOKEN or not hmac.compare_digest(received_token, XENDIT_CALLBACK_TOKEN):
         abort(401)
     payload = request.get_json(force=True, silent=True)
     if payload is None:

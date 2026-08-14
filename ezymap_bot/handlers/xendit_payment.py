@@ -31,7 +31,8 @@ async def initiate_xendit_payment(update: Update, context: ContextTypes.DEFAULT_
     payload = query.data.removeprefix("xendit_")
     product_code, duration_code = payload.rsplit("_", 1)
 
-    if product_code not in content.PRODUCTS:
+    product = content.PRODUCTS.get(product_code)
+    if product is None or duration_code not in product["plans"]:
         await query.edit_message_text(
             _text(content.MAIN_MENU_TEXT, region), reply_markup=different_payment_method_keyboard(region)
         )
@@ -45,7 +46,6 @@ async def initiate_xendit_payment(update: Update, context: ContextTypes.DEFAULT_
         )
         return
 
-    product = content.PRODUCTS[product_code]
     price = product["plans"][duration_code]
     plan_name = content.plan_duration_label(duration_code, region)
     symbol, currency_code = content.PRICE_REGIONS.get(

@@ -73,10 +73,10 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     if data.startswith("choose_pay_"):
         payload = data.removeprefix("choose_pay_")
         product_code, duration_code = payload.rsplit("_", 1)
-        if product_code not in content.PRODUCTS:
+        product = content.PRODUCTS.get(product_code)
+        if product is None or duration_code not in product["plans"]:
             await _show_route(query, region, "menu_pro")
             return
-        product = content.PRODUCTS[product_code]
         price = product["plans"][duration_code]
         symbol, _currency_code = content.PRICE_REGIONS.get(
             region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION]

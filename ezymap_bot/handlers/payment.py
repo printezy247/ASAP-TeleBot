@@ -30,7 +30,12 @@ async def plan_selected(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 
     payload = query.data.removeprefix("buy_")
     product_code, duration_code = payload.rsplit("_", 1)
-    product = content.PRODUCTS[product_code]
+    product = content.PRODUCTS.get(product_code)
+    if product is None or duration_code not in product["plans"]:
+        await query.edit_message_text(
+            _text(content.MAIN_MENU_TEXT, region), reply_markup=main_menu(region), parse_mode=ParseMode.MARKDOWN
+        )
+        return ConversationHandler.END
     price = product["plans"][duration_code]
     plan_name = content.plan_duration_label(duration_code, region)
 

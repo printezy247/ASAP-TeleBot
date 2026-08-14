@@ -544,6 +544,22 @@ XENDIT_AUTO_CONFIRM_CLIENT_TEXT = {
     ),
 }
 
+XENDIT_AUTO_CONFIRM_ADMIN_UNREACHABLE_TEXT = {
+    "en": (
+        "🎉 *Payment confirmed!*\n\n"
+        "Your purchase of *{product_name} — {plan_name}* is confirmed. I couldn't reach "
+        "Jack automatically just now — please also message him directly to be safe. "
+        "Your purchase will be activated shortly after."
+    ),
+    "my": (
+        "🎉 *Pembayaran disahkan!*\n\n"
+        "Pembelian anda untuk *{product_name} — {plan_name}* telah disahkan. Saya "
+        "tidak dapat hubungi Jack secara automatik buat masa ini — sila mesej dia "
+        "terus untuk memastikan. Pembelian anda akan diaktifkan tidak lama lagi "
+        "selepas itu."
+    ),
+}
+
 PAYMENT_PROOF_RECEIVED_TEXT = {
     "en": (
         "✅ Got it! Your payment proof has been sent to Jack.\n\n"
