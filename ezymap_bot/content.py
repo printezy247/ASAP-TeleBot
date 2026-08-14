@@ -255,38 +255,58 @@ PAYMENT_PROOF_ADMIN_UNREACHABLE_TEXT = (
     "with your proof to be safe. Your purchase will be activated shortly after."
 )
 
+# (question, answer, show_contact_admin, extra_button)
+# extra_button is None, or (label, url) to show one more URL button above "Back to FAQ".
+TRADINGVIEW_FREE_URL = (
+    "https://www.tradingview.com/pricing/?share_your_love=printezyusd&mobileapp=true"
+)
+
 FAQ_ITEMS = [
     (
         "Is joining EzyMap Algo free?",
-        "Yes — Beginner, Pro, and Premium packages are all unlocked just by having an "
-        f"account under my IB with {BROKER_NAME}. Only EzyMap Pro (the paid subscription) "
-        "costs money.",
+        "Yes — Beginner, Pro, Premium, and Elite are all unlocked just by having an "
+        f"account under my IB with {BROKER_NAME} (Premium and Elite also need a minimum "
+        "deposit). Only the *Purchase EzyMap* items (TradingView Pro or the MT5 bundles) "
+        "cost money.",
         False,
+        None,
     ),
     (
-        "What's the difference between the free packages and EzyMap Pro?",
-        "The free packages (Beginner/Pro/Premium) are unlocked by your broker account status "
-        "under my IB. EzyMap Pro is a separate paid subscription with the full indicator and "
-        "live signals from M1 to H4.",
+        "What's the difference between the free packages and Purchase EzyMap?",
+        "The free packages (Beginner/Pro/Premium/Elite) are unlocked by your broker "
+        "account status under my IB. *Purchase EzyMap* is separate paid content: the "
+        "TradingView EzyMap Pro indicator, or the MT5 indicator bundle/individual tools.",
         False,
+        None,
     ),
     (
         "How much do I need to deposit?",
         "Beginner needs no deposit. Pro needs any deposit amount. Premium needs a minimum "
-        "$100 deposit. All under my IB.",
+        "$100 deposit. Elite needs a minimum $700 deposit. All under my IB.",
         False,
+        None,
+    ),
+    (
+        "What do I get with the Elite package?",
+        "Everything in Premium, plus the full EzyMap MT5 indicator set (Drawdown Guardian, "
+        "Bulk Close with Layer Close, Auto TPSL, and more — worth $249), and the Elite "
+        "group with 1-on-1 support from Jack.",
+        False,
+        None,
     ),
     (
         "I already have a Vantage account. Can I still join?",
         "Yes — use *Change IB* instead of opening a new account (it's done by email, not a "
         "link), then submit your details the same way.",
         False,
+        None,
     ),
     (
         "How long until my package is unlocked?",
         "Once you submit your Name, Email, and Account Number, Jack checks your account "
         "status and unlocks the matching package shortly after — usually the same day.",
         False,
+        None,
     ),
     (
         "How do I pay for a paid indicator or bundle?",
@@ -294,23 +314,29 @@ FAQ_ITEMS = [
         "— you'll get a USDT wallet address plus instructions to confirm with Jack (or a "
         "button to ask him about a different payment method).",
         False,
+        None,
     ),
     (
         "Can I cancel or get a refund on a paid indicator/bundle?",
         "Message Jack directly to discuss — refund/cancellation isn't handled automatically "
         "through the bot.",
         True,
+        None,
     ),
     (
         "Do I need TradingView for the indicators?",
-        "Yes, EzyMap Lite/Scalp Mastery/Pro are TradingView indicators — you'll need a free "
-        "or paid TradingView account to use them.",
+        "The TradingView EzyMap indicators (Lite/Scalp Mastery/Pro) need a free or paid "
+        "TradingView account. The MT5 bundle and individual tools (Drawdown Guardian, Bulk "
+        "Close, Auto TPSL, Currency Strength Meter, MTF Bias) run on MT5 instead — no "
+        "TradingView needed for those.",
         False,
+        ("📊 Get TradingView FREE", TRADINGVIEW_FREE_URL),
     ),
     (
         "What if I get stuck during registration or payment?",
         "Go through the Open Account or Change IB steps again from the menu, or tap the "
         "button below to message Jack directly.",
         True,
+        None,
     ),
 ]

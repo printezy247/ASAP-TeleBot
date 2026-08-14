@@ -108,14 +108,17 @@ def faq_menu() -> InlineKeyboardMarkup:
 
     rows = [
         [InlineKeyboardButton(question, callback_data=f"faq_{i}")]
-        for i, (question, _answer, _show_contact_admin) in enumerate(FAQ_ITEMS)
+        for i, (question, _answer, _show_contact_admin, _extra_button) in enumerate(FAQ_ITEMS)
     ]
     rows.append([InlineKeyboardButton("⬅️ Main Menu", callback_data="menu_main")])
     return InlineKeyboardMarkup(rows)
 
 
-def faq_answer_keyboard(show_contact_admin: bool) -> InlineKeyboardMarkup:
+def faq_answer_keyboard(show_contact_admin: bool, extra_button=None) -> InlineKeyboardMarkup:
     rows = []
+    if extra_button:
+        label, url = extra_button
+        rows.append([InlineKeyboardButton(label, url=url)])
     if show_contact_admin:
         rows.append([InlineKeyboardButton("📞 Contact Admin", url=ADMIN_CONTACT_URL)])
     rows.append([InlineKeyboardButton("⬅️ Back to FAQ", callback_data="menu_faq")])

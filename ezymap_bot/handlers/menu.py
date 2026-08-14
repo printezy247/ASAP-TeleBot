@@ -72,10 +72,12 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
     if data.startswith("faq_"):
         index = int(data.removeprefix("faq_"))
-        question, answer, show_contact_admin = content.FAQ_ITEMS[index]
+        question, answer, show_contact_admin, extra_button = content.FAQ_ITEMS[index]
         text = f"❓ *{question}*\n\n{answer}"
         await query.edit_message_text(
-            text, reply_markup=faq_answer_keyboard(show_contact_admin), parse_mode=ParseMode.MARKDOWN
+            text,
+            reply_markup=faq_answer_keyboard(show_contact_admin, extra_button),
+            parse_mode=ParseMode.MARKDOWN,
         )
         return
 
