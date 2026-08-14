@@ -193,6 +193,10 @@ SUBMIT_DETAILS_PROMPT = (
 )
 ASK_EMAIL_TEXT = "Got it. What's the *email* you registered with?"
 ASK_ACCOUNT_TEXT = "Thanks. What's your *account number*?"
+ASK_DEPOSIT_PROOF_TEXT = (
+    "Almost done! Since this package requires a deposit, please send a *screenshot of your "
+    "deposit proof*."
+)
 
 SUBMISSION_CONFIRMATION_TEXT = (
     "🎉 Thanks! Your details have been sent to Jack for review.\n\n"

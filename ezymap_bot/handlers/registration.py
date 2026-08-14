@@ -12,7 +12,15 @@ from .start import start
 
 logger = logging.getLogger(__name__)
 
-ASK_NAME, ASK_EMAIL, ASK_ACCOUNT = range(3)
+ASK_NAME, ASK_EMAIL, ASK_ACCOUNT, ASK_DEPOSIT_PROOF = range(4)
+
+TIERS_REQUIRING_DEPOSIT_PROOF = {"pro", "premium", "elite"}
+
+
+def _clear_reg_data(context: ContextTypes.DEFAULT_TYPE) -> None:
+    context.user_data.pop("reg_name", None)
+    context.user_data.pop("reg_email", None)
+    context.user_data.pop("reg_account", None)
 
 
 async def submit_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -37,6 +45,23 @@ async def receive_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data["reg_account"] = update.message.text.strip()
 
+    tier_key = context.user_data.get("selected_package")
+    if tier_key in TIERS_REQUIRING_DEPOSIT_PROOF:
+        await update.message.reply_text(
+            content.ASK_DEPOSIT_PROOF_TEXT, parse_mode=ParseMode.MARKDOWN
+        )
+        return ASK_DEPOSIT_PROOF
+
+    return await _finalize_submission(update, context)
+
+
+async def receive_deposit_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    return await _finalize_submission(update, context, proof_message=update.message)
+
+
+async def _finalize_submission(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, proof_message=None
+) -> int:
     name = context.user_data.get("reg_name", "-")
     email = context.user_data.get("reg_email", "-")
     account = context.user_data.get("reg_account", "-")
@@ -46,6 +71,7 @@ async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     package_line = content.PACKAGE_TIERS[tier_key][0] if tier_key in content.PACKAGE_TIERS else "Not specified"
 
     username_line = f"@{user.username}" if user.username else "(no username set)"
+    proof_note = "\n\nDeposit proof is forwarded below." if proof_message else ""
     admin_text = (
         "📥 *New EzyMap Algo registration submission*\n\n"
         f"Package: {package_line}\n"
@@ -54,6 +80,7 @@ async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         f"Account Number: {account}\n\n"
         f"Telegram username: {username_line}\n"
         f"Telegram ID: `{user.id}`"
+        f"{proof_note}"
     )
     chat_with_client_keyboard = InlineKeyboardMarkup(
         [[InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")]]
@@ -67,6 +94,12 @@ async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
             parse_mode=ParseMode.MARKDOWN,
             reply_markup=chat_with_client_keyboard,
         )
+        if proof_message is not None:
+            await context.bot.forward_message(
+                chat_id=ADMIN_CHAT_ID,
+                from_chat_id=update.effective_chat.id,
+                message_id=proof_message.message_id,
+            )
     except TelegramError:
         admin_notified = False
         logger.exception(
@@ -88,9 +121,7 @@ async def receive_account(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         parse_mode=ParseMode.MARKDOWN,
     )
 
-    context.user_data.pop("reg_name", None)
-    context.user_data.pop("reg_email", None)
-    context.user_data.pop("reg_account", None)
+    _clear_reg_data(context)
     return ConversationHandler.END
 
 
@@ -100,8 +131,6 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 
 async def restart_via_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    context.user_data.pop("reg_name", None)
-    context.user_data.pop("reg_email", None)
-    context.user_data.pop("reg_account", None)
+    _clear_reg_data(context)
     await start(update, context)
     return ConversationHandler.END

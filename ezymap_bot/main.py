@@ -20,10 +20,12 @@ from .handlers.payment import plan_selected, receive_proof
 from .handlers.payment import restart_via_start as payment_restart_via_start
 from .handlers.registration import (
     ASK_ACCOUNT,
+    ASK_DEPOSIT_PROOF,
     ASK_EMAIL,
     ASK_NAME,
     cancel,
     receive_account,
+    receive_deposit_proof,
     receive_email,
     receive_name,
     restart_via_start,
@@ -51,6 +53,11 @@ def build_application() -> Application:
             ASK_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_name)],
             ASK_EMAIL: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_email)],
             ASK_ACCOUNT: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_account)],
+            ASK_DEPOSIT_PROOF: [
+                MessageHandler(
+                    (filters.PHOTO | filters.TEXT) & ~filters.COMMAND, receive_deposit_proof
+                )
+            ],
         },
         fallbacks=[
             CommandHandler("cancel", cancel),
