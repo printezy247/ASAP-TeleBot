@@ -9,6 +9,8 @@ ADMIN_CONTACT_URL = f"tg://user?id={ADMIN_CHAT_ID}"
 
 DIFFERENT_PAYMENT_METHOD_URL = "https://t.me/m/Z-yb3fL4NWVl"
 
+FREE_CHANNEL_URL = "https://t.me/ezymap"
+
 # Button chrome shared across screens. Product/brand names (EzyMap, TradingView, MT5,
 # Vantage, USDT, tier names Beginner/Pro/Premium/Elite) stay in English in both
 # languages - only the surrounding action words are translated.
@@ -45,6 +47,7 @@ _LABELS = {
     },
     "pay_now": {"en": "🔗 Pay Now", "my": "🔗 Bayar Sekarang"},
     "contact_admin": {"en": "📞 Contact Admin", "my": "📞 Hubungi Admin"},
+    "free_channel": {"en": "📢 Join Our Free Channel", "my": "📢 Join Channel Percuma Kami"},
 }
 
 
@@ -67,6 +70,7 @@ def main_menu(region: str) -> InlineKeyboardMarkup:
             [InlineKeyboardButton(_label("purchase_ezymap", region), callback_data="menu_pro")],
             [InlineKeyboardButton(_label("why_choose_vantage", region), callback_data="menu_broker")],
             [InlineKeyboardButton(_label("faq", region), callback_data="menu_faq")],
+            [InlineKeyboardButton(_label("free_channel", region), url=FREE_CHANNEL_URL)],
         ]
     )
 

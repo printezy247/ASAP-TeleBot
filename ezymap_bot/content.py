@@ -138,21 +138,21 @@ WELCOME_MESSAGES = {
     ],
     "my": [
         (
-            "Hai member trading saya 😎\n\n"
-            "Saya teruja macam anda, klik je butang di bawah untuk mula dan anda akan "
-            "terus dapat perks anda!"
+            "Hai semua income hustler 💪\n\n"
+            "Jack pun excited macam korang, klik je button bawah tu untuk mula dan "
+            "akan terus produk yang korang nak!"
         ),
         (
-            "Peringatan ringkas sebelum kita mula ⚠️\n\n"
-            "Trading melibatkan risiko. Hanya trade dengan modal yang anda sanggup "
-            "risikokan, dan anggap mana-mana indicator sebagai alat bantu keputusan, "
-            "bukan jaminan."
+            "Peringatan sebelum kita mula ⚠️\n\n"
+            "Trading melibatkan risiko. Hanya trade dengan modal yang sanggup "
+            "risikokan, dan anggap indicator untuk support analysis, bukan confirm "
+            "jadi."
         ),
         (
-            f"Nama saya {AMBASSADOR_NAME} dan saya dah guna {BROKER_NAME} ✅ "
-            "bertahun-tahun sebab pengeluaran yang laju dan eksekusi kilat untuk masuk "
-            "dan keluar lebih pantas."
+            f"Saya {AMBASSADOR_NAME} and {BROKER_NAME} memang favorite sebab "
+            "withdraw laju and fast execution untuk entry exit sepantas kilat."
         ),
+        "Pilih satu option dekat bawah 👇",
     ],
 }
 
