@@ -33,7 +33,7 @@ _LABELS = {
     },
     "mt5_bundles_category": {"en": "🖥 MT5 - EzyMap Bundles", "my": "🖥 MT5 - EzyMap Bundles"},
     "pay_usdt": {"en": "💰 Pay with USDT", "my": "💰 Bayar dengan USDT"},
-    "pay_xendit": {
+    "pay_card": {
         "en": "💳 Pay with Card/Bank/E-Wallet",
         "my": "💳 Bayar dengan Kad/Bank/E-Wallet",
     },
@@ -41,7 +41,6 @@ _LABELS = {
         "en": "💬 I want different payment method",
         "my": "💬 Saya mahu cara bayaran lain",
     },
-    "pay_now": {"en": "🔗 Pay Now", "my": "🔗 Bayar Sekarang"},
     "contact_admin": {"en": "📞 Contact Admin", "my": "📞 Hubungi Admin"},
 }
 
@@ -149,7 +148,7 @@ def payment_method_menu(product_code: str, duration: str, region: str) -> Inline
     return InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(_label("pay_usdt", region), callback_data=f"buy_{product_code}_{duration}")],
-            [InlineKeyboardButton(_label("pay_xendit", region), callback_data=f"xendit_{product_code}_{duration}")],
+            [InlineKeyboardButton(_label("pay_card", region), callback_data=f"tgpay_{product_code}_{duration}")],
             [InlineKeyboardButton(_label("main_menu", region), callback_data="menu_main")],
         ]
     )
@@ -164,17 +163,8 @@ def payment_prompt_keyboard(region: str) -> InlineKeyboardMarkup:
     )
 
 
-# Same layout as payment_prompt_keyboard, used on Xendit unavailable/failed screens.
+# Same layout as payment_prompt_keyboard, used on the card-payment unavailable screen.
 different_payment_method_keyboard = payment_prompt_keyboard
-
-
-def xendit_invoice_keyboard(invoice_url: str, region: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton(_label("pay_now", region), url=invoice_url)],
-            [InlineKeyboardButton(_label("main_menu", region), callback_data="menu_main")],
-        ]
-    )
 
 
 def faq_menu(region: str) -> InlineKeyboardMarkup:

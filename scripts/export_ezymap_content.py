@@ -138,7 +138,7 @@ def main():
     section(out, "12. CHOOSE PAYMENT METHOD (shown after picking a plan)")
     bilingual(out, "Choose payment method text (template)", content.CHOOSE_PAYMENT_METHOD_TEXT)
     L(out, "pay_usdt")
-    L(out, "pay_xendit")
+    L(out, "pay_card")
     L(out, "main_menu")
 
     section(out, "13. USDT PAYMENT PROMPT")
@@ -148,13 +148,13 @@ def main():
     bilingual(out, "USDT proof received (admin reached)", content.PAYMENT_PROOF_RECEIVED_TEXT)
     bilingual(out, "USDT proof received (admin unreachable)", content.PAYMENT_PROOF_ADMIN_UNREACHABLE_TEXT)
 
-    section(out, "14. XENDIT (CARD/BANK/E-WALLET) PAYMENT")
-    bilingual(out, "Xendit not set up yet", content.XENDIT_UNAVAILABLE_TEXT)
-    bilingual(out, "Xendit invoice created (template)", content.XENDIT_INVOICE_CREATED_TEXT)
-    L(out, "pay_now")
-    L(out, "main_menu")
-    bilingual(out, "Xendit invoice creation failed", content.XENDIT_INVOICE_FAILED_TEXT)
-    bilingual(out, "Xendit payment auto-confirmed (sent to client)", content.XENDIT_AUTO_CONFIRM_CLIENT_TEXT)
+    section(out, "14. CARD/BANK/E-WALLET PAYMENT (Telegram native Payments)")
+    bilingual(out, "Card payment not available in this currency", content.TG_PAYMENT_UNAVAILABLE_TEXT)
+    line(out, "Note: Telegram shows its own built-in payment form and Pay button on the")
+    line(out, "invoice message itself - there is no custom 'Pay Now' button to list here.")
+    bilingual(out, "Invoice title (template)", content.TG_PAYMENT_INVOICE_TITLE)
+    bilingual(out, "Invoice description (template)", content.TG_PAYMENT_INVOICE_DESCRIPTION)
+    bilingual(out, "Payment auto-confirmed (sent to client)", content.TG_PAYMENT_AUTO_CONFIRM_CLIENT_TEXT)
 
     section(out, "15. FAQ")
     line(out, "List header:")
@@ -175,7 +175,7 @@ def main():
     line(out, "- New registration submission: Package / Name / Email / Account Number / Telegram")
     line(out, "  username / Telegram ID / (Deposit proof forwarded below, if applicable)")
     line(out, "- New payment proof (USDT): Product / Plan / Telegram username / Telegram ID")
-    line(out, "- Payment confirmed via Xendit: Product / Plan / Telegram username / Telegram ID")
+    line(out, "- Payment confirmed via Telegram Payments: Product / Plan / Telegram username / Telegram ID")
     line(out, "- Every admin notification includes a 'Chat with Client' button")
 
     output_path = sys.argv[1] if len(sys.argv) > 1 else "ezymap_bot_messages_reference.txt"

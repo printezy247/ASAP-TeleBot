@@ -4,4 +4,3 @@ __pycache__/
 .venv/
 venv/
 *.pickle
-ezymap_xendit_invoices.json

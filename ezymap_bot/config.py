@@ -15,16 +15,13 @@ PERSISTENCE_FILE = os.environ.get(
 # part of the webhook URL path so strangers can't POST fake updates to your bot.
 WEBHOOK_SECRET = os.environ.get("EZYMAP_WEBHOOK_SECRET", "")
 
-# Optional - only needed for the Xendit (card/bank/e-wallet) payment option. Leave blank
-# until you've signed up with Xendit; that payment button will show a friendly "not set
-# up yet" message instead of erroring.
-XENDIT_SECRET_KEY = os.environ.get("EZYMAP_XENDIT_SECRET_KEY", "")
-# The "Verification Token" Xendit shows you when you set up a webhook callback in their
-# dashboard. Used to confirm incoming webhook calls really came from Xendit.
-XENDIT_CALLBACK_TOKEN = os.environ.get("EZYMAP_XENDIT_CALLBACK_TOKEN", "")
-INVOICE_STORE_FILE = os.environ.get(
-    "EZYMAP_INVOICE_STORE_FILE", os.path.join(PROJECT_ROOT, "ezymap_xendit_invoices.json")
-)
+# Optional - only needed for the Card/Bank/E-Wallet payment option (Telegram's native
+# Payments, via a provider connected in @BotFather -> /mybots -> Payments -> e.g. iPay88).
+# Leave blank until connected; that payment button will show a friendly "not available"
+# message instead of erroring. Each connected provider gives its own token - only one can
+# be "live" at a time here, since Telegram's sendInvoice takes a single provider_token.
+# Swapping which connected provider is active is just changing this value, no code change.
+TELEGRAM_PAYMENT_PROVIDER_TOKEN = os.environ.get("EZYMAP_TELEGRAM_PAYMENT_PROVIDER_TOKEN", "")
 
 if not BOT_TOKEN:
     raise RuntimeError(

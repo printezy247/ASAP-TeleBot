@@ -17,7 +17,7 @@ PLAN_DURATION_LABELS = {
     "my": {"1m": "1 Bulan", "6m": "6 Bulan", "1y": "1 Tahun"},
 }
 
-# region code -> (currency symbol, currency code for Xendit invoices)
+# region code -> (currency symbol, ISO 4217 currency code for Telegram Payments invoices)
 PRICE_REGIONS = {
     "en": ("$", "USD"),
     "my": ("RM", "MYR"),
@@ -493,45 +493,28 @@ PAYMENT_PROMPT_TEMPLATE = {
     ),
 }
 
-XENDIT_UNAVAILABLE_TEXT = {
+TG_PAYMENT_UNAVAILABLE_TEXT = {
     "en": (
-        "⚠️ Card/Bank/E-Wallet payment isn't set up yet — please use USDT for now, or "
-        "tap below to ask Jack about another way to pay."
+        "⚠️ Card/Bank/E-Wallet payment isn't available in this currency right now — "
+        "please use USDT for now, or tap below to ask Jack about another way to pay."
     ),
     "my": (
-        "⚠️ Pembayaran Card/Bank/E-Wallet belum tersedia lagi — sila guna USDT buat "
-        "masa ini, atau tekan di bawah untuk tanya Jack cara bayaran lain."
+        "⚠️ Pembayaran Card/Bank/E-Wallet tidak tersedia dalam mata wang ini buat masa "
+        "ini — sila guna USDT buat masa ini, atau tekan di bawah untuk tanya Jack cara "
+        "bayaran lain."
     ),
 }
 
-XENDIT_INVOICE_CREATED_TEXT = {
-    "en": (
-        "💳 *{product_name} — {plan_name}*\n"
-        "Price: *{price}*\n\n"
-        "Tap below to pay securely via card, bank transfer, or e-wallet. Once payment "
-        "is confirmed, you'll be notified here automatically — no need to send proof."
-    ),
-    "my": (
-        "💳 *{product_name} — {plan_name}*\n"
-        "Harga: *{price}*\n\n"
-        "Tekan di bawah untuk bayar dengan selamat melalui card, pemindahan bank, "
-        "atau e-wallet. Setelah pembayaran disahkan, anda akan dimaklumkan di sini "
-        "secara automatik — tak perlu hantar bukti."
-    ),
+TG_PAYMENT_INVOICE_TITLE = {
+    "en": "{product_name} — {plan_name}",
+    "my": "{product_name} — {plan_name}",
+}
+TG_PAYMENT_INVOICE_DESCRIPTION = {
+    "en": "EzyMap Algo purchase: {product_name}, {plan_name} plan.",
+    "my": "Pembelian EzyMap Algo: {product_name}, pelan {plan_name}.",
 }
 
-XENDIT_INVOICE_FAILED_TEXT = {
-    "en": (
-        "⚠️ Couldn't create a payment link just now. Please try USDT instead, or tap "
-        "below to ask Jack about another way to pay."
-    ),
-    "my": (
-        "⚠️ Tidak dapat cipta link pembayaran buat masa ini. Sila cuba USDT, atau "
-        "tekan di bawah untuk tanya Jack cara bayaran lain."
-    ),
-}
-
-XENDIT_AUTO_CONFIRM_CLIENT_TEXT = {
+TG_PAYMENT_AUTO_CONFIRM_CLIENT_TEXT = {
     "en": (
         "🎉 *Payment confirmed!*\n\n"
         "Your purchase of *{product_name} — {plan_name}* is confirmed. Jack has been "

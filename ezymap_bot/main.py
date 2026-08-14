@@ -8,6 +8,7 @@ from telegram.ext import (
     ConversationHandler,
     MessageHandler,
     PicklePersistence,
+    PreCheckoutQueryHandler,
     filters,
 )
 
@@ -32,7 +33,11 @@ from .handlers.registration import (
     submit_start,
 )
 from .handlers.start import start
-from .handlers.xendit_payment import initiate_xendit_payment
+from .handlers.telegram_payment import (
+    initiate_telegram_payment,
+    precheckout_callback,
+    successful_payment_callback,
+)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -91,7 +96,9 @@ def build_application() -> Application:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(registration_conversation)
     application.add_handler(payment_conversation)
-    application.add_handler(CallbackQueryHandler(initiate_xendit_payment, pattern="^xendit_"))
+    application.add_handler(CallbackQueryHandler(initiate_telegram_payment, pattern="^tgpay_"))
+    application.add_handler(PreCheckoutQueryHandler(precheckout_callback))
+    application.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
     application.add_handler(CallbackQueryHandler(menu_router))
     application.add_error_handler(log_error)
 
@@ -100,7 +107,7 @@ def build_application() -> Application:
 
 def main() -> None:
     application = build_application()
-    application.run_polling(allowed_updates=["message", "callback_query"])
+    application.run_polling(allowed_updates=["message", "callback_query", "pre_checkout_query"])
 
 
 if __name__ == "__main__":

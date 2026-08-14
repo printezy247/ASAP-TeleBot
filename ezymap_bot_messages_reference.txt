@@ -471,31 +471,23 @@ Saya tidak dapat hubungi Jack secara automatik buat masa ini — sila mesej admi
 
 
 ======================================================================
-14. XENDIT (CARD/BANK/E-WALLET) PAYMENT
+14. CARD/BANK/E-WALLET PAYMENT (Telegram native Payments)
 ======================================================================
-[Xendit not set up yet]
-  EN: ⚠️ Card/Bank/E-Wallet payment isn't set up yet — please use USDT for now, or tap below to ask Jack about another way to pay.
-  MY: ⚠️ Pembayaran Card/Bank/E-Wallet belum tersedia lagi — sila guna USDT buat masa ini, atau tekan di bawah untuk tanya Jack cara bayaran lain.
+[Card payment not available in this currency]
+  EN: ⚠️ Card/Bank/E-Wallet payment isn't available in this currency right now — please use USDT for now, or tap below to ask Jack about another way to pay.
+  MY: ⚠️ Pembayaran Card/Bank/E-Wallet tidak tersedia dalam mata wang ini buat masa ini — sila guna USDT buat masa ini, atau tekan di bawah untuk tanya Jack cara bayaran lain.
 
-[Xendit invoice created (template)]
-  EN: 💳 *{product_name} — {plan_name}*
-Price: *{price}*
+Note: Telegram shows its own built-in payment form and Pay button on the
+invoice message itself - there is no custom 'Pay Now' button to list here.
+[Invoice title (template)]
+  EN: {product_name} — {plan_name}
+  MY: {product_name} — {plan_name}
 
-Tap below to pay securely via card, bank transfer, or e-wallet. Once payment is confirmed, you'll be notified here automatically — no need to send proof.
-  MY: 💳 *{product_name} — {plan_name}*
-Harga: *{price}*
+[Invoice description (template)]
+  EN: EzyMap Algo purchase: {product_name}, {plan_name} plan.
+  MY: Pembelian EzyMap Algo: {product_name}, pelan {plan_name}.
 
-Tekan di bawah untuk bayar dengan selamat melalui card, pemindahan bank, atau e-wallet. Setelah pembayaran disahkan, anda akan dimaklumkan di sini secara automatik — tak perlu hantar bukti.
-
-  BUTTON  EN: 🔗 Pay Now
-          MY: 🔗 Bayar Sekarang
-  BUTTON  EN: ⬅️ Main Menu
-          MY: ⬅️ Menu Utama
-[Xendit invoice creation failed]
-  EN: ⚠️ Couldn't create a payment link just now. Please try USDT instead, or tap below to ask Jack about another way to pay.
-  MY: ⚠️ Tidak dapat cipta link pembayaran buat masa ini. Sila cuba USDT, atau tekan di bawah untuk tanya Jack cara bayaran lain.
-
-[Xendit payment auto-confirmed (sent to client)]
+[Payment auto-confirmed (sent to client)]
   EN: 🎉 *Payment confirmed!*
 
 Your purchase of *{product_name} — {plan_name}* is confirmed. Jack has been notified and will activate it shortly.
@@ -646,5 +638,5 @@ These are not shown to clients at all, so no Malay version exists:
 - New registration submission: Package / Name / Email / Account Number / Telegram
   username / Telegram ID / (Deposit proof forwarded below, if applicable)
 - New payment proof (USDT): Product / Plan / Telegram username / Telegram ID
-- Payment confirmed via Xendit: Product / Plan / Telegram username / Telegram ID
+- Payment confirmed via Telegram Payments: Product / Plan / Telegram username / Telegram ID
 - Every admin notification includes a 'Chat with Client' button

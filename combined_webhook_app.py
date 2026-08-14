@@ -14,9 +14,7 @@ from telegram import Update
 from asap_telebot.config import WEBHOOK_SECRET as ASAP_WEBHOOK_SECRET
 from asap_telebot.main import build_application as build_asap_application
 from ezymap_bot.config import WEBHOOK_SECRET as EZYMAP_WEBHOOK_SECRET
-from ezymap_bot.config import XENDIT_CALLBACK_TOKEN
 from ezymap_bot.main import build_application as build_ezymap_application
-from ezymap_bot.xendit_webhook import handle_paid_invoice
 
 if not ASAP_WEBHOOK_SECRET:
     raise RuntimeError("WEBHOOK_SECRET is not set. Add it to .env (see .env.example).")
@@ -53,17 +51,6 @@ def asap_webhook():
 @app.route(f"/webhook/ezymap/{EZYMAP_WEBHOOK_SECRET}", methods=["POST"])
 def ezymap_webhook():
     return _handle_webhook(build_ezymap_application)
-
-
-@app.route("/xendit/webhook/ezymap", methods=["POST"])
-def ezymap_xendit_webhook():
-    if not XENDIT_CALLBACK_TOKEN or request.headers.get("x-callback-token") != XENDIT_CALLBACK_TOKEN:
-        abort(401)
-    payload = request.get_json(force=True, silent=True)
-    if payload is None:
-        abort(400)
-    asyncio.run(handle_paid_invoice(payload))
-    return "ok"
 
 
 @app.route("/")
