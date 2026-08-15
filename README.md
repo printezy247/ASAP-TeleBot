@@ -68,13 +68,6 @@ Before this one can run, fill in `ezymap_bot/content.py`:
 Xendit is optional — see [Xendit setup](#xendit-setup-optional) below. Without it
 configured, the Xendit button still shows but tells the client to use USDT instead.
 
-> iPay88 and Smart Glocal (native Telegram Payments via @BotFather) are coded and ready
-> in `ezymap_bot/handlers/native_payment.py`, but intentionally not exposed as buttons
-> yet — waiting on those merchant registrations to finish. Once you've connected each
-> provider in BotFather and have its provider token, add it to `.env`
-> (`EZYMAP_IPAY88_PROVIDER_TOKEN` / `EZYMAP_SMARTGLOCAL_PROVIDER_TOKEN`) and add its row
-> back to `payment_method_menu()` in `ezymap_bot/keyboards.py`.
-
 ## Setup
 
 1. Install dependencies (Python 3.11+ recommended):
