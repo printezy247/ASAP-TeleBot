@@ -25,9 +25,15 @@ def _text(text_dict: dict, region: str) -> str:
 
 async def _show_route(query, region: str, route_key: str) -> None:
     text_dict, keyboard_fn = _SIMPLE_ROUTES[route_key]
-    await query.edit_message_text(
-        _text(text_dict, region), reply_markup=keyboard_fn(region), parse_mode=ParseMode.MARKDOWN
-    )
+    text = _text(text_dict, region)
+    reply_markup = keyboard_fn(region)
+    # The tier detail screen may be a photo message (package tier image) - edit_message_text
+    # fails on those, so replace the message instead of editing it in that case.
+    if query.message.photo:
+        await query.delete_message()
+        await query.message.chat.send_message(text, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
+    else:
+        await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
 
 
 async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
