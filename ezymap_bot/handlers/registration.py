@@ -34,9 +34,14 @@ def _clear_reg_data(context: ContextTypes.DEFAULT_TYPE) -> None:
 async def submit_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
-    await query.edit_message_text(
-        _text(content.SUBMIT_DETAILS_PROMPT, _region(context)), parse_mode=ParseMode.MARKDOWN
-    )
+    text = _text(content.SUBMIT_DETAILS_PROMPT, _region(context))
+    # The tier detail screen may be a photo message (package tier image) - edit_message_text
+    # fails on those, so replace the message instead of editing it in that case.
+    if query.message.photo:
+        await query.delete_message()
+        await query.message.chat.send_message(text, parse_mode=ParseMode.MARKDOWN)
+    else:
+        await query.edit_message_text(text, parse_mode=ParseMode.MARKDOWN)
     return ASK_NAME
 
 
