@@ -7,6 +7,7 @@ from telegram.ext import ContextTypes
 
 from .. import content
 from ..config import ADMIN_CHAT_ID
+from ..receipt import generate_receipt_image
 from ..submission_store import get_submission, remove_submission
 
 logger = logging.getLogger(__name__)
@@ -46,9 +47,25 @@ async def handle_decision(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     client_text = _text(text_dict, submission["region"]).format(label=submission["label"])
 
     try:
-        await context.bot.send_message(
-            chat_id=submission["chat_id"], text=client_text, parse_mode=ParseMode.MARKDOWN
-        )
+        if approved:
+            # Older pending submissions (created before this field existed) may not
+            # have a name on file - fall back rather than KeyError on a stale record.
+            receipt = generate_receipt_image(
+                kind=submission["kind"],
+                region=submission["region"],
+                name=submission.get("name") or "-",
+                label=submission["label"],
+            )
+            await context.bot.send_photo(
+                chat_id=submission["chat_id"],
+                photo=receipt,
+                caption=client_text,
+                parse_mode=ParseMode.MARKDOWN,
+            )
+        else:
+            await context.bot.send_message(
+                chat_id=submission["chat_id"], text=client_text, parse_mode=ParseMode.MARKDOWN
+            )
     except TelegramError:
         logger.exception(
             "Failed to notify client (chat_id=%s) of decision for submission %s",

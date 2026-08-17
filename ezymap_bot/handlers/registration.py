@@ -98,6 +98,7 @@ async def _finalize_submission(
             "chat_id": update.effective_chat.id,
             "region": region,
             "label": package_line,
+            "name": name,
         },
     )
 
