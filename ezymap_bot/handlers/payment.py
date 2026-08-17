@@ -67,6 +67,9 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
             "chat_id": update.effective_chat.id,
             "region": region,
             "label": f"{product_name} ({plan_name})",
+            # No name is collected for USDT payments - fall back to the Telegram
+            # display name for the receipt.
+            "name": user.full_name,
         },
     )
 
