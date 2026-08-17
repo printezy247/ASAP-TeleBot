@@ -19,10 +19,10 @@ PLAN_DURATION_LABELS = {
     "my": {"1m": "1 Bulan", "6m": "6 Bulan", "1y": "1 Tahun"},
 }
 
-# region code -> (currency symbol, currency code for Xendit invoices)
+# region code -> currency symbol
 PRICE_REGIONS = {
-    "en": ("$", "USD"),
-    "my": ("RM", "MYR"),
+    "en": "$",
+    "my": "RM",
 }
 DEFAULT_PRICE_REGION = "en"
 
@@ -429,6 +429,23 @@ SUBMISSION_ADMIN_UNREACHABLE_TEXT = {
     ),
 }
 
+# Sent to the client the moment Jack taps Approve/Reject on their registration
+# notification. {label} is the package tier name (e.g. "Pro").
+REGISTRATION_APPROVED_TEXT = {
+    "en": "🎉 Great news! Your {label} package has been approved and unlocked. Thanks for your patience!",
+    "my": "🎉 Berita baik! Pakej {label} anda telah diluluskan dan dibuka. Terima kasih atas kesabaran anda!",
+}
+REGISTRATION_REJECTED_TEXT = {
+    "en": (
+        "Hey, I wasn't able to verify your registration this time. Please double check "
+        "your details or message the admin directly."
+    ),
+    "my": (
+        "Hai, saya tak dapat sahkan pendaftaran anda kali ini. Sila semak semula "
+        "maklumat anda atau mesej admin terus."
+    ),
+}
+
 CANCEL_TEXT = {
     "en": "Cancelled. Use /start any time to open the menu again.",
     "my": "Dibatalkan. Guna /start bila-bila masa untuk buka menu semula.",
@@ -474,7 +491,7 @@ def product_detail_text(product_code: str, region: str) -> str:
 def plan_button_label(product_code: str, duration_code: str, region: str = DEFAULT_PRICE_REGION) -> str:
     price = PRODUCTS[product_code]["plans"][duration_code]
     duration_label = plan_duration_label(duration_code, region)
-    symbol, _currency_code = PRICE_REGIONS.get(region, PRICE_REGIONS[DEFAULT_PRICE_REGION])
+    symbol = PRICE_REGIONS.get(region, PRICE_REGIONS[DEFAULT_PRICE_REGION])
     return f"{duration_label} ({symbol}{price})"
 
 
@@ -510,72 +527,6 @@ PAYMENT_PROMPT_TEMPLATE = {
     ),
 }
 
-XENDIT_UNAVAILABLE_TEXT = {
-    "en": (
-        "⚠️ Card/Bank/E-Wallet payment isn't set up yet. Please use USDT for now, or "
-        "tap below to ask Jack about another way to pay."
-    ),
-    "my": (
-        "⚠️ Pembayaran Card/Bank/E-Wallet belum tersedia lagi. Sila guna USDT buat "
-        "masa ini, atau tekan di bawah untuk tanya Jack cara bayaran lain."
-    ),
-}
-
-XENDIT_INVOICE_CREATED_TEXT = {
-    "en": (
-        "💳 *{product_name} ({plan_name})*\n"
-        "Price: *{price}*\n\n"
-        "Tap below to pay securely via card, bank transfer, or e-wallet. Once payment "
-        "is confirmed, you'll be notified here automatically. No need to send proof."
-    ),
-    "my": (
-        "💳 *{product_name} ({plan_name})*\n"
-        "Harga: *{price}*\n\n"
-        "Tekan di bawah untuk bayar dengan selamat melalui card, pemindahan bank, "
-        "atau e-wallet. Setelah pembayaran disahkan, anda akan dimaklumkan di sini "
-        "secara automatik. Tak perlu hantar bukti."
-    ),
-}
-
-XENDIT_INVOICE_FAILED_TEXT = {
-    "en": (
-        "⚠️ Couldn't create a payment link just now. Please try USDT instead, or tap "
-        "below to ask Jack about another way to pay."
-    ),
-    "my": (
-        "⚠️ Tidak dapat cipta link pembayaran buat masa ini. Sila cuba USDT, atau "
-        "tekan di bawah untuk tanya Jack cara bayaran lain."
-    ),
-}
-
-XENDIT_AUTO_CONFIRM_CLIENT_TEXT = {
-    "en": (
-        "🎉 *Payment confirmed!*\n\n"
-        "Your purchase of *{product_name} ({plan_name})* is confirmed. Jack has been "
-        "notified and will activate it shortly."
-    ),
-    "my": (
-        "🎉 *Pembayaran disahkan!*\n\n"
-        "Pembelian anda untuk *{product_name} ({plan_name})* telah disahkan. Jack "
-        "telah dimaklumkan dan akan aktifkan tidak lama lagi."
-    ),
-}
-
-XENDIT_AUTO_CONFIRM_ADMIN_UNREACHABLE_TEXT = {
-    "en": (
-        "🎉 *Payment confirmed!*\n\n"
-        "Your purchase of *{product_name} ({plan_name})* is confirmed. I couldn't reach "
-        "Jack automatically just now. Please also message him directly to be safe. "
-        "Your purchase will be activated shortly after."
-    ),
-    "my": (
-        "🎉 *Pembayaran disahkan!*\n\n"
-        "Pembelian anda untuk *{product_name} ({plan_name})* telah disahkan. Saya "
-        "tidak dapat hubungi Jack secara automatik buat masa ini. Sila mesej dia "
-        "terus untuk memastikan. Pembelian anda akan diaktifkan tidak lama lagi "
-        "selepas itu."
-    ),
-}
 
 PAYMENT_PROOF_RECEIVED_TEXT = {
     "en": (
@@ -601,6 +552,23 @@ PAYMENT_PROOF_ADMIN_UNREACHABLE_TEXT = {
         "Saya tidak dapat hubungi Jack secara automatik buat masa ini. Sila mesej "
         "admin terus dengan bukti anda untuk memastikan. Pembelian anda akan "
         "diaktifkan tidak lama lagi selepas itu."
+    ),
+}
+
+# Sent to the client the moment Jack taps Approve/Reject on their payment proof
+# notification. {label} is "{product_name} ({plan_name})".
+PAYMENT_APPROVED_TEXT = {
+    "en": "🎉 Payment confirmed! Your {label} purchase is now active. Enjoy!",
+    "my": "🎉 Pembayaran disahkan! Pembelian {label} anda kini aktif. Nikmati!",
+}
+PAYMENT_REJECTED_TEXT = {
+    "en": (
+        "Hey, I wasn't able to verify your payment this time. Please double check or "
+        "message the admin directly."
+    ),
+    "my": (
+        "Hai, saya tak dapat sahkan pembayaran anda kali ini. Sila semak semula atau "
+        "mesej admin terus."
     ),
 }
 

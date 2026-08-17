@@ -138,7 +138,6 @@ def main():
     section(out, "12. CHOOSE PAYMENT METHOD (shown after picking a plan)")
     bilingual(out, "Choose payment method text (template)", content.CHOOSE_PAYMENT_METHOD_TEXT)
     L(out, "pay_usdt")
-    L(out, "pay_xendit")
     L(out, "main_menu")
 
     section(out, "13. USDT PAYMENT PROMPT")
@@ -148,15 +147,7 @@ def main():
     bilingual(out, "USDT proof received (admin reached)", content.PAYMENT_PROOF_RECEIVED_TEXT)
     bilingual(out, "USDT proof received (admin unreachable)", content.PAYMENT_PROOF_ADMIN_UNREACHABLE_TEXT)
 
-    section(out, "14. XENDIT (CARD/BANK/E-WALLET) PAYMENT")
-    bilingual(out, "Xendit not set up yet", content.XENDIT_UNAVAILABLE_TEXT)
-    bilingual(out, "Xendit invoice created (template)", content.XENDIT_INVOICE_CREATED_TEXT)
-    L(out, "pay_now")
-    L(out, "main_menu")
-    bilingual(out, "Xendit invoice creation failed", content.XENDIT_INVOICE_FAILED_TEXT)
-    bilingual(out, "Xendit payment auto-confirmed (sent to client)", content.XENDIT_AUTO_CONFIRM_CLIENT_TEXT)
-
-    section(out, "15. FAQ")
+    section(out, "14. FAQ")
     line(out, "List header:")
     bilingual(out, "FAQ list header", content.FAQ_LIST_HEADER)
     for i, item in enumerate(content.FAQ_ITEMS):
@@ -170,13 +161,18 @@ def main():
         L(out, "back_to_faq")
         line(out)
 
+    section(out, "15. ADMIN APPROVE/REJECT (sent to client the moment Jack taps a button)")
+    bilingual(out, "Registration approved - {label} is the package tier name", content.REGISTRATION_APPROVED_TEXT)
+    bilingual(out, "Registration rejected", content.REGISTRATION_REJECTED_TEXT)
+    bilingual(out, "Payment approved - {label} is \"product (plan)\"", content.PAYMENT_APPROVED_TEXT)
+    bilingual(out, "Payment rejected", content.PAYMENT_REJECTED_TEXT)
+
     section(out, "16. ADMIN-ONLY NOTIFICATIONS (always English, sent to Jack, not the client)")
     line(out, "These are not shown to clients at all, so no Malay version exists:")
     line(out, "- New registration submission: Package / Name / Email / Account Number / Telegram")
     line(out, "  username / Telegram ID / (Deposit proof forwarded below, if applicable)")
     line(out, "- New payment proof (USDT): Product / Plan / Telegram username / Telegram ID")
-    line(out, "- Payment confirmed via Xendit: Product / Plan / Telegram username / Telegram ID")
-    line(out, "- Every admin notification includes a 'Chat with Client' button")
+    line(out, "- Every admin notification includes 'Chat with Client' plus Approve/Reject buttons")
 
     output_path = sys.argv[1] if len(sys.argv) > 1 else "ezymap_bot_messages_reference.txt"
     with open(output_path, "w", encoding="utf-8") as f:

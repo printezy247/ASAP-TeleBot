@@ -86,9 +86,7 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             await _show_route(query, region, "menu_pro")
             return
         price = product["plans"][duration_code]
-        symbol, _currency_code = content.PRICE_REGIONS.get(
-            region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION]
-        )
+        symbol = content.PRICE_REGIONS.get(region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION])
         plan_name = content.plan_duration_label(duration_code, region)
         text = _text(content.CHOOSE_PAYMENT_METHOD_TEXT, region).format(
             product_name=product["name"], plan_name=plan_name, price=f"{symbol}{price}"

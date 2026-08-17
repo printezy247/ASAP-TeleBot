@@ -16,21 +16,21 @@ copy; the bot itself always reads from the code, not this file.
   EN: Hey there my trading fam 😎
 
 I'm excited as you are, just click the button below to start and you'll get your perks right away !
-  MY: Hai member trading saya 😎
+  MY: Hai semua income hustler 💪
 
-Saya teruja macam anda, klik je butang di bawah untuk mula dan anda akan terus dapat perks anda!
+Jack pun excited macam korang, klik je button bawah tu untuk mula dan akan terus produk yang korang nak!
 
 [Welcome message 2]
   EN: Quick reminder before we begin ⚠️
 
 Trading involves risk. Only trade with capital you're prepared to risk, and treat any indicators as tools to support decisions, not guarantees.
-  MY: Peringatan ringkas sebelum kita mula ⚠️
+  MY: Peringatan sebelum kita mula ⚠️
 
-Trading melibatkan risiko. Hanya trade dengan modal yang anda sanggup risikokan, dan anggap mana-mana indicator sebagai alat bantu keputusan, bukan jaminan.
+Trading melibatkan risiko. Hanya trade dengan modal yang sanggup risikokan, dan anggap indicator untuk support analysis, bukan confirm jadi.
 
 [Welcome message 3]
   EN: My name's Jack and I've used Vantage Markets ✅ for years due to its fast withdrawals and lightning executions for faster entry and exit.
-  MY: Nama saya Jack dan saya dah guna Vantage Markets ✅ bertahun-tahun sebab pengeluaran yang laju dan eksekusi kilat untuk masuk dan keluar lebih pantas.
+  MY: Saya Jack and Vantage Markets memang favorite sebab withdraw laju and fast execution untuk entry exit sepantas kilat.
 
 
 ======================================================================
@@ -421,8 +421,6 @@ Bagaimana anda ingin bayar?
 
   BUTTON  EN: 💰 Pay with USDT
           MY: 💰 Bayar dengan USDT
-  BUTTON  EN: 💳 Pay with Card/Bank/E-Wallet
-          MY: 💳 Bayar dengan Kad/Bank/E-Wallet
   BUTTON  EN: ⬅️ Main Menu
           MY: ⬅️ Menu Utama
 
@@ -475,41 +473,7 @@ Saya tidak dapat hubungi Jack secara automatik buat masa ini. Sila mesej admin t
 
 
 ======================================================================
-14. XENDIT (CARD/BANK/E-WALLET) PAYMENT
-======================================================================
-[Xendit not set up yet]
-  EN: ⚠️ Card/Bank/E-Wallet payment isn't set up yet. Please use USDT for now, or tap below to ask Jack about another way to pay.
-  MY: ⚠️ Pembayaran Card/Bank/E-Wallet belum tersedia lagi. Sila guna USDT buat masa ini, atau tekan di bawah untuk tanya Jack cara bayaran lain.
-
-[Xendit invoice created (template)]
-  EN: 💳 *{product_name} ({plan_name})*
-Price: *{price}*
-
-Tap below to pay securely via card, bank transfer, or e-wallet. Once payment is confirmed, you'll be notified here automatically. No need to send proof.
-  MY: 💳 *{product_name} ({plan_name})*
-Harga: *{price}*
-
-Tekan di bawah untuk bayar dengan selamat melalui card, pemindahan bank, atau e-wallet. Setelah pembayaran disahkan, anda akan dimaklumkan di sini secara automatik. Tak perlu hantar bukti.
-
-  BUTTON  EN: 🔗 Pay Now
-          MY: 🔗 Bayar Sekarang
-  BUTTON  EN: ⬅️ Main Menu
-          MY: ⬅️ Menu Utama
-[Xendit invoice creation failed]
-  EN: ⚠️ Couldn't create a payment link just now. Please try USDT instead, or tap below to ask Jack about another way to pay.
-  MY: ⚠️ Tidak dapat cipta link pembayaran buat masa ini. Sila cuba USDT, atau tekan di bawah untuk tanya Jack cara bayaran lain.
-
-[Xendit payment auto-confirmed (sent to client)]
-  EN: 🎉 *Payment confirmed!*
-
-Your purchase of *{product_name} ({plan_name})* is confirmed. Jack has been notified and will activate it shortly.
-  MY: 🎉 *Pembayaran disahkan!*
-
-Pembelian anda untuk *{product_name} ({plan_name})* telah disahkan. Jack telah dimaklumkan dan akan aktifkan tidak lama lagi.
-
-
-======================================================================
-15. FAQ
+14. FAQ
 ======================================================================
 List header:
 [FAQ list header]
@@ -644,11 +608,30 @@ List header:
 
 
 ======================================================================
+15. ADMIN APPROVE/REJECT (sent to client the moment Jack taps a button)
+======================================================================
+[Registration approved - {label} is the package tier name]
+  EN: 🎉 Great news! Your {label} package has been approved and unlocked. Thanks for your patience!
+  MY: 🎉 Berita baik! Pakej {label} anda telah diluluskan dan dibuka. Terima kasih atas kesabaran anda!
+
+[Registration rejected]
+  EN: Hey, I wasn't able to verify your registration this time. Please double check your details or message the admin directly.
+  MY: Hai, saya tak dapat sahkan pendaftaran anda kali ini. Sila semak semula maklumat anda atau mesej admin terus.
+
+[Payment approved - {label} is "product (plan)"]
+  EN: 🎉 Payment confirmed! Your {label} purchase is now active. Enjoy!
+  MY: 🎉 Pembayaran disahkan! Pembelian {label} anda kini aktif. Nikmati!
+
+[Payment rejected]
+  EN: Hey, I wasn't able to verify your payment this time. Please double check or message the admin directly.
+  MY: Hai, saya tak dapat sahkan pembayaran anda kali ini. Sila semak semula atau mesej admin terus.
+
+
+======================================================================
 16. ADMIN-ONLY NOTIFICATIONS (always English, sent to Jack, not the client)
 ======================================================================
 These are not shown to clients at all, so no Malay version exists:
 - New registration submission: Package / Name / Email / Account Number / Telegram
   username / Telegram ID / (Deposit proof forwarded below, if applicable)
 - New payment proof (USDT): Product / Plan / Telegram username / Telegram ID
-- Payment confirmed via Xendit: Product / Plan / Telegram username / Telegram ID
-- Every admin notification includes a 'Chat with Client' button
+- Every admin notification includes 'Chat with Client' plus Approve/Reject buttons
