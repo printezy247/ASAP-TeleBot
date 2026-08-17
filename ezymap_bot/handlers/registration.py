@@ -8,6 +8,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 from .. import content
 from ..config import ADMIN_CHAT_ID
 from ..keyboards import main_menu
+from ..submission_store import create_submission, remove_submission
 from .start import start
 
 logger = logging.getLogger(__name__)
@@ -90,6 +91,16 @@ async def _finalize_submission(
     tier_key = context.user_data.get("selected_package")
     package_line = content.PACKAGE_TIERS[tier_key]["name"] if tier_key in content.PACKAGE_TIERS else "Not specified"
 
+    submission_id = create_submission(
+        context,
+        {
+            "kind": "registration",
+            "chat_id": update.effective_chat.id,
+            "region": region,
+            "label": package_line,
+        },
+    )
+
     # Admin-facing notification always stays in English - it's for Jack, not the client.
     username_line = f"@{user.username}" if user.username else "(no username set)"
     proof_note = "\n\nDeposit proof is forwarded below." if proof_message else ""
@@ -103,8 +114,14 @@ async def _finalize_submission(
         f"Telegram ID: `{user.id}`"
         f"{proof_note}"
     )
-    chat_with_client_keyboard = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")]]
+    decision_keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")],
+            [
+                InlineKeyboardButton("✅ Approve", callback_data=f"approve:{submission_id}"),
+                InlineKeyboardButton("❌ Reject", callback_data=f"reject:{submission_id}"),
+            ],
+        ]
     )
 
     admin_notified = True
@@ -113,7 +130,7 @@ async def _finalize_submission(
             chat_id=ADMIN_CHAT_ID,
             text=admin_text,
             parse_mode=ParseMode.MARKDOWN,
-            reply_markup=chat_with_client_keyboard,
+            reply_markup=decision_keyboard,
         )
         if proof_message is not None:
             await context.bot.forward_message(
@@ -123,6 +140,7 @@ async def _finalize_submission(
             )
     except TelegramError:
         admin_notified = False
+        remove_submission(context, submission_id)
         logger.exception(
             "Failed to DM admin (chat_id=%s) with registration submission from user %s. "
             "The admin account must send /start to this bot at least once before it can "

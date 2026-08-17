@@ -12,6 +12,7 @@ from telegram.ext import (
 )
 
 from .config import BOT_TOKEN, PERSISTENCE_FILE
+from .handlers.decision import handle_decision, noop_callback
 from .handlers.menu import menu_router
 from .handlers.payment import ASK_PROOF
 from .handlers.payment import back_to_main_menu as payment_back_to_main_menu
@@ -32,7 +33,6 @@ from .handlers.registration import (
     submit_start,
 )
 from .handlers.start import start
-from .handlers.xendit_payment import initiate_xendit_payment
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -91,7 +91,8 @@ def build_application() -> Application:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(registration_conversation)
     application.add_handler(payment_conversation)
-    application.add_handler(CallbackQueryHandler(initiate_xendit_payment, pattern="^xendit_"))
+    application.add_handler(CallbackQueryHandler(handle_decision, pattern="^(approve|reject):"))
+    application.add_handler(CallbackQueryHandler(noop_callback, pattern="^noop$"))
     application.add_handler(CallbackQueryHandler(menu_router))
     application.add_error_handler(log_error)
 

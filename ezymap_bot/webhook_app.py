@@ -7,15 +7,13 @@ works correctly regardless of how many worker processes the host uses.
 """
 
 import asyncio
-import hmac
 import logging
 
 from flask import Flask, abort, request
 from telegram import Update
 
-from .config import WEBHOOK_SECRET, XENDIT_CALLBACK_TOKEN
+from .config import WEBHOOK_SECRET
 from .main import build_application
-from .xendit_webhook import handle_paid_invoice
 
 if not WEBHOOK_SECRET:
     raise RuntimeError(
@@ -43,18 +41,6 @@ def telegram_webhook():
     if update_data is None:
         abort(400)
     asyncio.run(_process_update(update_data))
-    return "ok"
-
-
-@app.route("/xendit/webhook", methods=["POST"])
-def xendit_webhook():
-    received_token = request.headers.get("x-callback-token", "")
-    if not XENDIT_CALLBACK_TOKEN or not hmac.compare_digest(received_token, XENDIT_CALLBACK_TOKEN):
-        abort(401)
-    payload = request.get_json(force=True, silent=True)
-    if payload is None:
-        abort(400)
-    asyncio.run(handle_paid_invoice(payload))
     return "ok"
 
 

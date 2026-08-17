@@ -35,15 +35,10 @@ _LABELS = {
     },
     "mt5_bundles_category": {"en": "🖥 MT5 - EzyMap Bundles", "my": "🖥 MT5 - EzyMap Bundles"},
     "pay_usdt": {"en": "💰 Pay with USDT", "my": "💰 Bayar dengan USDT"},
-    "pay_xendit": {
-        "en": "💳 Pay with Card/Bank/E-Wallet",
-        "my": "💳 Bayar dengan Kad/Bank/E-Wallet",
-    },
     "different_payment_method": {
         "en": "💬 I want different payment method",
         "my": "💬 Saya mahu cara bayaran lain",
     },
-    "pay_now": {"en": "🔗 Pay Now", "my": "🔗 Bayar Sekarang"},
     "contact_admin": {"en": "📞 Contact Admin", "my": "📞 Hubungi Admin"},
     "free_channel": {"en": "📢 Join Our Free Channel", "my": "📢 Join Channel Percuma Kami"},
 }
@@ -150,10 +145,12 @@ def product_detail_menu(product_code: str, region: str) -> InlineKeyboardMarkup:
 
 
 def payment_method_menu(product_code: str, duration: str, region: str) -> InlineKeyboardMarkup:
+    # Only USDT for now - more payment methods coming later. Kept as its own screen
+    # (rather than skipping straight to the USDT prompt) so adding one back later is
+    # just a new row here, not a flow restructure.
     return InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(_label("pay_usdt", region), callback_data=f"buy_{product_code}_{duration}")],
-            [InlineKeyboardButton(_label("pay_xendit", region), callback_data=f"xendit_{product_code}_{duration}")],
             [InlineKeyboardButton(_label("main_menu", region), callback_data="menu_main")],
         ]
     )
@@ -163,19 +160,6 @@ def payment_prompt_keyboard(region: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(_label("different_payment_method", region), url=DIFFERENT_PAYMENT_METHOD_URL)],
-            [InlineKeyboardButton(_label("main_menu", region), callback_data="menu_main")],
-        ]
-    )
-
-
-# Same layout as payment_prompt_keyboard, used on Xendit unavailable/failed screens.
-different_payment_method_keyboard = payment_prompt_keyboard
-
-
-def xendit_invoice_keyboard(invoice_url: str, region: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton(_label("pay_now", region), url=invoice_url)],
             [InlineKeyboardButton(_label("main_menu", region), callback_data="menu_main")],
         ]
     )

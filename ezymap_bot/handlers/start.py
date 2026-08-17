@@ -51,9 +51,7 @@ async def _handle_deep_link(update: Update, context: ContextTypes.DEFAULT_TYPE, 
 
         context.user_data["price_region"] = region
 
-        symbol, _currency_code = content.PRICE_REGIONS.get(
-            region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION]
-        )
+        symbol = content.PRICE_REGIONS.get(region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION])
         price = product["plans"][duration]
         plan_name = content.plan_duration_label(duration, region)
         text = content.CHOOSE_PAYMENT_METHOD_TEXT.get(

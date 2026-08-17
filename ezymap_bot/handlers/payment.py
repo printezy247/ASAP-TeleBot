@@ -8,6 +8,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 from .. import content
 from ..config import ADMIN_CHAT_ID
 from ..keyboards import main_menu, payment_prompt_keyboard
+from ..submission_store import create_submission, remove_submission
 from .start import start
 
 logger = logging.getLogger(__name__)
@@ -59,6 +60,16 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     price = context.user_data.get("pay_price", "-")
     user = update.effective_user
 
+    submission_id = create_submission(
+        context,
+        {
+            "kind": "payment",
+            "chat_id": update.effective_chat.id,
+            "region": region,
+            "label": f"{product_name} ({plan_name})",
+        },
+    )
+
     # Admin-facing notification always stays in English - it's for Jack, not the client.
     username_line = f"@{user.username}" if user.username else "(no username set)"
     admin_summary = (
@@ -69,8 +80,14 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
         f"Telegram ID: `{user.id}`\n\n"
         "The client's proof (screenshot/message) is forwarded below."
     )
-    chat_with_client_keyboard = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")]]
+    decision_keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("💬 Chat with Client", url=f"tg://user?id={user.id}")],
+            [
+                InlineKeyboardButton("✅ Approve", callback_data=f"approve:{submission_id}"),
+                InlineKeyboardButton("❌ Reject", callback_data=f"reject:{submission_id}"),
+            ],
+        ]
     )
 
     admin_notified = True
@@ -79,7 +96,7 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
             chat_id=ADMIN_CHAT_ID,
             text=admin_summary,
             parse_mode=ParseMode.MARKDOWN,
-            reply_markup=chat_with_client_keyboard,
+            reply_markup=decision_keyboard,
         )
         await context.bot.forward_message(
             chat_id=ADMIN_CHAT_ID,
@@ -88,6 +105,7 @@ async def receive_proof(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
         )
     except TelegramError:
         admin_notified = False
+        remove_submission(context, submission_id)
         logger.exception(
             "Failed to DM admin (chat_id=%s) with payment proof from user %s. The admin "
             "account must send /start to this bot at least once before it can receive DMs.",
