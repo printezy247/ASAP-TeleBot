@@ -4,9 +4,15 @@ from telegram.ext import ContextTypes
 
 from .. import content
 from ..keyboards import LANGUAGE_SELECT_MENU, main_menu, package_tier_menu, payment_method_menu
+from ..start_log import log_start
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    # Logged unconditionally, before any deep-link branching, so this counts every
+    # visitor regardless of where /start took them next - see handlers/stats.py.
+    tag = context.args[0] if context.args else ""
+    log_start(update.effective_user, tag)
+
     if context.args and await _handle_deep_link(update, context, context.args[0]):
         return
 

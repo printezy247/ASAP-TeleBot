@@ -182,6 +182,20 @@ per-bot `webhook_app.py` files still work individually — just import from
 from today"** (on the Web tab) at least once a month, or the site gets disabled. They
 email a reminder a week ahead.
 
+## Ad performance (/stats)
+
+Every `/start` is logged to `data/ezymap_starts.csv` (timestamp, Telegram ID,
+username, first name, and the raw deep-link tag if any) — independent of whether that
+person goes on to register or pay. Send the bot **`/stats`** from Jack's admin chat to
+see start counts (total and unique visitors) for today/7 days/30 days/all-time.
+
+If you're running ads (e.g. Meta Ads) pointed at the bot, tag the destination link
+with `?start=<your_tag>` (e.g. `https://t.me/ezyregisterbot?start=metaad1`) and
+`/stats` breaks traffic down by tag — lets you tell ad-driven starts apart from
+organic ones without needing anything on the ad platform's side. `data/` is
+gitignored and lives on the bot's local disk, same caveat as elsewhere: it resets on
+redeploy/disk wipe, so it's a live counter, not a permanent archive.
+
 ## Admin approvals
 
 Both of `ezymap_bot`'s submission flows (free-tier registration and USDT payment proof)
@@ -263,12 +277,14 @@ ezymap_bot/         # EzyMap Algo bot (Vantage Markets broker)
   nowpayments_client.py   # creates NOWPayments invoices
   nowpayments_webhook.py   # verifies + handles the NOWPayments IPN callback
   fx_rates.py             # live USD -> any-currency rates, cached, for price display only
+  start_log.py            # appends every /start to data/ezymap_starts.csv, for /stats
   handlers/
     start.py, menu.py, registration.py   # same roles as above
     currency.py          # currency quick-pick + "type any code" flow after language select
     payment.py          # USDT payment prompt -> proof (photo/text) -> admin DM
     nowpayments_payment.py # Card payment -> hosted checkout link -> auto-confirms via webhook
     decision.py          # handles the admin's Approve/Reject tap -> notifies the client
+    stats.py             # /stats admin command - start counts by period, and by ad tag
 ```
 
 ## Security note
