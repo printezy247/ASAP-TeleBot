@@ -43,6 +43,7 @@ from .handlers.registration import (
     submit_start,
 )
 from .handlers.start import start
+from .handlers.stats import stats_command
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -115,6 +116,7 @@ def build_application() -> Application:
     quick_pick_codes = "|".join(code for code, _ in content.CURRENCY_QUICK_PICKS)
 
     application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("stats", stats_command))
     application.add_handler(registration_conversation)
     application.add_handler(payment_conversation)
     application.add_handler(currency_code_conversation)
