@@ -50,12 +50,25 @@ def _label(key: str, region: str) -> str:
     return _LABELS[key].get(region, _LABELS[key][DEFAULT_PRICE_REGION])
 
 
+# Language (content wording) and currency (price display) are two separate steps -
+# language stays just English/Bahasa Melayu, but currency shouldn't be tied to it,
+# since clients anywhere in the world can speak either and still want their own
+# local currency. See currency_select_menu() below for that second step.
 LANGUAGE_SELECT_MENU = InlineKeyboardMarkup(
     [
         [InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
         [InlineKeyboardButton("🇲🇾 Bahasa Melayu", callback_data="lang_my")],
     ]
 )
+
+
+def currency_select_menu(region: str) -> InlineKeyboardMarkup:
+    from .content import CURRENCY_QUICK_PICKS
+
+    rows = [[InlineKeyboardButton(label, callback_data=f"currency_{code}")] for code, label in CURRENCY_QUICK_PICKS]
+    other_label = "🌐 Kod Lain" if region == "my" else "🌐 Other Currency"
+    rows.append([InlineKeyboardButton(other_label, callback_data="currency_other")])
+    return InlineKeyboardMarkup(rows)
 
 
 def main_menu(region: str) -> InlineKeyboardMarkup:
@@ -124,14 +137,15 @@ def mt5_bundles_menu(region: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(rows)
 
 
-def product_detail_menu(product_code: str, region: str) -> InlineKeyboardMarkup:
-    from .content import MT5_BUNDLE_PRODUCT_CODES, PLAN_DURATIONS, TRADINGVIEW_FREE_URL, plan_button_label
+def product_detail_menu(product_code: str, region: str, currency: str = None) -> InlineKeyboardMarkup:
+    from .content import DEFAULT_CURRENCY, MT5_BUNDLE_PRODUCT_CODES, PLAN_DURATIONS, TRADINGVIEW_FREE_URL, plan_button_label
 
     region = region or DEFAULT_PRICE_REGION
+    currency = currency or DEFAULT_CURRENCY
     rows = [
         [
             InlineKeyboardButton(
-                plan_button_label(product_code, duration, region),
+                plan_button_label(product_code, duration, region, currency),
                 callback_data=f"choose_pay_{product_code}_{duration}",
             )
         ]

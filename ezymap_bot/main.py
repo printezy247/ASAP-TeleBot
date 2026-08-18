@@ -11,7 +11,16 @@ from telegram.ext import (
     filters,
 )
 
+from . import content
 from .config import BOT_TOKEN, PERSISTENCE_FILE
+from .handlers.currency import (
+    ASK_CURRENCY_CODE,
+    cancel_currency_code,
+    currency_selected,
+    prompt_currency_code,
+    receive_currency_code,
+)
+from .handlers.currency import restart_via_start as currency_restart_via_start
 from .handlers.decision import handle_decision, noop_callback
 from .handlers.menu import menu_router
 from .handlers.nowpayments_payment import initiate_card_payment
@@ -70,6 +79,20 @@ def build_application() -> Application:
         persistent=True,
     )
 
+    currency_code_conversation = ConversationHandler(
+        entry_points=[CallbackQueryHandler(prompt_currency_code, pattern="^currency_other$")],
+        states={
+            ASK_CURRENCY_CODE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_currency_code)],
+        },
+        fallbacks=[
+            CommandHandler("cancel", cancel_currency_code),
+            CommandHandler("start", currency_restart_via_start),
+        ],
+        allow_reentry=True,
+        name="currency_code_conversation",
+        persistent=True,
+    )
+
     payment_conversation = ConversationHandler(
         entry_points=[CallbackQueryHandler(plan_selected, pattern="^buy_")],
         states={
@@ -89,9 +112,13 @@ def build_application() -> Application:
         persistent=True,
     )
 
+    quick_pick_codes = "|".join(code for code, _ in content.CURRENCY_QUICK_PICKS)
+
     application.add_handler(CommandHandler("start", start))
     application.add_handler(registration_conversation)
     application.add_handler(payment_conversation)
+    application.add_handler(currency_code_conversation)
+    application.add_handler(CallbackQueryHandler(currency_selected, pattern=f"^currency_({quick_pick_codes})$"))
     application.add_handler(CallbackQueryHandler(handle_decision, pattern="^(approve|reject):"))
     application.add_handler(CallbackQueryHandler(noop_callback, pattern="^noop$"))
     application.add_handler(CallbackQueryHandler(initiate_card_payment, pattern="^card_"))

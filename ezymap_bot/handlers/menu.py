@@ -6,9 +6,14 @@ from telegram.ext import ContextTypes
 
 from .. import content
 from .. import keyboards
-from ..keyboards import faq_answer_keyboard, faq_menu, mt5_bundles_menu, payment_method_menu, product_detail_menu
-from .start import send_greeting_and_menu
-
+from ..keyboards import (
+    currency_select_menu,
+    faq_answer_keyboard,
+    faq_menu,
+    mt5_bundles_menu,
+    payment_method_menu,
+    product_detail_menu,
+)
 _SIMPLE_ROUTES = {
     "menu_main": (content.MAIN_MENU_TEXT, keyboards.main_menu),
     "menu_broker": (content.BROKER_INFO_TEXT, keyboards.back_to_main),
@@ -21,6 +26,10 @@ _SIMPLE_ROUTES = {
 
 def _text(text_dict: dict, region: str) -> str:
     return text_dict.get(region, text_dict[content.DEFAULT_PRICE_REGION])
+
+
+def _currency(context: ContextTypes.DEFAULT_TYPE) -> str:
+    return context.user_data.get("price_currency", content.DEFAULT_CURRENCY)
 
 
 async def _show_route(query, region: str, route_key: str) -> None:
@@ -46,7 +55,9 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         region = "en" if data == "lang_en" else "my"
         context.user_data["price_region"] = region
         await query.delete_message()
-        await send_greeting_and_menu(update.effective_chat, region)
+        await update.effective_chat.send_message(
+            _text(content.CURRENCY_SELECT_TEXT, region), reply_markup=currency_select_menu(region)
+        )
         return
 
     if data == "menu_faq":
@@ -73,7 +84,7 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         text = content.product_detail_text(product_code, region)
         await query.edit_message_text(
             text,
-            reply_markup=product_detail_menu(product_code, region),
+            reply_markup=product_detail_menu(product_code, region, _currency(context)),
             parse_mode=ParseMode.MARKDOWN,
         )
         return
@@ -86,10 +97,9 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             await _show_route(query, region, "menu_pro")
             return
         price = product["plans"][duration_code]
-        symbol = content.PRICE_REGIONS.get(region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION])
         plan_name = content.plan_duration_label(duration_code, region)
         text = _text(content.CHOOSE_PAYMENT_METHOD_TEXT, region).format(
-            product_name=product["name"], plan_name=plan_name, price=f"{symbol}{price}"
+            product_name=product["name"], plan_name=plan_name, price=content.format_price(price, _currency(context))
         )
         await query.edit_message_text(
             text,
