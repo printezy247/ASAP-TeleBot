@@ -528,6 +528,30 @@ PAYMENT_PROMPT_TEMPLATE = {
 }
 
 
+CARD_UNAVAILABLE_TEXT = {
+    "en": "Card payment isn't available right now. Please use USDT instead, or message Jack directly.",
+    "my": "Pembayaran kad tidak tersedia buat masa ini. Sila guna USDT, atau mesej Jack terus.",
+}
+CARD_INVOICE_CREATED_TEXT = {
+    "en": (
+        "💎 *{product_name} ({plan_name})*\n"
+        "Price: *${price} USD*\n\n"
+        "Tap below to pay securely by card or e-wallet. Once payment goes through, "
+        "your purchase is confirmed automatically - no need to send proof."
+    ),
+    "my": (
+        "💎 *{product_name} ({plan_name})*\n"
+        "Harga: *${price} USD*\n\n"
+        "Tekan di bawah untuk bayar dengan selamat menggunakan kad atau e-wallet. "
+        "Setelah pembayaran berjaya, pembelian anda disahkan secara automatik - tiada "
+        "keperluan hantar bukti."
+    ),
+}
+CARD_INVOICE_FAILED_TEXT = {
+    "en": "Sorry, I couldn't start a card payment right now. Please use USDT instead, or message Jack directly.",
+    "my": "Maaf, saya tidak dapat mulakan pembayaran kad buat masa ini. Sila guna USDT, atau mesej Jack terus.",
+}
+
 PAYMENT_PROOF_RECEIVED_TEXT = {
     "en": (
         "✅ Got it! Your payment proof has been sent to Jack.\n\n"

@@ -35,6 +35,8 @@ _LABELS = {
     },
     "mt5_bundles_category": {"en": "🖥 MT5 - EzyMap Bundles", "my": "🖥 MT5 - EzyMap Bundles"},
     "pay_usdt": {"en": "💰 Pay with USDT", "my": "💰 Bayar dengan USDT"},
+    "pay_card": {"en": "💳 Pay by Card", "my": "💳 Bayar dengan Kad"},
+    "open_invoice": {"en": "💳 Pay Now", "my": "💳 Bayar Sekarang"},
     "different_payment_method": {
         "en": "💬 I want different payment method",
         "my": "💬 Saya mahu cara bayaran lain",
@@ -145,12 +147,19 @@ def product_detail_menu(product_code: str, region: str) -> InlineKeyboardMarkup:
 
 
 def payment_method_menu(product_code: str, duration: str, region: str) -> InlineKeyboardMarkup:
-    # Only USDT for now - more payment methods coming later. Kept as its own screen
-    # (rather than skipping straight to the USDT prompt) so adding one back later is
-    # just a new row here, not a flow restructure.
     return InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(_label("pay_usdt", region), callback_data=f"buy_{product_code}_{duration}")],
+            [InlineKeyboardButton(_label("pay_card", region), callback_data=f"card_{product_code}_{duration}")],
+            [InlineKeyboardButton(_label("main_menu", region), callback_data="menu_main")],
+        ]
+    )
+
+
+def card_invoice_keyboard(invoice_url: str, region: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton(_label("open_invoice", region), url=invoice_url)],
             [InlineKeyboardButton(_label("main_menu", region), callback_data="menu_main")],
         ]
     )
