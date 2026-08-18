@@ -74,7 +74,9 @@ PRODUCTS = {
         },
         # 1m raised from $9 -> $15: below that, a card payment fails outright since
         # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
-        "plans": {"1m": "15", "6m": "49", "1y": "99"},
+        # 6m/1y scaled up by the same increment the original $9 scheme used
+        # (+$40 / +$90), so the discount ladder's shape is unchanged.
+        "plans": {"1m": "15", "6m": "55", "1y": "105"},
     },
     "mt5_auto_tpsl": {
         "name": "Auto TPSL (Trending This Month)",
@@ -84,7 +86,9 @@ PRODUCTS = {
         },
         # 1m raised from $9 -> $15: below that, a card payment fails outright since
         # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
-        "plans": {"1m": "15", "6m": "49", "1y": "99"},
+        # 6m/1y scaled up by the same increment the original $9 scheme used
+        # (+$40 / +$90), so the discount ladder's shape is unchanged.
+        "plans": {"1m": "15", "6m": "55", "1y": "105"},
     },
     "mt5_currency_strength": {
         "name": "Currency Strength Meter",
@@ -100,7 +104,9 @@ PRODUCTS = {
         },
         # 1m raised from $9 -> $15: below that, a card payment fails outright since
         # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
-        "plans": {"1m": "15", "6m": "49", "1y": "99"},
+        # 6m/1y scaled up by the same increment the original $9 scheme used
+        # (+$40 / +$90), so the discount ladder's shape is unchanged.
+        "plans": {"1m": "15", "6m": "55", "1y": "105"},
     },
     "mt5_mtf_bias": {
         "name": "MTF Bias",
@@ -116,7 +122,9 @@ PRODUCTS = {
         },
         # 1m raised from $9 -> $15: below that, a card payment fails outright since
         # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
-        "plans": {"1m": "15", "6m": "49", "1y": "99"},
+        # 6m/1y scaled up by the same increment the original $9 scheme used
+        # (+$40 / +$90), so the discount ladder's shape is unchanged.
+        "plans": {"1m": "15", "6m": "55", "1y": "105"},
     },
 }
 
