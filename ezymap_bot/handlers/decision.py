@@ -48,20 +48,39 @@ async def handle_decision(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
     try:
         if approved:
-            # Older pending submissions (created before this field existed) may not
-            # have a name on file - fall back rather than KeyError on a stale record.
-            receipt = generate_receipt_image(
-                kind=submission["kind"],
-                region=submission["region"],
-                name=submission.get("name") or "-",
-                label=submission["label"],
-            )
-            await context.bot.send_photo(
-                chat_id=submission["chat_id"],
-                photo=receipt,
-                caption=client_text,
-                parse_mode=ParseMode.MARKDOWN,
-            )
+            try:
+                # Older pending submissions (created before this field existed) may
+                # not have a name on file - fall back rather than KeyError on a
+                # stale record.
+                receipt = generate_receipt_image(
+                    kind=submission["kind"],
+                    region=submission["region"],
+                    name=submission.get("name") or "-",
+                    label=submission["label"],
+                )
+                await context.bot.send_photo(
+                    chat_id=submission["chat_id"],
+                    photo=receipt,
+                    caption=client_text,
+                    parse_mode=ParseMode.MARKDOWN,
+                )
+            except TelegramError:
+                raise
+            except Exception:
+                # Receipt rendering itself failed (bad font path, Pillow error,
+                # etc) - the client still needs to hear they were approved, so
+                # fall back to the plain-text confirmation instead of going
+                # silent. Re-raising TelegramError above keeps genuine delivery
+                # failures (chat not found, blocked, ...) handled the normal
+                # way below instead of double-sending.
+                logger.exception(
+                    "Failed to generate/send receipt image for submission %s, "
+                    "falling back to plain text",
+                    submission_id,
+                )
+                await context.bot.send_message(
+                    chat_id=submission["chat_id"], text=client_text, parse_mode=ParseMode.MARKDOWN
+                )
         else:
             await context.bot.send_message(
                 chat_id=submission["chat_id"], text=client_text, parse_mode=ParseMode.MARKDOWN
