@@ -14,6 +14,7 @@ from telegram import Update
 
 from .config import WEBHOOK_SECRET
 from .main import build_application
+from .nowpayments_webhook import handle_paid_invoice, verify_signature
 
 if not WEBHOOK_SECRET:
     raise RuntimeError(
@@ -41,6 +42,19 @@ def telegram_webhook():
     if update_data is None:
         abort(400)
     asyncio.run(_process_update(update_data))
+    return "ok"
+
+
+@app.route("/nowpayments/webhook", methods=["POST"])
+def nowpayments_webhook():
+    raw_body = request.get_data()
+    signature = request.headers.get("x-nowpayments-sig", "")
+    if not verify_signature(raw_body, signature):
+        abort(401)
+    payload = request.get_json(force=True, silent=True)
+    if payload is None:
+        abort(400)
+    asyncio.run(handle_paid_invoice(payload))
     return "ok"
 
 

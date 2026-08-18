@@ -38,17 +38,24 @@ unlocked by broker account status under Jack's IB:
   1-on-1 support group + Premium perks.
 
 Plus a separate **paid catalog**, *Purchase EzyMap* (TradingView - EzyMap Pro, and the
-MT5 indicator bundle/individual tools): client picks a product and plan, then pays via
-**USDT** — wallet address + network instructions; client sends a screenshot or
-transaction ID, which is forwarded to Jack (with the original message/photo) for review.
-(USDT is the only payment method right now; more are planned later — see
-`payment_method_menu()` in `ezymap_bot/keyboards.py`, which is kept as its own screen for
-exactly that reason.)
+MT5 indicator bundle/individual tools): client picks a product and plan, then chooses how
+to pay:
 
-Both this and free-tier registrations end the same way: an admin notification with
+- **USDT** — wallet address + network instructions; client sends a screenshot or
+  transaction ID, which is forwarded to Jack (with the original message/photo) for
+  manual review.
+- **Card/e-wallet** (via [NOWPayments](https://nowpayments.io)) — client gets a hosted
+  checkout link, pays by card/Apple Pay/Google Pay, NOWPayments converts it to USDT and
+  settles to your wallet, and the purchase confirms **automatically** the moment the
+  webhook fires — no manual review needed, unlike USDT. See
+  [Card payments (NOWPayments)](#card-payments-nowpayments) below.
+
+Registration and USDT payment proof end with an admin notification carrying
 **✅ Approve / ❌ Reject** buttons right on the message, so Jack can act without leaving
 the chat — tapping one immediately messages the client back ("your package has been
-approved!" / "your payment is confirmed!"). See [Admin approvals](#admin-approvals) below.
+approved!" / "your payment is confirmed!"), receipt image included. See
+[Admin approvals](#admin-approvals) below. Card payments skip that step entirely: the
+client gets their confirmation + receipt as soon as NOWPayments confirms the charge.
 
 1. `/start` → welcome messages → main menu: **Check Out FREE Steps**, **Purchase EzyMap**,
    **Why Choose Vantage**, **FAQ**.
@@ -57,7 +64,8 @@ approved!" / "your payment is confirmed!"). See [Admin approvals](#admin-approva
    ✅ I've Completed Registration (Name → Email → Account Number → deposit proof screenshot
    for Pro/Premium/Elite → Jack's DM with Approve/Reject).
 3. **Purchase EzyMap** — pick TradingView or an MT5 bundle/tool, then a plan → USDT
-   payment instructions → proof → Jack's DM with Approve/Reject.
+   (payment instructions → proof → Jack's DM with Approve/Reject) or Card (hosted
+   checkout link → auto-confirms on payment, no admin step).
 4. **FAQ** — includes a "What if I get stuck?" / "cancel/refund" entry with a Contact
    Admin button.
 
@@ -184,6 +192,40 @@ everything else uses), keyed by a short random ID kept out of the button's
 Approve/Reject on a submission that's already been resolved (or whose record predates the
 persistence file, e.g. right after wiping it) just tells Jack it's already been handled.
 
+## Card payments (NOWPayments)
+
+Card/e-wallet checkout is handled by [NOWPayments](https://nowpayments.io): the client
+never leaves Telegram to talk to card networks, and neither do you — a customer paying
+by card for what's ultimately a trading-adjacent product is exactly the category
+PayPal/Stripe restrict, which is why this exists instead of a more mainstream processor.
+
+To turn it on:
+
+1. Create a NOWPayments account, generate an **API key** (Payments Settings → API keys)
+   and an **IPN secret key** (Payments Settings → Instant payment notifications — it's
+   only shown once, save it immediately), and add a **payout wallet** for the USDT
+   address you want to receive funds at.
+2. Set three env vars in `.env`: `NOWPAYMENTS_API_KEY`, `NOWPAYMENTS_IPN_SECRET`, and
+   `EZYMAP_PUBLIC_BASE_URL` (your bot's public HTTPS base URL, no trailing slash — e.g.
+   `https://yourname.pythonanywhere.com`). Leaving any of these blank makes the
+   **💳 Pay by Card** button tell the client that payment method is unavailable, rather
+   than erroring.
+3. Reload the web app.
+
+How it works: tapping **💳 Pay by Card** creates a NOWPayments invoice
+(`nowpayments_client.py`) and hands the client a hosted checkout link
+(`handlers/nowpayments_payment.py`). The pending invoice is tracked in
+`ezymap_nowpayments_invoices.json` (a small JSON file — separate from `bot_data`,
+mirroring how the old Xendit integration worked, since this needs to be looked up from a
+plain webhook request, not a Telegram update). When NOWPayments confirms the charge, it
+POSTs to `/nowpayments/webhook`; the signature is verified (`x-nowpayments-sig`, HMAC-
+SHA512 over the recursively key-sorted JSON body — see `nowpayments_webhook.py`) before
+anything is trusted, and only the `finished` status is treated as a real confirmation.
+On success the client gets their confirmation text *and* the same branded PNG receipt
+used elsewhere in the bot, no admin tap required — unlike USDT, a card charge is already
+cryptographically confirmed by the time the webhook fires, so there's nothing left for
+Jack to manually verify.
+
 ## Editing content
 
 All bot copy (welcome messages, broker links, package perks, FAQ, payment details) lives
@@ -207,10 +249,15 @@ asap_telebot/       # A$AP USD bot (Elev8 broker)
 
 ezymap_bot/         # EzyMap Algo bot (Vantage Markets broker)
   config.py, content.py, keyboards.py, main.py, webhook_app.py   # same roles as above
-  submission_store.py  # tracks pending registrations/payments awaiting admin Approve/Reject
+  submission_store.py  # tracks pending registrations/USDT payments awaiting admin Approve/Reject
+  receipt.py            # renders the branded PNG receipt card sent on approval/card payment
+  invoice_store.py       # tracks pending NOWPayments invoices awaiting the IPN webhook
+  nowpayments_client.py   # creates NOWPayments invoices
+  nowpayments_webhook.py   # verifies + handles the NOWPayments IPN callback
   handlers/
     start.py, menu.py, registration.py   # same roles as above
     payment.py          # USDT payment prompt -> proof (photo/text) -> admin DM
+    nowpayments_payment.py # Card payment -> hosted checkout link -> auto-confirms via webhook
     decision.py          # handles the admin's Approve/Reject tap -> notifies the client
 ```
 

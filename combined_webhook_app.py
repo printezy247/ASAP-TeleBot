@@ -15,6 +15,8 @@ from asap_telebot.config import WEBHOOK_SECRET as ASAP_WEBHOOK_SECRET
 from asap_telebot.main import build_application as build_asap_application
 from ezymap_bot.config import WEBHOOK_SECRET as EZYMAP_WEBHOOK_SECRET
 from ezymap_bot.main import build_application as build_ezymap_application
+from ezymap_bot.nowpayments_webhook import handle_paid_invoice as handle_nowpayments_invoice
+from ezymap_bot.nowpayments_webhook import verify_signature as verify_nowpayments_signature
 
 if not ASAP_WEBHOOK_SECRET:
     raise RuntimeError("WEBHOOK_SECRET is not set. Add it to .env (see .env.example).")
@@ -51,6 +53,19 @@ def asap_webhook():
 @app.route(f"/webhook/ezymap/{EZYMAP_WEBHOOK_SECRET}", methods=["POST"])
 def ezymap_webhook():
     return _handle_webhook(build_ezymap_application)
+
+
+@app.route("/nowpayments/webhook", methods=["POST"])
+def nowpayments_webhook():
+    raw_body = request.get_data()
+    signature = request.headers.get("x-nowpayments-sig", "")
+    if not verify_nowpayments_signature(raw_body, signature):
+        abort(401)
+    payload = request.get_json(force=True, silent=True)
+    if payload is None:
+        abort(400)
+    asyncio.run(handle_nowpayments_invoice(payload))
+    return "ok"
 
 
 @app.route("/")
