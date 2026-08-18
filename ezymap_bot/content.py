@@ -1,5 +1,7 @@
 import os
 
+from . import fx_rates
+
 CHANNEL_NAME = "EzyMap Algo"
 AMBASSADOR_NAME = "Jack"
 BROKER_NAME = "Vantage Markets"
@@ -19,16 +21,68 @@ PLAN_DURATION_LABELS = {
     "my": {"1m": "1 Bulan", "6m": "6 Bulan", "1y": "1 Tahun"},
 }
 
-# region code -> currency symbol
-PRICE_REGIONS = {
-    "en": "$",
-    "my": "RM",
-}
 DEFAULT_PRICE_REGION = "en"
+
+# currency code -> display symbol. "usd" is always paired with the "en" language (see
+# the language/currency picker in keyboards.py); the other three all pair with "my"
+# (Bahasa Melayu) - clients are never limited to these, they can type any ISO
+# currency code (see CURRENCY_QUICK_PICKS/handlers/currency.py) - these just get a
+# nicer symbol instead of a plain code prefix, since they're the most likely picks.
+CURRENCIES = {
+    "usd": "$",
+    "myr": "RM",
+    "idr": "Rp",
+    "bnd": "B$",
+}
+DEFAULT_CURRENCY = "usd"
+
+# code -> (flag label for the quick-pick button). "Other currency" (handled in
+# handlers/currency.py) covers every other ISO code the FX API recognizes - this
+# list is just the fast path for the most likely clients, not the full extent of
+# what's supported.
+CURRENCY_QUICK_PICKS = [
+    ("usd", "🇺🇸 USD"),
+    ("myr", "🇲🇾 MYR"),
+    ("idr", "🇮🇩 IDR"),
+    ("bnd", "🇧🇳 BND"),
+    ("sgd", "🇸🇬 SGD"),
+    ("eur", "🇪🇺 EUR"),
+    ("gbp", "🇬🇧 GBP"),
+    ("aud", "🇦🇺 AUD"),
+]
 
 
 def plan_duration_label(duration_code: str, region: str) -> str:
     return PLAN_DURATION_LABELS.get(region, PLAN_DURATION_LABELS[DEFAULT_PRICE_REGION])[duration_code]
+
+
+def format_price(usd_amount, currency: str = DEFAULT_CURRENCY) -> str:
+    """Formats a USD product price (a PRODUCTS[...]["plans"][...] value) for display
+    in the client's chosen currency - any ISO code the FX API recognizes, not just
+    the curated quick-picks. This is display only - actual USDT/card payment amounts
+    always stay quoted in USD, since crypto has no native local-currency price (see
+    PAYMENT_PROMPT_TEMPLATE below). Falls back to USD if given an unrecognized
+    currency code (e.g. a stale deep link, or the FX API being unreachable on a
+    currency this process has never successfully cached).
+    """
+    currency = (currency or DEFAULT_CURRENCY).lower()
+    if currency == "usd":
+        return f"{CURRENCIES['usd']}{usd_amount}"
+
+    converted = fx_rates.usd_to(currency, float(usd_amount))
+    if converted is None:
+        return f"{CURRENCIES['usd']}{usd_amount}"
+
+    symbol = CURRENCIES.get(currency)
+    if currency == "idr":
+        # IDR has no meaningful cents in everyday pricing - round to the nearest
+        # thousand for a clean, familiar-looking figure (e.g. "Rp245,000").
+        return f"{symbol}{round(converted, -3):,.0f}"
+    if symbol:
+        return f"{symbol}{converted:,.2f}"
+    # Not one of the curated symbols - show the plain ISO code rather than guess at
+    # a symbol/decimal convention we haven't specifically verified.
+    return f"{currency.upper()} {converted:,.2f}"
 
 
 # code -> {name, description: {en, my}, plans: {duration_code: price}}
@@ -72,7 +126,11 @@ PRODUCTS = {
                 "daripada mana-mana peringkat prop firm."
             ),
         },
-        "plans": {"1m": "9", "6m": "49", "1y": "99"},
+        # 1m raised from $9 -> $15: below that, a card payment fails outright since
+        # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
+        # 6m/1y scaled up by the same increment the original $9 scheme used
+        # (+$40 / +$90), so the discount ladder's shape is unchanged.
+        "plans": {"1m": "15", "6m": "55", "1y": "105"},
     },
     "mt5_auto_tpsl": {
         "name": "Auto TPSL (Trending This Month)",
@@ -80,7 +138,11 @@ PRODUCTS = {
             "en": "Don't waste your time setting TP & SL manually for each layer.",
             "my": "Jimat masa anda tanpa perlu set TP & SL secara manual untuk setiap layer.",
         },
-        "plans": {"1m": "9", "6m": "49", "1y": "99"},
+        # 1m raised from $9 -> $15: below that, a card payment fails outright since
+        # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
+        # 6m/1y scaled up by the same increment the original $9 scheme used
+        # (+$40 / +$90), so the discount ladder's shape is unchanged.
+        "plans": {"1m": "15", "6m": "55", "1y": "105"},
     },
     "mt5_currency_strength": {
         "name": "Currency Strength Meter",
@@ -94,7 +156,11 @@ PRODUCTS = {
                 "banyak di-trade."
             ),
         },
-        "plans": {"1m": "9", "6m": "49", "1y": "99"},
+        # 1m raised from $9 -> $15: below that, a card payment fails outright since
+        # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
+        # 6m/1y scaled up by the same increment the original $9 scheme used
+        # (+$40 / +$90), so the discount ladder's shape is unchanged.
+        "plans": {"1m": "15", "6m": "55", "1y": "105"},
     },
     "mt5_mtf_bias": {
         "name": "MTF Bias",
@@ -108,7 +174,11 @@ PRODUCTS = {
                 "trading plan anda yang sentiasa berubah."
             ),
         },
-        "plans": {"1m": "9", "6m": "49", "1y": "99"},
+        # 1m raised from $9 -> $15: below that, a card payment fails outright since
+        # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
+        # 6m/1y scaled up by the same increment the original $9 scheme used
+        # (+$40 / +$90), so the discount ladder's shape is unchanged.
+        "plans": {"1m": "15", "6m": "55", "1y": "105"},
     },
 }
 
@@ -159,6 +229,19 @@ WELCOME_MESSAGES = {
 }
 
 LANGUAGE_SELECT_TEXT = "🌐 Choose your language / Pilih bahasa anda:"
+
+CURRENCY_SELECT_TEXT = {
+    "en": "💱 Choose your currency (for browsing prices - USDT/card payments always settle in USD):",
+    "my": "💱 Pilih mata wang anda (untuk lihat harga - pembayaran USDT/kad tetap dalam USD):",
+}
+ASK_CURRENCY_CODE_TEXT = {
+    "en": "Type your currency's 3-letter code (e.g. EUR, GBP, JPY, CAD, INR):",
+    "my": "Taip kod mata wang anda (3 huruf, cth: EUR, GBP, JPY, CAD, INR):",
+}
+CURRENCY_NOT_RECOGNIZED_TEXT = {
+    "en": "Sorry, I don't recognize that currency code. Please try again (e.g. EUR, GBP, JPY), or /cancel to use USD instead.",
+    "my": "Maaf, kod mata wang itu tidak dikenali. Sila cuba lagi (cth: EUR, GBP, JPY), atau /cancel untuk guna USD.",
+}
 
 MAIN_MENU_TEXT = {
     "en": "What would you like to do?",
@@ -488,11 +571,12 @@ def product_detail_text(product_code: str, region: str) -> str:
     return "\n".join(lines)
 
 
-def plan_button_label(product_code: str, duration_code: str, region: str = DEFAULT_PRICE_REGION) -> str:
+def plan_button_label(
+    product_code: str, duration_code: str, region: str = DEFAULT_PRICE_REGION, currency: str = DEFAULT_CURRENCY
+) -> str:
     price = PRODUCTS[product_code]["plans"][duration_code]
     duration_label = plan_duration_label(duration_code, region)
-    symbol = PRICE_REGIONS.get(region, PRICE_REGIONS[DEFAULT_PRICE_REGION])
-    return f"{duration_label} ({symbol}{price})"
+    return f"{duration_label} ({format_price(price, currency)})"
 
 
 CHOOSE_PAYMENT_METHOD_TEXT = {

@@ -33,6 +33,10 @@ async def _handle_deep_link(update: Update, context: ContextTypes.DEFAULT_TYPE, 
         _, lang = parts
         region = "my" if lang == "my" else "en"
         context.user_data["price_region"] = region
+        # These external deep links only ever carry a language, not a specific
+        # currency - MYR is the best default for "my" (Malaysia is the primary
+        # market), and the client can still switch via /start any time.
+        context.user_data["price_currency"] = "myr" if region == "my" else "usd"
         text = content.PACKAGES_INTRO_TEXT.get(
             region, content.PACKAGES_INTRO_TEXT[content.DEFAULT_PRICE_REGION]
         )
@@ -44,19 +48,20 @@ async def _handle_deep_link(update: Update, context: ContextTypes.DEFAULT_TYPE, 
     if len(parts) >= 4 and parts[0] == "buy":
         _, lang, duration, product_code = payload.split("_", 3)
         region = "my" if lang == "my" else "en"
+        currency = "myr" if region == "my" else "usd"
 
         product = content.PRODUCTS.get(product_code)
         if not product or duration not in product["plans"]:
             return False
 
         context.user_data["price_region"] = region
+        context.user_data["price_currency"] = currency
 
-        symbol = content.PRICE_REGIONS.get(region, content.PRICE_REGIONS[content.DEFAULT_PRICE_REGION])
         price = product["plans"][duration]
         plan_name = content.plan_duration_label(duration, region)
         text = content.CHOOSE_PAYMENT_METHOD_TEXT.get(
             region, content.CHOOSE_PAYMENT_METHOD_TEXT[content.DEFAULT_PRICE_REGION]
-        ).format(product_name=product["name"], plan_name=plan_name, price=f"{symbol}{price}")
+        ).format(product_name=product["name"], plan_name=plan_name, price=content.format_price(price, currency))
 
         await update.effective_chat.send_message(
             text,

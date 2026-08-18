@@ -57,8 +57,16 @@ approved!" / "your payment is confirmed!"), receipt image included. See
 [Admin approvals](#admin-approvals) below. Card payments skip that step entirely: the
 client gets their confirmation + receipt as soon as NOWPayments confirms the charge.
 
-1. `/start` → welcome messages → main menu: **Check Out FREE Steps**, **Purchase EzyMap**,
-   **Why Choose Vantage**, **FAQ**.
+1. `/start` → language (English / Bahasa Melayu) → **currency** (USD/MYR/IDR/BND/SGD/
+   EUR/GBP/AUD quick-picks, or type any 3-letter ISO code — e.g. JPY, INR, CAD — for
+   anyone else worldwide) → welcome messages → main menu: **Check Out FREE Steps**,
+   **Purchase EzyMap**, **Why Choose Vantage**, **FAQ**. Currency is separate from
+   language on purpose — a client can speak either and still want their own local
+   currency. It only affects *displayed* prices while browsing; USDT/Card payments
+   always settle in USD (crypto has no native local-currency price). Prices are
+   converted using live exchange rates (`ezymap_bot/fx_rates.py`, a free keyless FX
+   API, cached ~12h) — if that's ever unreachable, it falls back to fixed rates rather
+   than breaking the price display.
 2. **Check Out FREE Steps** — explains the four tiers, then Open New Account / Change IB
    (done by email, not a link — the bot gives you the exact email template to send) /
    ✅ I've Completed Registration (Name → Email → Account Number → deposit proof screenshot
@@ -254,8 +262,10 @@ ezymap_bot/         # EzyMap Algo bot (Vantage Markets broker)
   invoice_store.py       # tracks pending NOWPayments invoices awaiting the IPN webhook
   nowpayments_client.py   # creates NOWPayments invoices
   nowpayments_webhook.py   # verifies + handles the NOWPayments IPN callback
+  fx_rates.py             # live USD -> any-currency rates, cached, for price display only
   handlers/
     start.py, menu.py, registration.py   # same roles as above
+    currency.py          # currency quick-pick + "type any code" flow after language select
     payment.py          # USDT payment prompt -> proof (photo/text) -> admin DM
     nowpayments_payment.py # Card payment -> hosted checkout link -> auto-confirms via webhook
     decision.py          # handles the admin's Approve/Reject tap -> notifies the client
