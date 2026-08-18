@@ -72,7 +72,9 @@ PRODUCTS = {
                 "daripada mana-mana peringkat prop firm."
             ),
         },
-        "plans": {"1m": "9", "6m": "49", "1y": "99"},
+        # 1m raised from $9 -> $15: below that, a card payment fails outright since
+        # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
+        "plans": {"1m": "15", "6m": "49", "1y": "99"},
     },
     "mt5_auto_tpsl": {
         "name": "Auto TPSL (Trending This Month)",
@@ -80,7 +82,9 @@ PRODUCTS = {
             "en": "Don't waste your time setting TP & SL manually for each layer.",
             "my": "Jimat masa anda tanpa perlu set TP & SL secara manual untuk setiap layer.",
         },
-        "plans": {"1m": "9", "6m": "49", "1y": "99"},
+        # 1m raised from $9 -> $15: below that, a card payment fails outright since
+        # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
+        "plans": {"1m": "15", "6m": "49", "1y": "99"},
     },
     "mt5_currency_strength": {
         "name": "Currency Strength Meter",
@@ -94,7 +98,9 @@ PRODUCTS = {
                 "banyak di-trade."
             ),
         },
-        "plans": {"1m": "9", "6m": "49", "1y": "99"},
+        # 1m raised from $9 -> $15: below that, a card payment fails outright since
+        # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
+        "plans": {"1m": "15", "6m": "49", "1y": "99"},
     },
     "mt5_mtf_bias": {
         "name": "MTF Bias",
@@ -108,7 +114,9 @@ PRODUCTS = {
                 "trading plan anda yang sentiasa berubah."
             ),
         },
-        "plans": {"1m": "9", "6m": "49", "1y": "99"},
+        # 1m raised from $9 -> $15: below that, a card payment fails outright since
+        # NOWPayments enforces a ~$12.50 minimum on USDT/TRC20 after fee deduction.
+        "plans": {"1m": "15", "6m": "49", "1y": "99"},
     },
 }
 
