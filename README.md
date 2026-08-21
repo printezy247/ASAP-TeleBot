@@ -57,23 +57,28 @@ approved!" / "your payment is confirmed!"), receipt image included. See
 [Admin approvals](#admin-approvals) below. Card payments skip that step entirely: the
 client gets their confirmation + receipt as soon as NOWPayments confirms the charge.
 
-1. `/start` → language (English / Bahasa Melayu) → **currency** (USD/MYR/IDR/BND/SGD/
-   EUR/GBP/AUD quick-picks, or type any 3-letter ISO code — e.g. JPY, INR, CAD — for
-   anyone else worldwide) → welcome messages → main menu: **Check Out FREE Steps**,
-   **Purchase EzyMap**, **Why Choose Vantage**, **FAQ**. Currency is separate from
-   language on purpose — a client can speak either and still want their own local
-   currency. It only affects *displayed* prices while browsing; USDT/Card payments
-   always settle in USD (crypto has no native local-currency price). Prices are
-   converted using live exchange rates (`ezymap_bot/fx_rates.py`, a free keyless FX
-   API, cached ~12h) — if that's ever unreachable, it falls back to fixed rates rather
-   than breaking the price display.
+1. `/start` → language (English / Bahasa Melayu) → welcome messages → main menu:
+   **Check Out FREE Steps**, **Purchase EzyMap**, **FAQ**, **Join Our Free Channel**.
+   Currency is deliberately *not* asked here — an extra question this early risked
+   scaring clients off before they ever saw the free packages.
 2. **Check Out FREE Steps** — explains the four tiers, then Open New Account / Change IB
    (done by email, not a link — the bot gives you the exact email template to send) /
    ✅ I've Completed Registration (Name → Email → Account Number → deposit proof screenshot
-   for Pro/Premium/Elite → Jack's DM with Approve/Reject).
-3. **Purchase EzyMap** — pick TradingView or an MT5 bundle/tool, then a plan → USDT
-   (payment instructions → proof → Jack's DM with Approve/Reject) or Card (hosted
-   checkout link → auto-confirms on payment, no admin step).
+   for Pro/Premium/Elite → Jack's DM with Approve/Reject) / **Why Choose Vantage** (moved
+   here from the main menu, since it's most relevant right where someone's deciding
+   whether to open a broker account).
+3. **Purchase EzyMap** — the first time a client taps this (and only the first time —
+   the choice sticks for the rest of the session), they're asked to pick a **currency**
+   (USD/MYR/IDR/BND/SGD/EUR/GBP/AUD quick-picks, or type any 3-letter ISO code — e.g.
+   JPY, INR, CAD — for anyone else worldwide) before seeing the catalog. Currency is
+   separate from language on purpose — a client can speak either and still want their
+   own local currency. It only affects *displayed* prices while browsing; USDT/Card
+   payments always settle in USD (crypto has no native local-currency price). Prices
+   are converted using live exchange rates (`ezymap_bot/fx_rates.py`, a free keyless FX
+   API, cached ~12h) — if that's ever unreachable, it falls back to fixed rates rather
+   than breaking the price display. Then: pick TradingView or an MT5 bundle/tool, then
+   a plan → USDT (payment instructions → proof → Jack's DM with Approve/Reject) or Card
+   (hosted checkout link → auto-confirms on payment, no admin step).
 4. **FAQ** — includes a "What if I get stuck?" / "cancel/refund" entry with a Contact
    Admin button.
 

@@ -1,9 +1,11 @@
 from telegram import Update
+from telegram.constants import ParseMode
 from telegram.ext import ContextTypes, ConversationHandler
 
 from .. import content
 from ..fx_rates import is_known_currency
-from .start import send_greeting_and_menu, start
+from ..keyboards import purchase_category_menu
+from .start import start
 
 ASK_CURRENCY_CODE = 200
 
@@ -16,13 +18,22 @@ def _text(text_dict: dict, region: str) -> str:
     return text_dict.get(region, text_dict[content.DEFAULT_PRICE_REGION])
 
 
+async def _show_purchase_menu(chat, region: str) -> None:
+    """Currency is only ever asked right after tapping Purchase EzyMap (see
+    handlers/menu.py), so once it's picked, that's always what comes next.
+    """
+    await chat.send_message(
+        _text(content.PURCHASE_INTRO_TEXT, region), reply_markup=purchase_category_menu(region), parse_mode=ParseMode.MARKDOWN
+    )
+
+
 async def currency_selected(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles a tap on one of the curated quick-pick currency buttons."""
     query = update.callback_query
     await query.answer()
     context.user_data["price_currency"] = query.data.removeprefix("currency_")
     await query.delete_message()
-    await send_greeting_and_menu(update.effective_chat, _region(context))
+    await _show_purchase_menu(update.effective_chat, _region(context))
 
 
 async def prompt_currency_code(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -41,7 +52,7 @@ async def receive_currency_code(update: Update, context: ContextTypes.DEFAULT_TY
         return ASK_CURRENCY_CODE
 
     context.user_data["price_currency"] = code
-    await send_greeting_and_menu(update.effective_chat, region)
+    await _show_purchase_menu(update.effective_chat, region)
     return ConversationHandler.END
 
 
@@ -49,7 +60,7 @@ async def cancel_currency_code(update: Update, context: ContextTypes.DEFAULT_TYP
     # Graceful default rather than leaving the client stuck mid-setup with no
     # currency chosen at all.
     context.user_data["price_currency"] = content.DEFAULT_CURRENCY
-    await send_greeting_and_menu(update.effective_chat, _region(context))
+    await _show_purchase_menu(update.effective_chat, _region(context))
     return ConversationHandler.END
 
 

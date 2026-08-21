@@ -14,9 +14,13 @@ from ..keyboards import (
     payment_method_menu,
     product_detail_menu,
 )
+from .start import send_greeting_and_menu
+
 _SIMPLE_ROUTES = {
     "menu_main": (content.MAIN_MENU_TEXT, keyboards.main_menu),
-    "menu_broker": (content.BROKER_INFO_TEXT, keyboards.back_to_main),
+    # Reached from the packages screen now (Why Choose Vantage moved there from the
+    # main menu) - back_to_packages returns there instead of skipping past it.
+    "menu_broker": (content.BROKER_INFO_TEXT, keyboards.back_to_packages),
     "menu_packages": (content.PACKAGES_INTRO_TEXT, keyboards.package_tier_menu),
     "menu_pro": (content.PURCHASE_INTRO_TEXT, keyboards.purchase_category_menu),
     "reg_open_account": (content.OPEN_ACCOUNT_TEXT, keyboards.back_to_packages),
@@ -52,8 +56,17 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     region = context.user_data.get("price_region", content.DEFAULT_PRICE_REGION)
 
     if data in ("lang_en", "lang_my"):
+        # Currency is asked later, only when the client taps Purchase EzyMap (the
+        # only place a price is actually shown - free packages have none) - asking
+        # for it this early risked scaring clients off before they ever saw the
+        # free packages.
         region = "en" if data == "lang_en" else "my"
         context.user_data["price_region"] = region
+        await query.delete_message()
+        await send_greeting_and_menu(update.effective_chat, region)
+        return
+
+    if data == "menu_pro" and "price_currency" not in context.user_data:
         await query.delete_message()
         await update.effective_chat.send_message(
             _text(content.CURRENCY_SELECT_TEXT, region), reply_markup=currency_select_menu(region)
