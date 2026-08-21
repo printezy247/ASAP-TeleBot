@@ -72,11 +72,13 @@ def currency_select_menu(region: str) -> InlineKeyboardMarkup:
 
 
 def main_menu(region: str) -> InlineKeyboardMarkup:
+    # Why Choose Vantage lives on the package_tier_menu screen instead (reached via
+    # Check Out FREE Steps) - keeps the very first thing a client sees to the 3
+    # things that actually matter for conversion, plus FAQ as a safety net.
     return InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(_label("check_out_free_steps", region), callback_data="menu_packages")],
             [InlineKeyboardButton(_label("purchase_ezymap", region), callback_data="menu_pro")],
-            [InlineKeyboardButton(_label("why_choose_vantage", region), callback_data="menu_broker")],
             [InlineKeyboardButton(_label("faq", region), callback_data="menu_faq")],
             [InlineKeyboardButton(_label("free_channel", region), url=FREE_CHANNEL_URL)],
         ]
@@ -94,6 +96,7 @@ def package_tier_menu(region: str) -> InlineKeyboardMarkup:
             [InlineKeyboardButton("🥈 Pro", callback_data="tier_pro")],
             [InlineKeyboardButton("🥇 Premium", callback_data="tier_premium")],
             [InlineKeyboardButton("🏆 Elite", callback_data="tier_elite")],
+            [InlineKeyboardButton(_label("why_choose_vantage", region), callback_data="menu_broker")],
             [InlineKeyboardButton(_label("main_menu", region), callback_data="menu_main")],
         ]
     )
